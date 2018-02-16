@@ -8,6 +8,10 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Install Ubuntu dependencies
+          command: sudo apt install -y python-dev
+
       - restore_cache:
           key: requirements-{{ checksum "requirements.txt" }}
       - run:
