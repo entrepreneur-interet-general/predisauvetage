@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-from converters import CoordinatesConverter, SitRepConverter
+from collecte.sauvamer.converters import CoordinatesConverter, SitRepConverter
 
 COLS_NAME = [
     'numero_etablissement', 'numero_rapport',

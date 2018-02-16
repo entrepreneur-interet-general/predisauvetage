@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from converters import CoordinatesConverter, SitRepConverter
+from collecte.sauvamer.converters import CoordinatesConverter, SitRepConverter
 
 
 class TestSitRepConverter(unittest.TestCase):
