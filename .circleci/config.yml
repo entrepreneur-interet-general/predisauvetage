@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2.7.13
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: requirements-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install Python deps in a venv
+          command: |
+            virtualenv -p /usr/bin/python2.7 venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            echo "source $(pwd)/venv/bin/activate" >> $BASH_ENV
+      - save_cache:
+          key: requirements-{{ checksum "requirements.txt" }}
+          paths:
+            - "venv"
+
+      - run:
+          name: Run test suite
+          command: nosetests .
