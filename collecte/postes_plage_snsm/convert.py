@@ -2,6 +2,9 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 
+# Likely coming from
+# https://www.google.com/maps/d/viewer?mid=151Itl_57S7UlpC7P-TdfvT2Pz7Y
+
 
 class KMLConverter(object):
     def __init__(self, filepath):
@@ -29,7 +32,7 @@ class KMLConverter(object):
             soup = BeautifulSoup(f, 'lxml')
             for placemark in soup.folder.find_all('placemark'):
                 poste = {}
-                poste['nom'] = placemark.find('name').text
+                poste['nom'] = placemark.find('name').text.strip()
                 poste['latitude'], poste['longitude'] = self.parse_coordinates(
                     placemark.find('coordinates')
                 )
@@ -45,4 +48,6 @@ class KMLConverter(object):
 
     def to_csv(self, filepath):
         df = pd.DataFrame(self.postes)
-        df.to_csv(filepath, encoding='utf-8', index=False)
+        df = df.sort_values(by='code_postal').reset_index(drop=True)
+        df.index += 1
+        df.to_csv(filepath, encoding='utf-8', index=True, index_label='id')
