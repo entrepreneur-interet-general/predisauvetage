@@ -29,14 +29,14 @@ class KMLConverter(object):
 
     def parse(self):
         with open(self.filepath, 'r') as f:
-            soup = BeautifulSoup(f, 'lxml')
-            for placemark in soup.folder.find_all('placemark'):
+            soup = BeautifulSoup(f, 'xml')
+            for placemark in soup.kml.Document.Folder.find_all('Placemark'):
                 poste = {}
                 poste['nom'] = placemark.find('name').text.strip()
                 poste['latitude'], poste['longitude'] = self.parse_coordinates(
                     placemark.find('coordinates')
                 )
-                for data in placemark.find_all('data'):
+                for data in placemark.ExtendedData.find_all('Data'):
                     key, value = data['name'], data.text.strip()
                     if key != 'gx_media_links':
                         cleaned_key = self.clean_key(key)

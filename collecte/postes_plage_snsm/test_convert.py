@@ -17,6 +17,9 @@ class TesKMLConverter(unittest.TestCase):
         output_file = '/tmp/out.csv'
         KMLConverter(input_file).to_csv(output_file)
 
-        assert_frame_equal(pd.read_csv(test_file), pd.read_csv(output_file))
+        assert_frame_equal(
+            pd.read_csv(test_file, encoding='utf-8'),
+            pd.read_csv(output_file, encoding='utf-8')
+        )
 
         os.remove(output_file)
