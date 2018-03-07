@@ -1,0 +1,33 @@
+<div class="page" data-name="prevention">
+  <div class="navbar">
+    <div class="navbar-inner sliding">
+      <div class="title">Prévention</div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="block-title">En cas d'incident</div>
+    <div class="list media-list">
+      <ul>
+        {{#each $root.problemes}}
+        <li>
+          <a href="/problemes/{{ nom }}" class="item-link item-content">
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">{{nom}}</div>
+              </div>
+              <div class="item-subtitle">{{sous_titre}}</div>
+            </div>
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="block-title">Partenaires</div>
+    <div class="list links-list">
+      <ul>
+        <li><a href="/snsm/">Donner à la SNSM</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
