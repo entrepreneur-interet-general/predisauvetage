@@ -1,0 +1,72 @@
+in:
+  type: file
+  path_prefix: /Users/antoineaugusti/Desktop/secmar.csv
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ;
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    columns:
+    - {name: id, type: long}
+    - {name: annee, type: long}
+    - {name: n_ordre_annuel_cross, type: long}
+    - {name: n_sitrep, type: long}
+    - {name: identifiant_marylin, type: string}
+    - {name: date_operation, type: string}
+    - {name: date_de_reception_de_lalerte, type: string}
+    - {name: date_de_fin_operation, type: string}
+    - {name: latitude, type: string}
+    - {name: longitude, type: string}
+    - {name: direction_du_vent, type: long}
+    - {name: force_du_vent, type: long}
+    - {name: force_de_la_mer, type: long}
+    - {name: pourquoi_alerte, type: string}
+    - {name: moyen_alerte, type: string}
+    - {name: qui_alerte, type: string}
+    - {name: cross, type: string}
+    - {name: departement, type: string}
+    - {name: evenement, type: string}
+    - {name: etat_fiche, type: string}
+    - {name: autorite, type: string}
+    - {name: autorite_2, type: string}
+    - {name: zone_de_responsabilite, type: string}
+    - {name: autorite_demploi, type: string}
+    - {name: flotteur_commerce, type: long}
+    - {name: flotteur_peche, type: long}
+    - {name: flotteur_plaisance, type: long}
+    - {name: flotteur_loisir_nautique, type: long}
+    - {name: flotteur_aeronef, type: long}
+    - {name: flotteur_autre, type: long}
+    - {name: moyen_navire, type: long}
+    - {name: moyen_navire_de_sauvetage_agree, type: long}
+    - {name: moyen_avion-helicoptre, type: long}
+    - {name: moyen_plongeur, type: long}
+    - {name: moyen_terrestre, type: long}
+    - {name: cross_sitrep, type: string}
+    - {name: pourquoi_alerte_short, type: string}
+    - {name: snsm_implique, type: long}
+    - {name: nb_personnes_asssistées, type: long}
+    - {name: nb_décédés_accidentels, type: long}
+    - {name: nb_décédés_naturels, type: long}
+    - {name: nb_personnes_disparues, type: long}
+    - {name: nb_personnes_impliquées_fausses_alertes, type: long}
+    - {name: nb_personnes_retrouvées, type: long}
+    - {name: nb_personnes_secourues, type: long}
+    - {name: nb_personnes_tirées_daffaires_elles_memes, type: long}
+    - {name: autorite_demploi_0, type: string}
+    - {name: autorite_demploi_1, type: string}
+    - {name: autorite_demploi_2, type: string}
+    - {name: autorite_demploi_3, type: string}
+    - {name: autorite_demploi_4, type: string}
+    - {name: autorite_demploi_5, type: string}
+    - {name: autorite_demploi_6, type: string}
+    - {name: autorite_demploi_7, type: string}
+{% include 'datasources/out_postgresql_secmar' %}
+  table: secmar
+  mode: truncate_insert
