@@ -3,8 +3,9 @@ venv/
 *.pyc
 .DS_Store
 
-
 app/node_modules
 app/platforms
 app/plugins
-appresources/signing
+app/resources/signing
+
+map/data.csv
