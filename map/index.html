@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/leaflet.markercluster.js" integrity="sha256-3ojygIn9E2azRCTFNSS+qcVr8FT9yfpol9iG2ZaRz4w=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/MarkerCluster.Default.css" integrity="sha256-LWhzWaQGZRsWFrrJxg+6Zn8TT84k0/trtiHBc6qcGpY=" crossorigin="anonymous" />
   <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.7/highcharts.js" integrity="sha256-F0xKYvUdYPCgKKgKGtEjxwHXKSRbwKP+2mOlgGoR0Fs=" crossorigin="anonymous"></script>
   <style>
     body {
       padding: 0;
@@ -22,9 +23,22 @@
       height: 100%;
       width: 100%;
     }
+    #map {
+      z-index: 1;
+    }
+    #stats {
+      position: absolute;
+      bottom: 20px;
+      right: 0px;
+      width: auto;
+      height: 200px;
+      z-index: 2;
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <div id="stats"></div>
   <div id="map"></div>
   <script>
     Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
@@ -67,14 +81,81 @@
       var map = L.map('map', {
         center: new L.LatLng(48.8531, 2.3664),
         zoom: 7,
-        layers: [tileLayers['Main']].concat(markers)
+        layers: [tileLayers['Main']].concat(Object.values(eventTypes), Object.values(operationTypes), markers)
       });
+      function refreshStats() {
+        var contained = [];
+        markers.eachLayer(function(layer) {
+          if (map.getBounds().contains(layer.getLatLng())) {
+            contained.push(layer);
+          }
+        });
+        var points = toData(counts(contained));
+        eventsInZone.series[0].setData(points);
+        if (points.length > 0) {
+          document.getElementById("stats").style.display = 'block';
+        }
+        else {
+          document.getElementById("stats").style.display = 'none';
+        }
+      }
+      function counts(points) {
+        var counts = {};
+        points.forEach(function(point) {
+          var type = point.feature.properties.evenement;
+          if (!counts.hasOwnProperty(type)) {
+            counts[type] = 0;
+          }
+          counts[type] += 1;
+        });
+        return counts;
+      }
+      function toData(src) {
+        var res = [];
+        for (var k in src) {
+          res.push({name: k, y: src[k]})
+        }
+        return res
+      }
+      ['zoomend', 'moveend', 'overlayadd', 'overlayremove'].forEach(function(event) {
+        map.on(event, function() { refreshStats() });
+      });
+
       var groups = {
         "Évenement": eventTypes,
         "Type d'opération": operationTypes,
       }
-      L.control.groupedLayers(tileLayers, groups, {position:'topleft', groupCheckboxes: true, collapsed: false}).addTo(map);
+      L.control.groupedLayers(tileLayers, groups, {position:'topleft', groupCheckboxes: true, collapsed: true}).addTo(map);
       L.control.scale({imperial: false}).addTo(map);
+
+      var eventsInZone = Highcharts.chart('stats', {
+        chart: {
+          type: 'pie'
+        },
+        title: {
+          text: "Type d'événements dans la zone"
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>'
+        },
+        plotOptions: {
+          pie: {
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            }
+          }
+        },
+        series: [{
+          name: 'Événements',
+          colorByPoint: true,
+          data: []
+        }]
+      });
     });
   </script>
 </body>
