@@ -62,6 +62,10 @@
         maxZoom: 20,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }),
+      'SHOM': L.tileLayer(
+        'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',
+        {"format":"png", "minZoom":0, "maxZoom":18, "detectRetina":false, "attribution": '<a href="http://www.shom.fr/">SHOM</a>'}
+      ),
       'SeaMap': L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
       })
