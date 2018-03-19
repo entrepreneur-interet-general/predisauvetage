@@ -7,6 +7,14 @@ select
   moyen_alerte,
   qui_alerte,
   evenement,
+  "nb_personnes_asssistées",
+  "nb_décédés_accidentels",
+  "nb_décédés_naturels",
+  "nb_personnes_disparues",
+  "nb_personnes_impliquées_fausses_alertes",
+  "nb_personnes_retrouvées",
+  "nb_personnes_secourues",
+  "nb_personnes_tirées_daffaires_elles_memes",
   replace(latitude, ',', '.') latitude,
   replace(longitude, ',', '.') longitude
 from secmar

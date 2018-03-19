@@ -26,19 +26,26 @@
     #map {
       z-index: 1;
     }
-    #stats {
+    .stats {
       position: absolute;
-      bottom: 20px;
-      right: 0px;
-      width: auto;
       height: 200px;
+      width: 600px;
       z-index: 2;
       display: none;
+    }
+    #stats-event-types {
+      bottom: 20px;
+      right: 0px;
+    }
+    #stats-casualties {
+      bottom: 220px;
+      right: 0px;
     }
   </style>
 </head>
 <body>
-  <div id="stats"></div>
+  <div id="stats-event-types" class="stats"></div>
+  <div id="stats-casualties" class="stats"></div>
   <div id="map"></div>
   <script>
     Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
@@ -90,25 +97,64 @@
             contained.push(layer);
           }
         });
-        var points = toData(counts(contained));
-        eventsInZone.series[0].setData(points);
-        if (points.length > 0) {
-          document.getElementById("stats").style.display = 'block';
+        eventsInZone.series[0].setData(toData(eventsCount(contained)));
+        casulatiesInZone.series[0].setData(toData(casualtiesCount(contained)));
+        if (contained.length > 0) {
+          document.getElementById("stats-event-types").style.display = 'block';
+          document.getElementById("stats-casualties").style.display = 'block';
         }
         else {
-          document.getElementById("stats").style.display = 'none';
+          document.getElementById("stats-event-types").style.display = 'none';
+          document.getElementById("stats-casualties").style.display = 'none';
         }
       }
-      function counts(points) {
-        var counts = {};
+      function eventsCount(points) {
+        var res = {};
         points.forEach(function(point) {
           var type = point.feature.properties.evenement;
-          if (!counts.hasOwnProperty(type)) {
-            counts[type] = 0;
+          if (!res.hasOwnProperty(type)) {
+            res[type] = 0;
           }
-          counts[type] += 1;
+          res[type] += 1;
         });
-        return counts;
+        return res;
+      }
+      function casualtiesCount(points) {
+        var res = {};
+        points.forEach(function(point) {
+          var cols = [
+            "nb_personnes_asssistées",
+            "nb_décédés_accidentels",
+            "nb_décédés_naturels",
+            "nb_personnes_disparues",
+            "nb_personnes_impliquées_fausses_alertes",
+            "nb_personnes_retrouvées",
+            "nb_personnes_secourues",
+            "nb_personnes_tirées_daffaires_elles_memes"
+          ]
+          var mapping = {
+            "nb_personnes_asssistées" : "Assistées",
+            "nb_décédés_accidentels" : "Décédés accidentels",
+            "nb_décédés_naturels" : "Décédés naturels",
+            "nb_personnes_disparues" : "Disparues",
+            "nb_personnes_impliquées_fausses_alertes" : "Impliquées dans fausses alertes",
+            "nb_personnes_retrouvées" : "Retrouvées",
+            "nb_personnes_secourues" : "Secourues",
+            "nb_personnes_tirées_daffaires_elles_memes" : "Tirées d'affaires elles-mêmes"
+          }
+          cols.forEach(function(col) {
+            var value = parseInt(point.feature.properties[col]);
+            if (value === 0) {
+              return
+            }
+            var name = mapping[col];
+            if (!res.hasOwnProperty(name)) {
+              res[name] = value;
+            }
+            res[name] += value;
+          })
+        });
+        return res;
       }
       function toData(src) {
         var res = [];
@@ -128,7 +174,7 @@
       L.control.groupedLayers(tileLayers, groups, {position:'topleft', groupCheckboxes: true, collapsed: true}).addTo(map);
       L.control.scale({imperial: false}).addTo(map);
 
-      var eventsInZone = Highcharts.chart('stats', {
+      var eventsInZone = Highcharts.chart('stats-event-types', {
         chart: {
           type: 'pie'
         },
@@ -152,6 +198,34 @@
         },
         series: [{
           name: 'Événements',
+          colorByPoint: true,
+          data: []
+        }]
+      });
+      var casulatiesInZone = Highcharts.chart('stats-casualties', {
+        chart: {
+          type: 'pie'
+        },
+        title: {
+          text: "Bilan humain dans la zone"
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>'
+        },
+        plotOptions: {
+          pie: {
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            }
+          }
+        },
+        series: [{
+          name: 'Nombre',
           colorByPoint: true,
           data: []
         }]
