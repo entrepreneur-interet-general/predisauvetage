@@ -4,25 +4,21 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0D3F94">
 
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 
-    <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-
-    <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        <nav class="navbar navbar-expand-md navbar-light">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo SNOSAN" height="40">
@@ -71,8 +67,16 @@
             @yield('content')
         </main>
 
-        <footer class="bg-primary">
+        <footer>
             <div class="container">
+                <div class="row">
+                    <div class="col-6 logos">
+                        <img src="{{ asset('images/mtes.png') }}" alt="Logo Ministère de la Transition écologique et solidaire">
+                        <img src="{{ asset('images/sports.png') }}" alt="Logo Ministère des Sports">
+                        <img src="{{ asset('images/interieur.png') }}" alt="Logo Ministère de l'Intérieur">
+                        <img src="{{ asset('images/snsm.png') }}" alt="Logo SNSM">
+                    </div>
+                </div>
             </div>
         </footer>
     </div>
