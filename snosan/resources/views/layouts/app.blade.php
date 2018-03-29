@@ -10,8 +10,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <script src="{{ mix('js/app.js') }}" defer></script>
-
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -63,6 +61,10 @@
             </div>
         </nav>
 
+        <div class="container">
+            @include('flash::message')
+        </div>
+
         <main class="py-4">
             @yield('content')
         </main>
@@ -80,5 +82,9 @@
             </div>
         </footer>
     </div>
+<script src="{{ mix('js/app.js') }}"></script>
+<script>
+$('div.alert').not('.alert-important').delay(3000).fadeOut(350);
+</script>
 </body>
 </html>
