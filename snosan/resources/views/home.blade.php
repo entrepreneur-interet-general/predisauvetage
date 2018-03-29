@@ -21,11 +21,11 @@
                         Le SNOSAN est né par la conclusion d'un protocole d'accord interministériel le 2 juillet 2015 associant :
                     </p>
                     <ul>
-                        <li>Le Ministère chargé de la mer</li>
-                        <li>Le Ministère chargé des sports</li>
-                        <li>Le Ministère de l'Intérieur</li>
-                        <li>L'École Nationale de Voile et des Sports Nautiques (ENVSN)</li>
-                        <li>La Société Nationale de Sauvetage en Mer (SNSM)</li>
+                        <li>Le Ministère chargé de la mer ;</li>
+                        <li>Le Ministère chargé des sports ;</li>
+                        <li>Le Ministère de l'Intérieur ;</li>
+                        <li>L'École Nationale de Voile et des Sports Nautiques (ENVSN) ;</li>
+                        <li>La Société Nationale de Sauvetage en Mer (SNSM).</li>
                     </ul>
                 </div>
             </div>
