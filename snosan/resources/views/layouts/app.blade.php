@@ -10,6 +10,10 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <link rel="icon" sizes="256x256" href="{{ asset('images/life-buoy.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/life-buoy.png') }}">
+    <link rel="mask-icon" href="{{ asset('images/life-buoy.png') }}" color="blue">
+
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
