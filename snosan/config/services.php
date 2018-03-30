@@ -35,4 +35,9 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'redash' => [
+        'base_url' => env('REDASH_BASE_URL'),
+        'api_key' => env('REDASH_API_KEY'),
+    ]
+
 ];

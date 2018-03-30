@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\RedashUrlGenerator;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,8 +13,12 @@ class DashboardController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(RedashUrlGenerator $redashGenerator)
     {
-        return view('dashboard.index');
+        $visualisations = [
+            $redashGenerator->iframe(1, 2)
+        ];
+
+        return view('dashboard.index', compact('visualisations'));
     }
 }

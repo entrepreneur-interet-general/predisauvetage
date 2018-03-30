@@ -4,7 +4,9 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            Et ici, un petit géranium.
+            @foreach($visualisations as $visualisation)
+                {!! $visualisation !!}
+            @endforeach
         </div>
     </div>
 </div>
