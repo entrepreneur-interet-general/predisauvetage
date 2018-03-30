@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\RedashUrlGenerator;
+use Illuminate\Support\ServiceProvider;
 
 class RedashProvider extends ServiceProvider
 {
