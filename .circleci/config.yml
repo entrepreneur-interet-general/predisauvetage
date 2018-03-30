@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:2.7.13
+      - image: circleci/php:7.1-node-browsers
     working_directory: ~/repo
 
     steps:
@@ -10,7 +11,7 @@ jobs:
 
       - run:
           name: Install Ubuntu dependencies
-          command: sudo apt install -y python-dev
+          command: sudo apt install -y python-dev libsqlite3-dev zlib1g-dev
 
       - restore_cache:
           key: requirements-{{ checksum "requirements.txt" }}
@@ -29,3 +30,28 @@ jobs:
       - run:
           name: Run test suite
           command: nosetests .
+
+      # Laravel
+      - run: sudo docker-php-ext-install zip
+      - run: sudo composer self-update
+      - restore_cache:
+          keys:
+            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v1-
+      - run: composer install -n --prefer-dist
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - restore_cache:
+          keys:
+            - node-v1-{{ checksum "package.json" }}
+            - node-v1-
+      - run: yarn install
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: touch storage/testing.sqlite
+      - run: php artisan migrate --env=testing --database=sqlite_testing --force
+      - run: ./vendor/bin/codecept build
