@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App;
 
 class RedashUrlGenerator
 {
-
     private $baseUrl;
     private $apiKey;
 
@@ -18,7 +18,7 @@ class RedashUrlGenerator
         $this->apiKey = $apiKey;
     }
 
-    public function iframe(int $queryId, int $visualisationId, array $options=[])
+    public function iframe(int $queryId, int $visualisationId, array $options = [])
     {
         $template = '<iframe src="%s/embed/query/%s/visualization/%s?%s" width="%s" height="%s"></iframe>';
 
