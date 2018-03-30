@@ -1,9 +1,8 @@
 version: 2
 jobs:
-  build:
+  python:
     docker:
       - image: circleci/python:2.7.13
-      - image: circleci/php:7.1-node-browsers
     working_directory: ~/repo
 
     steps:
@@ -11,7 +10,7 @@ jobs:
 
       - run:
           name: Install Ubuntu dependencies
-          command: sudo apt install -y python-dev libsqlite3-dev zlib1g-dev
+          command: sudo apt install -y  software-properties-common python-dev libsqlite3-dev zlib1g-dev
 
       - restore_cache:
           key: requirements-{{ checksum "requirements.txt" }}
@@ -26,12 +25,14 @@ jobs:
           key: requirements-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
-
-      - run:
-          name: Run test suite
-          command: nosetests .
-
-      # Laravel
+  laravel:
+    docker:
+      - image: circleci/php:7.1-node-browsers
+    working_directory: ~/repo/snosan
+    steps:
+      - checkout:
+          path: ~/repo
+      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
       - run: sudo docker-php-ext-install zip
       - run: sudo composer self-update
       - restore_cache:
@@ -52,6 +53,12 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: touch storage/testing.sqlite
-      - run: php artisan migrate --env=testing --database=sqlite_testing --force
-      - run: ./vendor/bin/codecept build
+      - run: cp .env.example .env.testing
+      - run: php artisan key:generate --env=testing
+      - run: ./vendor/bin/phpunit
+workflows:
+  version: 2
+  python_and_laravel:
+    jobs:
+      - python
+      - laravel
