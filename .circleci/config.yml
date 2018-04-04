@@ -53,8 +53,8 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: cp .env.example .env.testing
-      - run: php artisan key:generate --env=testing
+      - run: touch storage/testing.sqlite
+      - run: php artisan migrate --env=testing
       - run: ./vendor/bin/phpunit
 workflows:
   version: 2
