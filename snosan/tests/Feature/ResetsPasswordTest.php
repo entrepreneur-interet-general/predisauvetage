@@ -3,13 +3,11 @@
 namespace Tests\Feature;
 
 use App\User;
-use Tests\TestCase;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ResetsPasswordTest extends TestCase
 {
@@ -79,10 +77,10 @@ class ResetsPasswordTest extends TestCase
         $token = Password::createToken($user);
 
         $response = $this->post('/password/reset', [
-            'token' => $token,
-            'email' => $user->email,
-            'password' => 'password',
-            'password_confirmation' => 'password'
+            'token'                 => $token,
+            'email'                 => $user->email,
+            'password'              => 'password',
+            'password_confirmation' => 'password',
         ]);
 
         $this->assertTrue(Hash::check('password', $user->fresh()->password));
