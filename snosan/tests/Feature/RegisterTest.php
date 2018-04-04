@@ -3,10 +3,8 @@
 namespace Tests\Feature;
 
 use App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class RegisterTest extends TestCase
 {
@@ -34,10 +32,10 @@ class RegisterTest extends TestCase
         $user = factory(User::class)->make();
 
         $response = $this->post('register', [
-            'name' => $user->name,
-            'email' => $user->email,
-            'password' => 'secret',
-            'password_confirmation' => 'secret'
+            'name'                  => $user->name,
+            'email'                 => $user->email,
+            'password'              => 'secret',
+            'password_confirmation' => 'secret',
         ]);
 
         $response->assertStatus(302);
@@ -55,10 +53,10 @@ class RegisterTest extends TestCase
         $user = factory(User::class)->make();
 
         $response = $this->post('register', [
-            'name' => $user->name,
-            'email' => $user->email,
-            'password' => 'secret',
-            'password_confirmation' => 'invalid'
+            'name'                  => $user->name,
+            'email'                 => $user->email,
+            'password'              => 'secret',
+            'password_confirmation' => 'invalid',
         ]);
 
         $response->assertSessionHasErrors('password');
