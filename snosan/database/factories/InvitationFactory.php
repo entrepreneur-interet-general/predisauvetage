@@ -4,8 +4,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Invitation::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'invitation_token' => str_random(32)
+        'email'            => $faker->unique()->safeEmail,
+        'invitation_token' => str_random(32),
     ];
 });
 

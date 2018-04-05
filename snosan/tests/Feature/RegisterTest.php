@@ -57,7 +57,6 @@ class RegisterTest extends TestCase
         $response->assertStatus(302);
 
         $this->assertGuest();
-
     }
 
     public function testDoesNotRegisterAnInvalidUser()

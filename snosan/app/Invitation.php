@@ -12,7 +12,7 @@ class Invitation extends Model
      * @var array
      */
     protected $fillable = [
-        'email', 'invitation_token'
+        'email', 'invitation_token',
     ];
 
     /**
@@ -20,14 +20,16 @@ class Invitation extends Model
      *
      * @return bool|string
      */
-    public function generateInvitationToken() {
-        $this->invitation_token = substr(md5(rand(0, 9) . $this->email . time()), 0, 32);
+    public function generateInvitationToken()
+    {
+        $this->invitation_token = substr(md5(rand(0, 9).$this->email.time()), 0, 32);
     }
 
     /**
      * @return string
      */
-    public function getLink() {
-        return urldecode(route('register') . '?invitation_token=' . $this->invitation_token);
+    public function getLink()
+    {
+        return urldecode(route('register').'?invitation_token='.$this->invitation_token);
     }
 }
