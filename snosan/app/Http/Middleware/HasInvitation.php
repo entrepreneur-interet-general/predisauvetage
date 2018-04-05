@@ -11,8 +11,9 @@ class HasInvitation
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -20,6 +21,7 @@ class HasInvitation
         if ($request->isMethod('get')) {
             if (!$request->has('invitation_token')) {
                 flash("L'inscription ne peut se faire que par invitation.")->error();
+
                 return redirect(route('home'));
             }
 
@@ -29,11 +31,13 @@ class HasInvitation
                 $invitation = Invitation::where('invitation_token', $invitation_token)->firstOrFail();
             } catch (ModelNotFoundException $e) {
                 flash("Votre lien d'invitation n'est pas valide.")->error();
+
                 return redirect(route('home'));
             }
 
             if (!is_null($invitation->registered_at)) {
                 flash("Votre lien d'invitation a déjà été utilisé.")->error();
+
                 return redirect(route('login'));
             }
         }

@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Invitation;
 use App\User;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -61,9 +61,9 @@ class RegisterController extends Controller
                 'email',
                 'max:255',
                 'unique:users',
-                Rule::exists('invitations', 'email')->where(function($query) {
+                Rule::exists('invitations', 'email')->where(function ($query) {
                     $query->whereNull('registered_at');
-                })
+                }),
             ],
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -90,6 +90,7 @@ class RegisterController extends Controller
      * pass it to the view.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function showRegistrationForm(Request $request)
@@ -97,6 +98,7 @@ class RegisterController extends Controller
         $invitation_token = $request->get('invitation_token');
         $invitation = Invitation::where('invitation_token', $invitation_token)->firstOrFail();
         $email = $invitation->email;
+
         return view('auth.register', compact('email'));
     }
 
