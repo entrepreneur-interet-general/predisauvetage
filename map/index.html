@@ -14,34 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/MarkerCluster.Default.css" integrity="sha256-LWhzWaQGZRsWFrrJxg+6Zn8TT84k0/trtiHBc6qcGpY=" crossorigin="anonymous" />
   <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.7/highcharts.js" integrity="sha256-F0xKYvUdYPCgKKgKGtEjxwHXKSRbwKP+2mOlgGoR0Fs=" crossorigin="anonymous"></script>
-  <style>
-    body {
-      padding: 0;
-      margin: 0;
-    }
-    html, body, #map {
-      height: 100%;
-      width: 100%;
-    }
-    #map {
-      z-index: 1;
-    }
-    .stats {
-      position: absolute;
-      height: 200px;
-      width: 600px;
-      z-index: 2;
-      display: none;
-    }
-    #stats-event-types {
-      bottom: 20px;
-      right: 0px;
-    }
-    #stats-casualties {
-      bottom: 220px;
-      right: 0px;
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
   <div id="stats-event-types" class="stats"></div>
@@ -86,7 +59,12 @@
         var properties = marker.feature.properties;
         var popupContent = Object.keys(properties).map(function(key) {return key + " : " + properties[key]}).join("<br>")
         marker.bindPopup(popupContent);
-        marker.setIcon(L.icon.glyph({glyph: properties.type}));
+        marker.setIcon(L.icon.glyph({
+          glyph: properties.type,
+          className: 'marker-icon-' + properties.type.toLowerCase(),
+          iconUrl: '/assets/images/markers-soft.png',
+          iconSize: [35, 46]
+        }));
         markers.addLayer(marker);
         addToDict(operationTypes, properties.type, marker);
         addToDict(eventTypes, properties.evenement, marker);
