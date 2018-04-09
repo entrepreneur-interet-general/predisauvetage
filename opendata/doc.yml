@@ -195,3 +195,90 @@ components:
           format: "date-time"
           description: Date et heure de fin de mise en oeuvre du moyen en UTC au format ISO8601
           example: "1992-12-06T15:07:00Z"
+    Flotteur: 
+     properties: 
+        operation_id:
+          type: integer
+          format: int64
+          description: Le numéro unique de l'opération
+          example: 1119920371
+        numero_ordre:
+          type: integer
+          format: int32
+          description: Indique l'ordre d'implication des flotteurs'. Le premier flotteur impliqué est numéroté 1, le suivant 2 etc.
+          example: 1
+        pavillon:
+          type: string
+          description: Indique si le pavillon est français ou étranger
+          example: "Français"
+        resultat_flotteur: 
+          type: string
+          description: Etat du flotteur à la fin de l'intervention
+          example: "Remorqué"
+        type_flotteur:
+          type: string
+          description: Indique le type précis du flotteur
+          example: 'kayak'
+        cat_flotteur:
+          type: string
+          enum: [Commerce, Pêche, Plaisance, Loisir nautique, Aéronef, Autre]
+          description: Grande catégorie à laquelle appartient le flotteur
+          example: "Plaisance"
+        pavillon_obligatoire:
+          type: boolean
+          description: Determine si le flotteur doit obligatoirement avoir un pavillon
+          example: true   
+        immatriculation_obligatoire:
+          type: boolean
+          description: Determine si le flotteur doit obligatoirement avoir un numéro d'immatriculation
+          example: true
+        nom_obligatoire:
+          type: boolean
+          description: Determine si le flotteur doit obligatoirement avoir un nom
+          example: true
+        nom_flotteur:
+          type: string
+          description: Nom du flotteur
+          example: "Nautilus"
+        num_immat_fr:
+          type: integer
+          format: int64
+          description: Numéro d'immatriculation français
+          example: 445068
+        num_imo: 
+          type: integer
+          format: int64
+          description: Immatriculation internationale
+          example: 79224356
+        num_immat_autre:
+          type: integer
+          format: int64
+          description: Autre numéro d'immatriculation (non français ni internationale)
+          example: 98789030
+        marque:
+          type: string
+          description: Marque du flotteur
+          example: "SOPA"
+        nom_serie:
+          type: string
+          description: Nom de série
+          example: "CYRUS"
+        assurance: 
+          type: boolean 
+          description: Indique si le flotteur possede une assurance
+          example: true
+        longueur: 
+          type: number
+          format: float
+          description: Longueur du flotteur
+          example: 4.5
+        largeur: 
+          type: number
+          format: float
+          description: Largeur du flotteur
+          example: 1.67
+        jauge: 
+          type: number
+          format: float
+          description: Jauge du flotteur
+          example: 5.24
