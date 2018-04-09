@@ -2,6 +2,7 @@ venv/
 .env
 *.pyc
 .DS_Store
+*.csv
 
 app/node_modules
 app/platforms
