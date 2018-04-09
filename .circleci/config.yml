@@ -56,9 +56,19 @@ jobs:
       - run: touch storage/testing.sqlite
       - run: php artisan migrate --env=testing
       - run: ./vendor/bin/phpunit
+  opendata:
+    docker:
+      - image: circleci/node:9-stretch
+    working_directory: ~/repo/opendata
+    steps:
+      - checkout:
+          path: ~/repo
+      - run: npm install -g speccy
+      - run: speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
 workflows:
   version: 2
   python_and_laravel:
     jobs:
       - python
       - laravel
+      - opendata
