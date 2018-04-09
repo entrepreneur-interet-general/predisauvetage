@@ -144,13 +144,13 @@ components:
           type: string
           description: Description du bilan humain
           example: Personne secourue
-        nb:
+        nombre:
           type: number
           format: int32
           minimum: 0
           description: Nombre de personnes impliquées dans ce bilan
           example: 3
-        dont_nb_blesse:
+        dont_nombre_blesse:
           type: number
           format: int32
           minimum: 0
