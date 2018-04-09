@@ -63,7 +63,7 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
-      - run: npm install -g speccy
+      - run: sudo npm install -g speccy
       - run: speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
 workflows:
   version: 2
