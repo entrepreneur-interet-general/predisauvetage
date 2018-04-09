@@ -63,11 +63,14 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
-      - run: sudo npm install -g npm@latest
-      - run: sudo chown -R `whoami` ~/.npm
-      - run: sudo chown -R `whoami` /usr/local/lib/node_modules
-      - run: npm install -g speccy
-      - run: speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - restore_cache:
+            key: dependency-cache-{{ checksum "package.json" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
 workflows:
   version: 2
   python_and_laravel:
