@@ -46,6 +46,7 @@ components:
           example: Gris-Nez
         departement:
           type: string
+          nullable: true
           description: Département où se déroule l'opération
           example: Seine-Maritime
         est_metropolitain:
