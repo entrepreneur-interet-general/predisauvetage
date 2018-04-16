@@ -225,37 +225,14 @@ components:
           enum: [Commerce, Pêche, Plaisance, Loisir nautique, Aéronef, Autre]
           description: Grande catégorie à laquelle appartient le flotteur
           example: "Plaisance"
-        pavillon_obligatoire:
-          type: boolean
-          description: Determine si le flotteur doit obligatoirement avoir un pavillon
-          example: true   
-        immatriculation_obligatoire:
-          type: boolean
-          description: Determine si le flotteur doit obligatoirement avoir un numéro d'immatriculation
-          example: true
-        nom_obligatoire:
-          type: boolean
-          description: Determine si le flotteur doit obligatoirement avoir un nom
-          example: true
         nom_flotteur:
           type: string
           description: Nom du flotteur
           example: "Nautilus"
         num_immat_fr:
-          type: integer
-          format: int64
-          description: Numéro d'immatriculation français
-          example: 445068
-        num_imo: 
-          type: integer
-          format: int64
-          description: Immatriculation internationale
-          example: 79224356
-        num_immat_autre:
-          type: integer
-          format: int64
-          description: Autre numéro d'immatriculation (non français ni internationale)
-          example: 98789030
+          type: string
+          description: Numéro d'immatriculation du navire
+          example: 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
         marque:
           type: string
           description: Marque du flotteur
@@ -267,19 +244,78 @@ components:
         assurance: 
           type: boolean 
           description: Indique si le flotteur possede une assurance
+          nullable: true
           example: true
         longueur: 
           type: number
           format: float
           description: Longueur du flotteur
+          nullable: true
           example: 4.5
         largeur: 
           type: number
           format: float
           description: Largeur du flotteur
+          nullable: true
           example: 1.67
         jauge: 
           type: number
           format: float
-          description: Jauge du flotteur
+          description: Jauge du flotteur en ???
+          nullable: true
           example: 5.24
+        nb_personne_recommande: 
+          type: number
+          format: int32
+          description: Nombre de personnes recommandées à bord du flotteur
+          nullable: true
+          example: 8
+        puissance_max_autorisée: 
+          type: number
+          format: float
+          description: Puissance maximum autorisée sur le flotteur en ??
+          nullable: true
+          example: 7.36
+        surface_voilure: 
+          type: number
+          format: float
+          description: Surface de la voilure en m2 ?? 
+          nullable: true
+          example: 39.30
+        somme_puissance: 
+          type: number
+          format: float
+          description: Somme de la puissance des moteurs?? 
+          nullable: true
+          example: 25.76
+        coque: 
+          type: string
+          description: Type de coque du flotteur
+          nullable: true
+          example: 'MONOCOQUE HABITABLE'
+        materiau: 
+          type: string
+          description: Matériau de construction du navire
+          nullable: true
+          example: 'POLYESTER/EPOXY'
+        propulsion: 
+          type: string
+          description: Comment se propulse le flotteur
+          nullable: true
+          example: 'Moteur à essence'
+        type_moteur: 
+          type: string
+          description: Type de moteur 
+          nullable: true
+          example: 'HORS-BORD'
+        type_navire: 
+          type: string
+          description: Type du navire
+          nullable: true
+          example: 'VOILIER'
+        utilisation: 
+          type: string
+          description: Quel usage est fait du flotteur
+          nullable: true
+          example: 'USAGE PERSONNEL'
+
