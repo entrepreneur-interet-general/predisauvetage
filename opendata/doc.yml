@@ -196,8 +196,8 @@ components:
           format: "date-time"
           description: Date et heure de fin de mise en oeuvre du moyen en UTC au format ISO8601
           example: "1992-12-06T15:07:00Z"
-    Flotteur: 
-     properties: 
+    Flotteur:
+     properties:
         operation_id:
           type: integer
           format: int64
@@ -206,30 +206,27 @@ components:
         numero_ordre:
           type: integer
           format: int32
-          description: Indique l'ordre d'implication des flotteurs'. Le premier flotteur impliqué est numéroté 1, le suivant 2 etc.
+          description: "Indique l'ordre d'implication des flotteurs. Le premier flotteur impliqué est numéroté 1, le suivant 2 etc."
           example: 1
         pavillon:
           type: string
-          description: Indique si le pavillon est français ou étranger
+          description: Indique si le pavillon du flotteur impliqué est français ou étranger
+          enum: [Étranger, Français]
           example: "Français"
-        resultat_flotteur: 
+        resultat_flotteur:
           type: string
-          description: Etat du flotteur à la fin de l'intervention
+          description: État du flotteur à la fin de l'intervention
           example: "Remorqué"
         type_flotteur:
           type: string
           description: Indique le type précis du flotteur
-          example: 'kayak'
-        cat_flotteur:
+          example: Planche à voile
+        categorie_flotteur:
           type: string
           enum: [Commerce, Pêche, Plaisance, Loisir nautique, Aéronef, Autre]
           description: Grande catégorie à laquelle appartient le flotteur
           example: "Plaisance"
-        nom_flotteur:
-          type: string
-          description: Nom du flotteur
-          example: "Nautilus"
-        num_immat_fr:
+        numero_immatriculation:
           type: string
           description: Numéro d'immatriculation du navire
           example: 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
@@ -241,81 +238,80 @@ components:
           type: string
           description: Nom de série
           example: "CYRUS"
-        assurance: 
-          type: boolean 
-          description: Indique si le flotteur possede une assurance
+        assurance:
+          type: boolean
+          description: Indique si le flotteur possède une assurance
           nullable: true
           example: true
-        longueur: 
+        longueur:
           type: number
           format: float
-          description: Longueur du flotteur
+          description: Longueur du flotteur en mètres
           nullable: true
           example: 4.5
-        largeur: 
+        largeur:
           type: number
           format: float
-          description: Largeur du flotteur
+          description: Largeur du flotteur en mètres
           nullable: true
           example: 1.67
-        jauge: 
+        jauge:
           type: number
           format: float
-          description: Jauge du flotteur en ???
+          description: Jauge du flotteur en tonneaux
           nullable: true
           example: 5.24
-        nb_personne_recommande: 
+        nombre_personne_recommande:
           type: number
           format: int32
           description: Nombre de personnes recommandées à bord du flotteur
           nullable: true
           example: 8
-        puissance_max_autorisée: 
+        puissance_maximum_autorisee:
           type: number
           format: float
-          description: Puissance maximum autorisée sur le flotteur en ??
+          description: Puissance maximum autorisée sur le flotteur en kilowatt
           nullable: true
           example: 7.36
-        surface_voilure: 
+        surface_voilure:
           type: number
           format: float
-          description: Surface de la voilure en m2 ?? 
+          description: Surface de la voilure en mètres carré
           nullable: true
           example: 39.30
-        somme_puissance: 
+        somme_puissance:
           type: number
           format: float
-          description: Somme de la puissance des moteurs?? 
+          description: Puissance totale des moteurs du flotteur en kilowatt
           nullable: true
           example: 25.76
-        coque: 
+        coque:
           type: string
           description: Type de coque du flotteur
           nullable: true
-          example: 'MONOCOQUE HABITABLE'
-        materiau: 
+          example: MONOCOQUE HABITABLE
+        materiau:
           type: string
           description: Matériau de construction du navire
           nullable: true
-          example: 'POLYESTER/EPOXY'
-        propulsion: 
+          example: POLYESTER/EPOXY
+        propulsion:
           type: string
-          description: Comment se propulse le flotteur
+          description: Mode de propulsion du flotteur
           nullable: true
-          example: 'Moteur à essence'
-        type_moteur: 
+          example: Moteur à essence
+        type_moteur:
           type: string
-          description: Type de moteur 
+          description: Type de moteur
           nullable: true
-          example: 'HORS-BORD'
-        type_navire: 
+          example: HORS-BORD
+        type_navire:
           type: string
           description: Type du navire
           nullable: true
-          example: 'VOILIER'
-        utilisation: 
+          example: VOILIER
+        utilisation:
           type: string
           description: Quel usage est fait du flotteur
           nullable: true
-          example: 'USAGE PERSONNEL'
-
+          example: USAGE PERSONNEL
