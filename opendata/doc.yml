@@ -279,7 +279,7 @@ components:
           description: Surface de la voilure en mètres carré
           nullable: true
           example: 39.30
-        somme_puissance:
+        puissance_moteurs:
           type: number
           format: float
           description: Puissance totale des moteurs du flotteur en kilowatt

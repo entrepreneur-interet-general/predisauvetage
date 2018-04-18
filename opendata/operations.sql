@@ -1,5 +1,5 @@
 select
-  so.OPERATION_ID,
+  so.OPERATION_ID operation_id,
   scpq.LIBELLE pourquoi_alerte,
   scma.LIBELLE moyen_alerte,
   scqa.LIBELLE qui_alerte,
@@ -18,7 +18,7 @@ select
   so.VENT_FORCE vent_force,
   so.MER_FORCE mer_force,
   so.DATE_HEURE_RECPT_ALERTE date_heure_reception_alerte,
-  so.DATE_HEURE_FIN_OPERATION,
+  so.DATE_HEURE_FIN_OPERATION date_heure_fin_operation,
   so.NO_SITREP numero_sitrep,
   null cross_sitrep,
   null fuseau_horaire
@@ -34,3 +34,4 @@ join SECMAR.SEC_C_CAT_EVENEMENT scce on sce.CAT_EVENEMENT_ID = scce.CAT_EVENEMEN
 join SECMAR.SEC_C_AUTORITE sca on so.AUTORITE_ID = sca.AUTORITE_ID
 left join secmar.SEC_C_AUTORITE sca2 on so.AUTORITE_ID_2 = sca2.AUTORITE_ID
 join secmar.SEC_C_ZONE_RESP sczr on so.ZONE_RESP_ID = sczr.ZONE_RESP_ID
+where so.ETAT_FICHE_ID = 'VALIDE'
