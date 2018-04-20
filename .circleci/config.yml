@@ -86,7 +86,6 @@ jobs:
           command: |
             sudo pip install open-api-schemas-to-markdown
             oa-to-md doc.yml schema.md
-            npm install -g markdown-pdf
             wget -O github-markdown.css https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css
             ./node_modules/.bin/markdown-pdf -s github-markdown.css schema.md
       - store_artifacts:
