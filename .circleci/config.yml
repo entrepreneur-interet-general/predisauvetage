@@ -63,7 +63,7 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
-      - run: sudo apt install python-dev
+      - run: sudo apt install python-dev wkhtmltopdf
       - run:
           name: Install pip
           command: |
@@ -85,15 +85,19 @@ jobs:
           name: Build Markdown documentation
           command: |
             sudo pip install open-api-schemas-to-markdown
+            pip install grip
             oa-to-md doc.yml schema.md
-            wget -O github-markdown.css https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css
-            ./node_modules/.bin/markdown-pdf -s github-markdown.css schema.md
+            grip schema.md --export schema.html
+            wkhtmltopdf schema.html schema.pdf
       - store_artifacts:
           path: schema.md
           destination: schema.md
       - store_artifacts:
           path: schema.pdf
           destination: schema.pdf
+      - store_artifacts:
+          path: schema.html
+          destination: schema.html
 workflows:
   version: 2
   python_and_laravel:
