@@ -90,8 +90,10 @@ jobs:
             ./node_modules/.bin/markdown-pdf -s github-markdown.css schema.md
       - store_artifacts:
           path: schema.md
+          destination: schema.md
       - store_artifacts:
           path: schema.pdf
+          destination: schema.pdf
 workflows:
   version: 2
   python_and_laravel:
