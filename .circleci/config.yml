@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Build Markdown documentation
           command: |
-            pip install open-api-schemas-to-markdown
+            sudo pip install open-api-schemas-to-markdown
             oa-to-md doc.yml schema.md
             npm install -g markdown-pdf
             wget -O github-markdown.css https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css
