@@ -63,6 +63,13 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
+      - run: sudo apt install python-dev
+      - run:
+          name: Install pip
+          command: |
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            sudo python get-pip.py
+            rm get-pip.py
       - restore_cache:
             key: dependency-cache-{{ checksum "package.json" }}
       - run: yarn install
@@ -70,7 +77,10 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Check doc file against OpenAPI specification
+          command: |
+            ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
       - run:
           name: Build Markdown documentation
           command: |
@@ -78,7 +88,7 @@ jobs:
             oa-to-md doc.yml schema.md
             npm install -g markdown-pdf
             wget -O github-markdown.css https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css
-            markdown-pdf -s github-markdown.css schema.md
+            ./node_modules/.bin/markdown-pdf -s github-markdown.css schema.md
       - store_artifacts:
           path: schema.md
       - store_artifacts:

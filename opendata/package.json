@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "speccy": "^0.5.4"
+    "speccy": "^0.5.4",
+    "markdown-pdf": "^8.1.1"
   }
 }
