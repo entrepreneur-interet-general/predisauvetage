@@ -63,6 +63,13 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
+      - run: sudo apt install python-dev wkhtmltopdf xvfb
+      - run:
+          name: Install pip
+          command: |
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            sudo python get-pip.py
+            rm get-pip.py
       - restore_cache:
             key: dependency-cache-{{ checksum "package.json" }}
       - run: yarn install
@@ -70,7 +77,27 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Check doc file against OpenAPI specification
+          command: |
+            ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Build Markdown documentation
+          command: |
+            sudo pip install open-api-schemas-to-markdown
+            sudo pip install grip
+            oa-to-md doc.yml schema.md
+            grip schema.md --export schema.html
+            xvfb-run wkhtmltopdf schema.html schema.pdf
+      - store_artifacts:
+          path: schema.md
+          destination: schema.md
+      - store_artifacts:
+          path: schema.pdf
+          destination: schema.pdf
+      - store_artifacts:
+          path: schema.html
+          destination: schema.html
 workflows:
   version: 2
   python_and_laravel:
