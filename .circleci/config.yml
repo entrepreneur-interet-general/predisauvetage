@@ -87,7 +87,12 @@ jobs:
             sudo pip install open-api-schemas-to-markdown
             sudo pip install grip
             oa-to-md doc.yml schema.md
+            mkdir ~/.grip
+            mv grip/settings.py ~/.grip/settings.py
+            python -m SimpleHTTPServer 8000 &> /dev/null &
+            pid=$!
             grip schema.md --export schema.html
+            kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
       - store_artifacts:
           path: schema.md

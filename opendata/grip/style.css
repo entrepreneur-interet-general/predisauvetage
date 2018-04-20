@@ -1,0 +1,9 @@
+.preview-page {
+  margin: 0 !important;
+}
+.container {
+  width: 100% !important;
+}
+.boxed-group>h3 {
+  display: none !important;
+}
