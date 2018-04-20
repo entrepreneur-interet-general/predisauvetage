@@ -71,6 +71,18 @@ jobs:
           paths:
             - node_modules
       - run: ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Build Markdown documentation
+          command: |
+            pip install open-api-schemas-to-markdown
+            oa-to-md doc.yml schema.md
+            npm install -g markdown-pdf
+            wget -O github-markdown.css https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css
+            markdown-pdf -s github-markdown.css schema.md
+      - store_artifacts:
+          path: schema.md
+      - store_artifacts:
+          path: schema.pdf
 workflows:
   version: 2
   python_and_laravel:
