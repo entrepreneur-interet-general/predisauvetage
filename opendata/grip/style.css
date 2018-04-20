@@ -1,0 +1,13 @@
+.preview-page {
+  margin: 0 !important;
+}
+.container {
+  width: 100% !important;
+}
+.boxed-group>h3 {
+  display: none !important;
+}
+.readme .markdown-body {
+  padding: 20px 10px !important;
+  border: 0;
+}
