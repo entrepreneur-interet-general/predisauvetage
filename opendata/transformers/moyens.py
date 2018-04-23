@@ -13,4 +13,5 @@ class MoyensTransformer(BaseTransformer):
             self.filepath,
             parse_dates=['date_heure_debut', 'date_heure_fin']
         )
-        df.to_csv(output, index=False)
+
+        self.to_csv(df, output)
