@@ -56,13 +56,20 @@ jobs:
       - run: touch storage/testing.sqlite
       - run: php artisan migrate --env=testing
       - run: ./vendor/bin/phpunit
-  opendata:
+  opendata_build:
     docker:
       - image: circleci/node:latest
     working_directory: ~/repo/opendata
     steps:
       - checkout:
           path: ~/repo
+      - run: sudo apt install python-dev wkhtmltopdf xvfb
+      - run:
+          name: Install pip
+          command: |
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            sudo python get-pip.py
+            rm get-pip.py
       - restore_cache:
             key: dependency-cache-{{ checksum "package.json" }}
       - run: yarn install
@@ -70,11 +77,67 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Check doc file against OpenAPI specification
+          command: |
+            ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+      - run:
+          name: Build Markdown documentation
+          command: |
+            sudo pip install open-api-schemas-to-markdown
+            sudo pip install grip
+            oa-to-md doc.yml schema.md
+            mkdir ~/.grip
+            mv grip/settings.py ~/.grip/settings.py
+            python -m SimpleHTTPServer 8000 &> /dev/null &
+            pid=$!
+            grip schema.md --export schema.html
+            kill "${pid}"
+            xvfb-run wkhtmltopdf schema.html schema.pdf
+      - store_artifacts:
+          path: schema.md
+          destination: schema.md
+      - store_artifacts:
+          path: schema.pdf
+          destination: schema.pdf
+      - store_artifacts:
+          path: schema.html
+          destination: schema.html
+
+  opendata_test:
+    docker:
+      - image: circleci/python:2.7
+    working_directory: ~/repo/opendata
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+      - run: sudo apt install python-dev
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv || virtualenv -p /usr/bin/python2.7 venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: Run test suite
+          command: |
+            . venv/bin/activate
+            nosetests .
 workflows:
   version: 2
-  python_and_laravel:
+  all_jobs:
     jobs:
       - python
       - laravel
-      - opendata
+      - opendata_test
+      - opendata_build:
+          requires:
+            - opendata_test
