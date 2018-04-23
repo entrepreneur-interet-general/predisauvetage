@@ -56,7 +56,7 @@ jobs:
       - run: touch storage/testing.sqlite
       - run: php artisan migrate --env=testing
       - run: ./vendor/bin/phpunit
-  opendata:
+  opendata_build:
     docker:
       - image: circleci/node:latest
     working_directory: ~/repo/opendata
@@ -103,10 +103,38 @@ jobs:
       - store_artifacts:
           path: schema.html
           destination: schema.html
+
+  opendata_test:
+    docker:
+      - image: circleci/python:2.7
+    working_directory: ~/repo/opendata
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv || virtualenv -p /usr/bin/python2.7 venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: Run test suite
+          command: |
+            . venv/bin/activate
+            nosetests .
 workflows:
   version: 2
-  python_and_laravel:
+  all_jobs:
     jobs:
       - python
       - laravel
-      - opendata
+      - opendata_build
+      - opendata_test
