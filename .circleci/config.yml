@@ -137,5 +137,7 @@ workflows:
     jobs:
       - python
       - laravel
-      - opendata_build
       - opendata_test
+      - opendata_build:
+          requires:
+            - opendata_test
