@@ -16,10 +16,10 @@ class TestSchemaMatches(BaseTest):
         files = ['operations.csv', 'resultat_humain.csv', 'moyens.csv']
         expected_files = map(lambda e: 'expected_' + e, files)
 
-        for file in files + expected_files:
+        for filename in files + expected_files:
             self.assertEquals(
-                open_data_schema[file.replace('expected_', '')],
-                self.csv_schema(file)
+                open_data_schema[filename.replace('expected_', '')],
+                self.csv_schema(filename)
             )
 
     def csv_schema(self, filename):
