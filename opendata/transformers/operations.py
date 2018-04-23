@@ -20,7 +20,9 @@ class OperationsTransformer(BaseTransformer):
         df['cross_sitrep'] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df['fuseau_horaire'] = self.fuseau_horaire(df.cross)
         df['pourquoi_alerte'] = df.pourquoi_alerte.replace({r'^(SAR|MAS|DIV|SUR).*' : r'\1'}, regex=True)
-        df.to_csv(output, index=False)
+        # Keep floats with up to 12 decimal if they need it, otherwise display as int
+        # https://stackoverflow.com/questions/25789354/exporting-ints-with-missing-values-to-csv-in-pandas
+        df.to_csv(output, index=False, float_format='%.12g')
 
     def cross_sitrep(self, row):
         if pd.isna(row['numero_sitrep']):
