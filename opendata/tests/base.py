@@ -19,6 +19,3 @@ class BaseTest(unittest.TestCase):
         )
 
         os.remove(out_file)
-
-if __name__ == '__main__':
-    unittest.main()
