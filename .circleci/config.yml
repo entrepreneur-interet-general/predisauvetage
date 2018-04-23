@@ -119,7 +119,7 @@ jobs:
           command: |
             python -m venv venv || virtualenv -p /usr/bin/python2.7 venv
             . venv/bin/activate
-            pip install -e .[dev]
+            pip install -r requirements.txt
       - save_cache:
           paths:
             - ./venv
