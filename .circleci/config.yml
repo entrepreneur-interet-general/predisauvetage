@@ -114,6 +114,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
+      - run: sudo apt install python-dev
       - run:
           name: Install dependencies
           command: |
