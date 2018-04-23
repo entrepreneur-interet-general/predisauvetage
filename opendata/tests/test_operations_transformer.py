@@ -27,4 +27,4 @@ class TestOperationsTransformer(unittest.TestCase):
             open(expected_file, 'r').readlines(),
         )
 
-        # os.remove(out_file)
+        os.remove(out_file)
