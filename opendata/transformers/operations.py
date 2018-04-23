@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-
 import pandas as pd
 import numpy as np
 
+from transformers.base import BaseTransformer
 
-class OperationsTransformer(object):
+
+class OperationsTransformer(BaseTransformer):
     def __init__(self, filepath):
-        super(OperationsTransformer, self).__init__()
-        self.filepath = filepath
+        super(OperationsTransformer, self).__init__(filepath)
 
     def transform(self, output):
         df = pd.read_csv(

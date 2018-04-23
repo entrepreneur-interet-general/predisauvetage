@@ -8,4 +8,7 @@ class TestOperationsTransformer(BaseTest):
         in_file = self.filepath('tests/files/operations.csv')
         expected_file = self.filepath('tests/files/expected_operations.csv')
 
-        self.run_for_files(in_file, expected_file, OperationsTransformer)
+        self.run_for_files(in_file, expected_file)
+
+    def subject(self):
+        return OperationsTransformer

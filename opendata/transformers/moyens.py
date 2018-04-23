@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-
 import pandas as pd
 
+from transformers.base import BaseTransformer
 
-class MoyensTransformer(object):
+
+class MoyensTransformer(BaseTransformer):
     def __init__(self, filepath):
-        super(MoyensTransformer, self).__init__()
-        self.filepath = filepath
+        super(MoyensTransformer, self).__init__(filepath)
 
     def transform(self, output):
         df = pd.read_csv(

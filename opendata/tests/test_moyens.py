@@ -8,4 +8,7 @@ class TestMoyensTransformer(BaseTest):
         in_file = self.filepath('tests/files/moyens.csv')
         expected_file = self.filepath('tests/files/expected_moyens.csv')
 
-        self.run_for_files(in_file, expected_file, MoyensTransformer)
+        self.run_for_files(in_file, expected_file)
+
+    def subject(self):
+        return MoyensTransformer
