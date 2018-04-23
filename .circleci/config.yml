@@ -103,6 +103,26 @@ jobs:
       - store_artifacts:
           path: schema.html
           destination: schema.html
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements" }}
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv || virtualenv -p /usr/bin/python2.7 venv
+            . venv/bin/activate
+            pip install -e .[dev]
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements" }}
+
+      - run:
+          name: Run test suite
+          command: |
+            . venv/bin/activate
+            nosetests .
 workflows:
   version: 2
   python_and_laravel:
