@@ -13,7 +13,7 @@ class TestSchemaMatches(BaseTest):
     """
     MAPPING = {
         'Operation': 'operations.csv',
-        'ResultatHumain': 'resultat_humain.csv',
+        'ResultatHumain': 'resultats_humain.csv',
         'Moyen': 'moyens.csv',
         'Flotteur': 'flotteurs.csv'
     }
@@ -36,9 +36,9 @@ class TestSchemaMatches(BaseTest):
     def test_we_test_each_object_in_open_data_schema(self):
         content = self.yaml_content()
 
-        self.assertItemsEqual(
-            content.keys(),
-            self.MAPPING.keys()
+        self.assertEquals(
+            set(content.keys()),
+            set(self.MAPPING.keys())
         )
 
     def csv_schema(self, filename):
@@ -49,7 +49,7 @@ class TestSchemaMatches(BaseTest):
         content = self.yaml_content()
         acc = {}
         for object_name, values in content.items():
-            acc[self.MAPPING[object_name]] = values['properties'].keys()
+            acc[self.MAPPING[object_name]] = list(values['properties'].keys())
 
         return acc
 

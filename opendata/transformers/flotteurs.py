@@ -38,7 +38,7 @@ class FlotteursTransformer(BaseTransformer):
         hashed = sha1('{secret}{immatriculation}'.format(
             secret=secret,
             immatriculation=val
-        )).hexdigest()
+        ).encode('utf-8')).hexdigest()
         self.hash_cache[val] = hashed
         return hashed
 
