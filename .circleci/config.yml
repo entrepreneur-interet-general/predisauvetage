@@ -58,34 +58,18 @@ jobs:
       - run: ./vendor/bin/phpunit
   opendata_build:
     docker:
-      - image: circleci/node:latest
+      - image: antoineaugusti/secmar-opendata-build:0.0.1
     working_directory: ~/repo/opendata
     steps:
       - checkout:
           path: ~/repo
-      - run: sudo apt install python-dev wkhtmltopdf xvfb
-      - run:
-          name: Install pip
-          command: |
-            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-            sudo python get-pip.py
-            rm get-pip.py
-      - restore_cache:
-            key: dependency-cache-{{ checksum "package.json" }}
-      - run: yarn install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
       - run:
           name: Check doc file against OpenAPI specification
           command: |
-            ./node_modules/.bin/speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+            speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
       - run:
           name: Build Markdown documentation
           command: |
-            sudo pip install open-api-schemas-to-markdown
-            sudo pip install grip
             oa-to-md doc.yml schema.md
             mkdir ~/.grip
             mv grip/settings.py ~/.grip/settings.py
