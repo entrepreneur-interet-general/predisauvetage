@@ -52,7 +52,7 @@ components:
         est_metropolitain:
           type: boolean
           description: Indique si l'opération se déroule en France métropolitaine
-          example: true
+          example: True
         evenement:
           type: string
           description: "Évenement qui a donné lieu à l'opération"
@@ -242,7 +242,7 @@ components:
           type: boolean
           description: Indique si le flotteur possède une assurance
           nullable: true
-          example: true
+          example: True
         longueur:
           type: number
           format: float
