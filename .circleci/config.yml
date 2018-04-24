@@ -90,7 +90,7 @@ jobs:
 
   opendata_test:
     docker:
-      - image: circleci/python:2.7
+      - image: circleci/python:3.6
     working_directory: ~/repo/opendata
     steps:
       - checkout:
