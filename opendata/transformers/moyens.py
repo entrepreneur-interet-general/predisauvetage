@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
-
 from transformers.base import BaseTransformer
 
 
 class MoyensTransformer(BaseTransformer):
+    DATE_COLUMNS = ['date_heure_debut', 'date_heure_fin']
+
     def __init__(self, filepath):
         super(MoyensTransformer, self).__init__(filepath)
 
     def transform(self, output):
-        df = pd.read_csv(
-            self.filepath,
-            parse_dates=['date_heure_debut', 'date_heure_fin']
-        )
-
-        self.to_csv(df, output)
+        self.to_csv(self.read_csv(), output)

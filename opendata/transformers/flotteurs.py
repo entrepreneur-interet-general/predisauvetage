@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
 import numpy as np
 from hashlib import sha1
 from os import getenv
@@ -13,7 +12,7 @@ class FlotteursTransformer(BaseTransformer):
         self.hash_cache = {np.nan: np.nan}
 
     def transform(self, output):
-        df = pd.read_csv(self.filepath)
+        df = self.read_csv()
         df['numero_immatriculation'] = self.build_numero_immatriculation(df)
         df['assurance'] = self.assurance(df.assurance)
         self.to_csv(df, output)
