@@ -1,0 +1,3 @@
+- install Embulk
+- symlink opendata folder
+- set env variable SECMAR_OPENDATA_HASH_SECRET
