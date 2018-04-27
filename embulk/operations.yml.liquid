@@ -1,0 +1,42 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    stop_on_invalid_record: true
+    columns:
+    - {name: operation_id, type: long}
+    - {name: pourquoi_alerte, type: string}
+    - {name: moyen_alerte, type: string}
+    - {name: qui_alerte, type: string}
+    - {name: categorie_qui_alerte, type: string}
+    - {name: cross, type: string}
+    - {name: departement, type: string}
+    - {name: est_metropolitain, type: boolean}
+    - {name: evenement, type: string}
+    - {name: categorie_evenement, type: string}
+    - {name: autorite, type: string}
+    - {name: sous_autorite, type: string}
+    - {name: zone_responsabilite, type: string}
+    - {name: latitude, type: double}
+    - {name: longitude, type: double}
+    - {name: vent_direction, type: long}
+    - {name: vent_force, type: long}
+    - {name: mer_force, type: long}
+    - {name: date_heure_reception_alerte, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: date_heure_fin_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: numero_sitrep, type: long}
+    - {name: cross_sitrep, type: string}
+    - {name: fuseau_horaire, type: string}
+{% include 'datasources/out_postgresql' %}
+  table: operations
+  mode: truncate_insert

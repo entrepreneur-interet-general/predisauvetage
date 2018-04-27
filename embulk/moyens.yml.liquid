@@ -1,0 +1,27 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    stop_on_invalid_record: true
+    columns:
+    - {name: operation_id, type: long}
+    - {name: numero_ordre, type: long}
+    - {name: moyen, type: string}
+    - {name: categorie_moyen, type: string}
+    - {name: domaine_action, type: string}
+    - {name: autorite_moyen, type: string}
+    - {name: date_heure_debut, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: date_heure_fin, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+{% include 'datasources/out_postgresql' %}
+  table: moyens
+  mode: truncate_insert

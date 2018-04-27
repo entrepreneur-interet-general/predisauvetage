@@ -1,0 +1,42 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    stop_on_invalid_record: true
+    columns:
+    - {name: operation_id, type: long}
+    - {name: numero_ordre, type: long}
+    - {name: pavillon, type: string}
+    - {name: resultat_flotteur, type: string}
+    - {name: type_flotteur, type: string}
+    - {name: categorie_flotteur, type: string}
+    - {name: numero_immatriculation, type: string}
+    - {name: marque, type: string}
+    - {name: nom_serie, type: string}
+    - {name: assurance, type: boolean}
+    - {name: longueur, type: double}
+    - {name: largeur, type: double}
+    - {name: jauge, type: double}
+    - {name: nombre_personne_recommande, type: long}
+    - {name: puissance_maximum_autorisee, type: double}
+    - {name: surface_voilure, type: double}
+    - {name: puissance_moteurs, type: double}
+    - {name: coque, type: string}
+    - {name: materiau, type: string}
+    - {name: propulsion, type: string}
+    - {name: type_moteur, type: string}
+    - {name: type_navire, type: string}
+    - {name: utilisation, type: string}
+{% include 'datasources/out_postgresql' %}
+  table: flotteurs
+  mode: truncate_insert

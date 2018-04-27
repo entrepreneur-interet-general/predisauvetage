@@ -1,0 +1,24 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    stop_on_invalid_record: true
+    columns:
+    - {name: operation_id, type: long}
+    - {name: categorie_personne, type: string}
+    - {name: resultat_humain, type: string}
+    - {name: nombre, type: long}
+    - {name: dont_nombre_blesse, type: long}
+{% include 'datasources/out_postgresql' %}
+  table: resultats_humain
+  mode: truncate_insert
