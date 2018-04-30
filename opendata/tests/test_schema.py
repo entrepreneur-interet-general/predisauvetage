@@ -25,11 +25,6 @@ class TestSchemaMatches(BaseTest):
         for filename in files:
             self.assertEquals(
                 open_data_schema[filename],
-                self.csv_schema(filename)
-            )
-
-            self.assertEquals(
-                open_data_schema[filename],
                 self.csv_schema('expected_' + filename)
             )
 

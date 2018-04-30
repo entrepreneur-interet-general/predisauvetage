@@ -16,7 +16,8 @@ class OperationsTransformer(BaseTransformer):
 
         df['cross_sitrep'] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df['fuseau_horaire'] = self.fuseau_horaire(df.cross)
-        df['pourquoi_alerte'] = df.pourquoi_alerte.replace({r'^(SAR|MAS|DIV|SUR).*' : r'\1'}, regex=True)
+        df.insert(1, 'type_operation', self.type_operation(df.pourquoi_alerte))
+        df['pourquoi_alerte'] = self.pourquoi_alerte(df.pourquoi_alerte)
 
         self.to_csv(df, output)
 
@@ -28,6 +29,16 @@ class OperationsTransformer(BaseTransformer):
             year=row['date_heure_reception_alerte'].year,
             sitrep_nb=int(row['numero_sitrep'])
         )
+
+    def pourquoi_alerte(self, series):
+        return series.replace({r'^(SAR|MAS|DIV|SUR).*' : np.nan}, regex=True)
+
+    def type_operation(self, series):
+        return series.replace(
+                {r'^(SAR|MAS|DIV|SUR).*' : r'\1'}, regex=True
+            ).replace(
+                {r'^(?!SAR|MAS|DIV|SUR).*' : np.nan}, regex=True
+            )
 
     def fuseau_horaire(self, series):
         return series.map({

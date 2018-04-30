@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
     "operation_id" bigint PRIMARY KEY,
+    "type_operation" varchar(3),
     "pourquoi_alerte" varchar(50),
     "moyen_alerte" varchar(100),
     "qui_alerte" varchar(100),
@@ -25,6 +26,7 @@ CREATE TABLE public.operations (
     "fuseau_horaire" varchar(25)
 );
 
+CREATE INDEX ON operations(type_operation);
 CREATE INDEX ON operations(pourquoi_alerte);
 CREATE INDEX ON operations("cross");
 CREATE INDEX ON operations(departement);

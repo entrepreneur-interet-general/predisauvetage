@@ -18,16 +18,18 @@ components:
           format: int64
           description: Le numéro unique de l'opération
           example: 1119920371
-        pourquoi_alerte:
+        type_operation:
           type: string
           enum: [SAR, MAS, DIV, SUR]
           description: >
-            La catégorie du type d'intervention.
-              - SAR (search and rescue) : vie humaine en danger.
-              - MAS (maritime assistance service) : assistance aux navires
-              - SUR : sûreté des navires
-              - DIV : autres cas
+            Le type d'opération coordonné par le CROSS. SAR (search and rescue) : vie humaine en danger ; MAS (maritime assistance service) : assistance aux navires ; SUR : sûreté des navires ; DIV : autres cas.
           example: SAR
+          nullable: true
+        pourquoi_alerte:
+          type: string
+          description: Pourquoi l'alerte a-t-elle été donnée
+          example: Événement reconnu
+          nullable: true
         moyen_alerte:
           type: string
           description: Comment l'alerte a-t-elle été donnée
