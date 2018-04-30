@@ -52,6 +52,7 @@ components:
           example: Seine-Maritime
         est_metropolitain:
           type: boolean
+          nullable: true
           description: Indique si l'opération se déroule en France métropolitaine
           example: True
         evenement:
@@ -122,10 +123,10 @@ components:
           type: integer
           format: int32
           minimum: 1
-          description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h heure UTC et est incrémentale par la suite. La numérotation des SITREP est idépendante par les CROSS.
+          description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h UTC et la numérotation est incrémentale par la suite. La numérotation des SITREP est indépendante pour chaque CROSS.
         cross_sitrep:
           type: string
-          description: "Numéro unique identifiant l'opération utilisant le CROSS coordinateur de l'opération et le numéro de SITREP"
+          description: "Identifiant unique de l'opération. Il est composé du CROSS coordinateur de l'opération, de l'année et du numéro de SITREP"
           example: "Corsen 2017/42"
         fuseau_horaire:
           type: string

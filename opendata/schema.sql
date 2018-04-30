@@ -3,27 +3,27 @@ CREATE TABLE public.operations (
     "operation_id" bigint PRIMARY KEY,
     "type_operation" varchar(3),
     "pourquoi_alerte" varchar(50),
-    "moyen_alerte" varchar(100),
-    "qui_alerte" varchar(100),
-    "categorie_qui_alerte" varchar(100),
-    "cross" varchar(50),
+    "moyen_alerte" varchar(100) not null,
+    "qui_alerte" varchar(100) not null,
+    "categorie_qui_alerte" varchar(100) not null,
+    "cross" varchar(50) not null,
     "departement" varchar(100),
     "est_metropolitain" boolean,
-    "evenement" varchar(100),
-    "categorie_evenement" varchar(50),
-    "autorite" varchar(100),
-    "sous_autorite" varchar(100),
-    "zone_responsabilite" varchar(50),
+    "evenement" varchar(100) not null,
+    "categorie_evenement" varchar(50) not null,
+    "autorite" varchar(100) not null,
+    "sous_autorite" varchar(100) not null,
+    "zone_responsabilite" varchar(50) not null,
     "latitude" numeric(7, 4),
     "longitude" numeric(7, 4),
     "vent_direction" smallint,
     "vent_force" smallint,
     "mer_force" smallint,
-    "date_heure_reception_alerte" timestamp without time zone,
-    "date_heure_fin_operation" timestamp without time zone,
+    "date_heure_reception_alerte" timestamp without time zone not null,
+    "date_heure_fin_operation" timestamp without time zone not null,
     "numero_sitrep" smallint,
     "cross_sitrep" varchar(50),
-    "fuseau_horaire" varchar(25)
+    "fuseau_horaire" varchar(25) not null
 );
 
 CREATE INDEX ON operations(type_operation);
@@ -37,11 +37,11 @@ CREATE INDEX ON operations((date_heure_fin_operation::date));
 DROP TABLE IF EXISTS public.flotteurs;
 CREATE TABLE public.flotteurs (
     "operation_id" bigint references operations on delete cascade,
-    "numero_ordre" smallint,
+    "numero_ordre" smallint not null,
     "pavillon" varchar(50),
-    "resultat_flotteur" varchar(50),
-    "type_flotteur" varchar(50),
-    "categorie_flotteur" varchar(50),
+    "resultat_flotteur" varchar(50) not null,
+    "type_flotteur" varchar(50) not null,
+    "categorie_flotteur" varchar(50) not null,
     "numero_immatriculation" varchar(40),
     "marque" varchar(250),
     "nom_serie" varchar(500),
@@ -69,14 +69,14 @@ CREATE INDEX ON flotteurs(categorie_flotteur);
 
 DROP TABLE IF EXISTS public.moyens;
 CREATE TABLE public.moyens (
-    "operation_id" bigint references operations on delete cascade,
-    "numero_ordre" smallint,
-    "moyen" varchar(100),
-    "categorie_moyen" varchar(100),
-    "domaine_action" varchar(50),
-    "autorite_moyen" varchar(100),
-    "date_heure_debut" timestamp without time zone,
-    "date_heure_fin" timestamp without time zone
+    "operation_id" bigint references operations on delete cascade not null,
+    "numero_ordre" smallint not null,
+    "moyen" varchar(100) not null,
+    "categorie_moyen" varchar(100) not null,
+    "domaine_action" varchar(50) not null,
+    "autorite_moyen" varchar(100) not null,
+    "date_heure_debut" timestamp without time zone not null,
+    "date_heure_fin" timestamp without time zone not null
 );
 
 CREATE INDEX ON moyens(operation_id);
@@ -88,11 +88,11 @@ CREATE INDEX ON moyens(autorite_moyen);
 
 DROP TABLE IF EXISTS public.resultats_humain;
 CREATE TABLE public.resultats_humain (
-    "operation_id" bigint references operations on delete cascade,
-    "categorie_personne" varchar(50),
-    "resultat_humain" varchar(50),
-    "nombre" smallint,
-    "dont_nombre_blesse" smallint
+    "operation_id" bigint references operations on delete cascade not null,
+    "categorie_personne" varchar(50) not null,
+    "resultat_humain" varchar(50) not null,
+    "nombre" smallint not null,
+    "dont_nombre_blesse" smallint not null
 );
 
 CREATE INDEX ON resultats_humain(operation_id);
