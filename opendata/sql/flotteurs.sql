@@ -13,7 +13,7 @@ SELECT
   t.LONGUEUR longueur,
   t.LARGEUR largeur,
   t.JAUGE jauge,
-  t.NB_PERSONNE_RECOMMANDE nombre_personne_recommande,
+  t.NB_PERSONNE_RECOMMANDE nombre_personnes_recommande,
   t.PUISSANCE_MAX_AUT puissance_maximum_autorisee,
   t.SURFACE_VOILURE surface_voilure,
   t.sum_puissance puissance_moteurs,

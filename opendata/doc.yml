@@ -263,7 +263,7 @@ components:
           description: Jauge du flotteur en tonneaux
           nullable: true
           example: 5.24
-        nombre_personne_recommande:
+        nombre_personnes_recommande:
           type: number
           format: int32
           description: Nombre de personnes recommandées à bord du flotteur
@@ -317,3 +317,327 @@ components:
           description: Quel usage est fait du flotteur
           nullable: true
           example: USAGE PERSONNEL
+    OperationStats:
+     properties:
+        operation_id:
+          type: integer
+          format: int64
+          description: Le numéro unique de l'opération
+          example: 1119920371
+        annee:
+          type: integer
+          format: int32
+          description: L'année de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          example: 2012
+        mois:
+          type: integer
+          format: int32
+          description: Le mois de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          example: 3
+          minimum: 1
+          maximum: 12
+        jour:
+          type: integer
+          format: int32
+          description: Le jour de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          example: 13
+          minimum: 1
+          maximum: 31
+        phase_journee:
+          type: string
+          # TODO: meilleurs définitions
+          enum: [matinee, milieu-journee, apres-midi, tombee-nuit, nuit, lever-soleil]
+          description: Indique à quel moment de la journée l'opération se déroule. La date de référence est la date de réception de l'alerte en UTC qui tient compte de l'heure locale du CROSS coordonnant l'opérateur.
+          example: pleine-nuit
+        concerne_snosan:
+          type: boolean
+          description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques).
+          example: true
+        nombre_personnes_assistees:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes assistées lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees_accidentellement:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées accidentellement lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees_naturellement:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées naturellement lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_disparues:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes disparues lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_impliquees_dans_fausse_alerte:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes impliquées dans une fausse alerte lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_retrouvees:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes retrouvées lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_secourues:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes secourues lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_tirees_daffaire_seule:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes tirées d'affaire seule lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_tous_deces:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_tous_deces_ou_disparues:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_impliquees:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes impliquées lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_assistees_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes assistées lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees_accidentellement_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées accidentellement lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_decedees_naturellement_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées naturellement lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_disparues_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes disparues lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes impliquées dans une fausse alerte lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_retrouvees_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes retrouvées lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_secourues_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes secourues lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_tirees_daffaire_seule_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes tirées d'affaire seule lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_tous_deces_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_personnes_tous_deces_ou_disparues_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de, sans prendre en compte les clandestins l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_impliquees_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes impliquées lors de l'opération, sans prendre en compte les clandestins.
+          example: 42
+          minimum: 0
+        nombre_moyens_nautiques_engages:
+          type: integer
+          format: int32
+          description: Le nombre total de moyens nautiques engagés lors de l'opération.
+          example: 3
+          minimum: 0
+        nombre_moyens_terrestres_engages:
+          type: integer
+          format: int32
+          description: Le nombre total de moyens terrestres engagés lors de l'opération.
+          example: 3
+          minimum: 0
+        nombre_moyens_aeriens_engages:
+          type: integer
+          format: int32
+          description: Le nombre total de moyens aériens engagés lors de l'opération.
+          example: 3
+          minimum: 0
+        duree_engagement_moyens_nautiques_minutes:
+          type: integer
+          format: int32
+          description: La durée totale d'engagement en minutes de moyens nautiques lors de l'opération.
+          example: 72
+          minimum: 0
+        duree_engagement_moyens_terrestres_minutes:
+          type: integer
+          format: int32
+          description: La durée totale d'engagement en minutes de moyens terrestres lors de l'opération.
+          example: 72
+          minimum: 0
+        duree_engagement_moyens_aeriens_minutes:
+          type: integer
+          format: int32
+          description: La durée totale d'engagement en minutes de moyens aériens lors de l'opération.
+          example: 72
+          minimum: 0
+        nombre_flotteurs_commerce_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de commerce impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_peche_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de pêche impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_loisirs_nautiques_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de loisirs nautiques impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_aeronefs_impliques:
+          type: integer
+          format: int32
+          description: Le nombre d'aéronefs impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_autre_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs non catégorisés impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_annexe_impliques:
+          type: integer
+          format: int32
+          description: Le nombre d'annexes impliquées dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_autre_loisir_nautique_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de loisir nautique non déterminé impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_canoe_kayak_aviron_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de canoë / kayak / aviron impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_engin_de_plage_impliques:
+          type: integer
+          format: int32
+          description: Le nombre d'engins de plage impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_kitesurf_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de kitesurfs impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_voile_legere_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à voile légère impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à moteur de moins de 8 mètres dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à moteur de plus de 8 mètres impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_a_voile_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à voile impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_planche_a_voile_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de planches à voile impliquées dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_ski_nautique_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de skis nautiques impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_surf_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de surfs impliqués dans l'opération.
+          example: 1
+          minimum: 0

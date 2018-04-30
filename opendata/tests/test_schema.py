@@ -15,12 +15,15 @@ class TestSchemaMatches(BaseTest):
         'Operation': 'operations.csv',
         'ResultatHumain': 'resultats_humain.csv',
         'Moyen': 'moyens.csv',
-        'Flotteur': 'flotteurs.csv'
+        'Flotteur': 'flotteurs.csv',
+        'OperationStats': 'operations_stats.csv',
     }
+
+    AGGREGATES = ['OperationStats']
 
     def test_schema_matches(self):
         open_data_schema = self.open_data_schemas()
-        files = self.MAPPING.values()
+        files = self.transformers_mapping().values()
 
         for filename in files:
             self.assertEquals(
@@ -32,9 +35,12 @@ class TestSchemaMatches(BaseTest):
         content = self.yaml_content()
 
         self.assertEquals(
-            set(content.keys()),
-            set(self.MAPPING.keys())
+            set(content.keys()) - set(self.AGGREGATES),
+            set(self.transformers_mapping().keys())
         )
+
+    def transformers_mapping(self):
+        return {k: v for (k, v) in self.MAPPING.items() if k not in self.AGGREGATES}
 
     def csv_schema(self, filename):
         path = self.filepath('tests/files/' + filename)

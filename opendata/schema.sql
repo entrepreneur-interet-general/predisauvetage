@@ -49,7 +49,7 @@ CREATE TABLE public.flotteurs (
     "longueur" numeric(5, 2),
     "largeur" numeric(5, 2),
     "jauge" numeric(6, 2),
-    "nombre_personne_recommande" smallint,
+    "nombre_personnes_recommande" smallint,
     "puissance_maximum_autorisee" numeric(7, 2),
     "surface_voilure" numeric(6, 2),
     "puissance_moteurs" numeric(7, 2),
@@ -98,3 +98,66 @@ CREATE TABLE public.resultats_humain (
 CREATE INDEX ON resultats_humain(operation_id);
 CREATE INDEX ON resultats_humain(categorie_personne);
 CREATE INDEX ON resultats_humain(resultat_humain);
+
+DROP TABLE IF EXISTS public.operations_stats;
+CREATE TABLE public.operations_stats (
+    "operation_id" bigint references operations on delete cascade not null,
+    "annee" smallint not null,
+    "mois" smallint not null,
+    "jour" smallint not null,
+    "phase_journee" int not null,
+    "concerne_snosan" boolean not null,
+    "nombre_personnes_assistees" smallint not null,
+    "nombre_personnes_decedees" smallint not null,
+    "nombre_personnes_decedees_accidentellement" smallint not null,
+    "nombre_personnes_decedees_naturellement" smallint not null,
+    "nombre_personnes_disparues" smallint not null,
+    "nombre_personnes_impliquees_dans_fausse_alerte" smallint not null,
+    "nombre_personnes_retrouvees" smallint not null,
+    "nombre_personnes_secourues" smallint not null,
+    "nombre_personnes_tirees_daffaire_seule" smallint not null,
+    "nombre_personnes_tous_deces" smallint not null,
+    "nombre_personnes_tous_deces_ou_disparues" smallint not null,
+    "nombre_personnes_impliquees" smallint not null,
+    "nombre_personnes_assistees_sans_clandestins" smallint not null,
+    "nombre_personnes_decedees_sans_clandestins" smallint not null,
+    "nombre_personnes_decedees_accidentellement_sans_clandestins" smallint not null,
+    "nombre_personnes_decedees_naturellement_sans_clandestins" smallint not null,
+    "nombre_personnes_disparues_sans_clandestins" smallint not null,
+    "nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins" smallint not null,
+    "nombre_personnes_retrouvees_sans_clandestins" smallint not null,
+    "nombre_personnes_secourues_sans_clandestins" smallint not null,
+    "nombre_personnes_tirees_daffaire_seule_sans_clandestins" smallint not null,
+    "nombre_personnes_tous_deces_sans_clandestins" smallint not null,
+    "nombre_personnes_tous_deces_ou_disparues_sans_clandestins" smallint not null,
+    "nombre_personnes_impliquees_sans_clandestins" smallint not null,
+    "nombre_moyens_nautiques_engages" smallint not null,
+    "nombre_moyens_terrestres_engages" smallint not null,
+    "nombre_moyens_aeriens_engages" smallint not null,
+    "duree_engagement_moyens_nautiques_minutes" smallint not null,
+    "duree_engagement_moyens_terrestres_minutes" smallint not null,
+    "duree_engagement_moyens_aeriens_minutes" smallint not null,
+    "nombre_flotteurs_commerce_impliques" smallint not null,
+    "nombre_flotteurs_peche_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_impliques" smallint not null,
+    "nombre_flotteurs_loisirs_nautiques_impliques" smallint not null,
+    "nombre_aeronefs_impliques" smallint not null,
+    "nombre_flotteurs_autre_impliques" smallint not null,
+    "nombre_flotteurs_annexe_impliques" smallint not null,
+    "nombre_flotteurs_autre_loisir_nautique_impliques" smallint not null,
+    "nombre_flotteurs_canoe_kayak_aviron_impliques" smallint not null,
+    "nombre_flotteurs_engin_de_plage_impliques" smallint not null,
+    "nombre_flotteurs_kitesurf_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_voile_legere_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_a_voile_impliques" smallint not null,
+    "nombre_flotteurs_planche_a_voile_impliques" smallint not null,
+    "nombre_flotteurs_ski_nautique_impliques" smallint not null,
+    "nombre_flotteurs_surf_impliques" smallint not null
+);
+
+CREATE INDEX ON operations_stats(operation_id);
+CREATE INDEX ON operations_stats(annee);
+CREATE INDEX ON operations_stats(phase_journee);
+CREATE INDEX ON operations_stats(concerne_snosan);

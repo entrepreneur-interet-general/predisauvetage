@@ -1,4 +1,4 @@
-operation_id,numero_ordre,pavillon,resultat_flotteur,type_flotteur,categorie_flotteur,numero_immatriculation,marque,nom_serie,assurance,longueur,largeur,jauge,nombre_personne_recommande,puissance_maximum_autorisee,surface_voilure,puissance_moteurs,coque,materiau,propulsion,type_moteur,type_navire,utilisation
+operation_id,numero_ordre,pavillon,resultat_flotteur,type_flotteur,categorie_flotteur,numero_immatriculation,marque,nom_serie,assurance,longueur,largeur,jauge,nombre_personnes_recommande,puissance_maximum_autorisee,surface_voilure,puissance_moteurs,coque,materiau,propulsion,type_moteur,type_navire,utilisation
 -51138,1,Français,Remorqué,Plaisance à moteur < 8m,Plaisance,,,,,,,,,,,,,,,,,
 2319910129,1,,"Difficulté surmontée, reprise de route",Planche à voile,Loisir nautique,,,,,,,,,,,,,,,,,
 3119982090,1,Français,Remorqué,Navire de plaisance à moteur,Plaisance,363921,,BARQUE,0,7.00,0.00,3.06,0,0.00,,26.5,MONOCOQUE HABITABLE,BOIS MASSIF,Moteur à essence,LIGNE D'ARBRE,INCONNU,USAGE PERSONNEL
