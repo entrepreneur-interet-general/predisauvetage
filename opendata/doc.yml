@@ -21,8 +21,7 @@ components:
         type_operation:
           type: string
           enum: [SAR, MAS, DIV, SUR]
-          description: >
-            Le type d'opération coordonné par le CROSS. SAR (search and rescue) : vie humaine en danger ; MAS (maritime assistance service) : assistance aux navires ; SUR : sûreté des navires ; DIV : autres cas.
+          description: "Le type d'opération coordonné par le CROSS. SAR (search and rescue) : vie humaine en danger ; MAS (maritime assistance service) : assistance aux navires ; SUR : sûreté des navires ; DIV : autres cas."
           example: SAR
           nullable: true
         pourquoi_alerte:
