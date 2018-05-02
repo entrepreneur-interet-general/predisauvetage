@@ -75,7 +75,8 @@ jobs:
             mv grip/settings.py ~/.grip/settings.py
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
-            grip schema.md --export schema.html
+            cat cross.md donnees.md schema.md > all.md
+            grip all.md --export schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
       - store_artifacts:
