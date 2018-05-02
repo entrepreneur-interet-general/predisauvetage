@@ -6,7 +6,7 @@ select
   extract(year from o.date_heure_reception_alerte) annee,
   extract(month from o.date_heure_reception_alerte) mois,
   extract(day from o.date_heure_reception_alerte) jour,
-  # TODO: set it
+  -- TODO: set it
   '' phase_journee,
   false concerne_snosan,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
@@ -117,7 +117,7 @@ left join (
     sum((categorie_flotteur = 'Commerce')::int) nombre_flotteurs_commerce_impliques,
     sum((categorie_flotteur = 'Pêche')::int) nombre_flotteurs_peche_impliques,
     sum((categorie_flotteur = 'Plaisance')::int) nombre_flotteurs_plaisance_impliques,
-    sum((categorie_flotteur = 'Loisir Nautique')::int) nombre_flotteurs_loisirs_nautiques_impliques,
+    sum((categorie_flotteur = 'Loisir nautique')::int) nombre_flotteurs_loisirs_nautiques_impliques,
     sum((categorie_flotteur = 'Aéronef')::int) nombre_aeronefs_impliques,
     sum((categorie_flotteur = 'Autre')::int) nombre_flotteurs_autre_impliques,
     sum((type_flotteur = 'Annexe')::int) nombre_flotteurs_annexe_impliques,
