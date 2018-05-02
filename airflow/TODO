@@ -1,3 +1,4 @@
 - install Embulk
-- symlink opendata folder
+- symlink opendata/transformers folder to airflow/dags/transformers
+- symlink opendata/sql folder airflow/opendata_sql
 - set env variable SECMAR_OPENDATA_HASH_SECRET

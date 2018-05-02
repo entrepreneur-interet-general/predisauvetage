@@ -7,6 +7,13 @@ def base_path():
     return Variable.get('BASE_PATH')
 
 
+def opendata_sql_path(filename):
+    return "{base}/opendata_sql/{filename}.sql".format(
+        base=base_path(),
+        filename=filename
+    )
+
+
 def data_path(filename):
     return "{base}/data/{filename}".format(
         base=base_path(),

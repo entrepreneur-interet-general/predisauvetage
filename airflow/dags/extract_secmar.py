@@ -58,7 +58,7 @@ def create_tables_fn(**kwargs):
 
 
 def delete_invalid_operations_fn(**kwargs):
-    PostgresHook('postgresql_local').run(
+    return PostgresHook('postgresql_local').run(
         """
         delete from operations
         where operation_id not in (
@@ -69,6 +69,13 @@ def delete_invalid_operations_fn(**kwargs):
         drop table operations_valides;
         """
     )
+
+
+def insert_operations_stats_fn(**kwargs):
+    path = helpers.opendata_sql_path('insert_operations_stats')
+    with open(path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return PostgresHook('postgresql_local').run(content)
 
 
 def embulk_import(dag, table):
@@ -127,10 +134,18 @@ delete_invalid_operations = PythonOperator(
 )
 delete_invalid_operations.set_upstream(import_operations_valides)
 
+insert_operations_stats = PythonOperator(
+    task_id='insert_operations_stats',
+    python_callable=insert_operations_stats_fn,
+    provide_context=True,
+    dag=dag
+)
+insert_operations_stats.set_upstream(delete_invalid_operations)
+
 for table in config.SECMAR_TABLES:
     t = BashOperator(
         task_id='delete_output_csv_' + table,
         bash_command="rm " + out_path(table),
         dag=dag,
     )
-    t.set_upstream(delete_invalid_operations)
+    t.set_upstream(insert_operations_stats)

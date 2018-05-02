@@ -142,6 +142,7 @@ components:
         categorie_personne:
           type: string
           description: Indique la catégorie de personne impliquée dans le bilan humain
+          enum: [Autre, Plaisancier français, Clandestin, Pêcheur français, Commerce français, Marin étranger, Toutes catégories]
           example: Pêcheur français
         resultat_humain:
           type: string
@@ -327,19 +328,19 @@ components:
         annee:
           type: integer
           format: int32
-          description: L'année de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          description: L'année de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
           example: 2012
         mois:
           type: integer
           format: int32
-          description: Le mois de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          description: Le mois de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
           example: 3
           minimum: 1
           maximum: 12
         jour:
           type: integer
           format: int32
-          description: Le jour de l'opération. La date de référence est la date de réception de l'alerte en UTC.
+          description: Le jour de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
           example: 13
           minimum: 1
           maximum: 31
