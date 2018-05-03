@@ -9,6 +9,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.check_operator import CheckOperator
 from airflow.hooks.postgres_hook import PostgresHook
 
 import config
@@ -90,7 +91,9 @@ def embulk_import(dag, table):
 start = DummyOperator(task_id='start', dag=dag)
 end_transform = DummyOperator(task_id='end_transform', dag=dag)
 end_import = DummyOperator(task_id='end_import', dag=dag)
+end_checks = DummyOperator(task_id='end_checks', dag=dag)
 
+# Convert input CSV files
 for table in config.SECMAR_TABLES:
     t = PythonOperator(
         task_id='transform_' + table,
@@ -114,6 +117,7 @@ create_tables = PythonOperator(
 )
 create_tables.set_upstream(end_transform)
 
+# Import CSV files into PostgreSQL
 embulk_operations = embulk_import(dag, 'operations')
 embulk_operations.set_upstream(create_tables)
 embulk_operations.set_downstream(end_import)
@@ -142,10 +146,61 @@ insert_operations_stats = PythonOperator(
 )
 insert_operations_stats.set_upstream(delete_invalid_operations)
 
+# Check consistency of data
+queries = {
+    'operations_operations_stats': '''
+        select
+            nb_operations_stats = nb_operations
+        from (
+            select count(1) nb_operations
+            from operations
+        ) operations
+        join (
+            select count(1) nb_operations_stats
+            from operations_stats
+        ) operations_stats on true
+    ''',
+    'concerne_snosan': '''
+        select count(1) = 0
+        from (
+            select distinct operation_id
+            from flotteurs
+            where categorie_flotteur in ('Plaisance', 'Loisir nautique') and type_flotteur = 'Annexe'
+              and operation_id not in (
+                select operation_id
+                from operations_stats
+                where concerne_snosan
+            )
+        ) t
+    ''',
+    'operations_count_2017': '''
+        select count(1) between 11100 and 11300
+        from operations_stats
+        where annee = 2017
+    ''',
+    'dead_people_2017': '''
+        select
+            sum(os.nombre_personnes_tous_deces_ou_disparues) between 300 and 320
+        from operations_stats os
+        where annee = 2017
+    '''
+}
+
+for query_name, query in queries.items():
+    t = CheckOperator(
+        task_id='check_consistency_' + query_name,
+        sql=query,
+        conn_id='postgresql_local',
+        dag=dag
+    )
+    t.set_upstream(insert_operations_stats)
+    t.set_downstream(end_checks)
+
+# Remove temporary CSV files
 for table in config.SECMAR_TABLES:
     t = BashOperator(
         task_id='delete_output_csv_' + table,
         bash_command="rm " + out_path(table),
         dag=dag,
     )
-    t.set_upstream(insert_operations_stats)
+    t.set_upstream(end_checks)
