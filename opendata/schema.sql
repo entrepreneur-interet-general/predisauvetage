@@ -107,6 +107,7 @@ CREATE TABLE public.operations_stats (
     "jour" smallint not null,
     "phase_journee" varchar(20) not null,
     "concerne_snosan" boolean not null,
+    "concerne_plongee" boolean not null,
     "nombre_personnes_assistees" smallint not null,
     "nombre_personnes_decedees" smallint not null,
     "nombre_personnes_decedees_accidentellement" smallint not null,
@@ -161,3 +162,4 @@ CREATE INDEX ON operations_stats(operation_id);
 CREATE INDEX ON operations_stats(annee);
 CREATE INDEX ON operations_stats(phase_journee);
 CREATE INDEX ON operations_stats(concerne_snosan);
+CREATE INDEX ON operations_stats(concerne_plongee);

@@ -354,6 +354,10 @@ components:
           type: boolean
           description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques).
           example: true
+        concerne_plongee:
+          type: boolean
+          description: Indique si cette opération est une opération qui concerne une activité de plongée ou de chasse sous-marine
+          example: true
         nombre_personnes_assistees:
           type: integer
           format: int32

@@ -9,6 +9,7 @@ select
   -- TODO: set it
   '' phase_journee,
   false concerne_snosan,
+  false concerne_plongee,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
   coalesce(rh.nombre_personnes_decedees_accidentellement, 0) nombre_personnes_decedees_accidentellement,
@@ -142,3 +143,10 @@ update operations_stats set concerne_snosan = true where
   nombre_flotteurs_loisirs_nautiques_impliques > 0 or
   nombre_flotteurs_annexe_impliques > 0
 ;
+
+update operations_stats set concerne_plongee = true
+where operation_id in (
+  select operation_id
+  from operations
+  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée en bouteille')
+);
