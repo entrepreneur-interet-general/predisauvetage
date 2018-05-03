@@ -1,5 +1,6 @@
 .preview-page {
-  margin: 0 !important;
+  max-width: 1200px;
+  margin: 0 auto!important;
 }
 .container {
   width: 100% !important;
@@ -10,4 +11,10 @@
 .readme .markdown-body {
   padding: 20px 10px !important;
   border: 0;
+}
+h1, h2 {
+  color: #0F3789;
+}
+h3 {
+  color: #333;
 }
