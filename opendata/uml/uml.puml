@@ -1,0 +1,20 @@
+@startuml
+' Ceci est un fichier PlantUML http://plantuml.com
+' Il est possible de générer le graphique en ligne https://www.planttext.com
+!define Table(name,desc) class name as "desc" << (T, #FFAAAA) >>
+hide methods
+hide stereotypes
+
+
+Table(operations, "operations\n(Opérations des CROSS)")
+Table(flotteurs, "flotteurs\n(Flotteurs impliqués dans une opération)")
+Table(operations_stats, "operations_stats\n(Les statistiques aggrégées d'une opération)")
+Table(resultats_humain, "resultats_humain\n(Bilan humain d'une opération)")
+Table(moyens, "moyens\n(Moyens engagés dans une opération)")
+
+
+operations "1" -- "1" operations_stats : "Chaque opération comporte\nune ligne de statistiques"
+operations "1" --> "0..N" flotteurs : "Plusieurs flotteurs peuvent être\n impliqués lors d'une opération"
+operations "1" --> "0..N" resultats_humain : "Un bilan humain peut être dressé\n suite à une opération"
+operations "1" --> "0..N" moyens : "Plusieurs moyens peuvent être\n engagés lors d'une opération"
+@enduml

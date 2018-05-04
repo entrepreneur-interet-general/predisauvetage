@@ -136,3 +136,6 @@ Cette section explicite la colonne `resultats_humain.categorie_personne`.
 - **Marin étranger** : marin professionnel étranger toutes activités confondues ;
 - **Clandestin** : personne en situation irrégulière ou ne figurant pas sur la liste des personnes embarquées ;
 - **Autre** : toute personne autre que celles déjà mentionnées.
+
+# Schéma de données
+![Schéma UML des tables](uml/uml.png "Schéma UML des tables")
