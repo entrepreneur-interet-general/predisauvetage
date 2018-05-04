@@ -138,4 +138,4 @@ Cette section explicite la colonne `resultats_humain.categorie_personne`.
 - **Autre** : toute personne autre que celles déjà mentionnées.
 
 # Schéma de données
-![Schéma UML des tables](uml/uml.png "Schéma UML des tables")
+![Schéma UML des tables](https://raw.githubusercontent.com/entrepreneur-interet-general/predisauvetage/master/opendata/uml/uml.png "Schéma UML des tables")
