@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
-    "operation_id" bigint PRIMARY KEY,
+    "operation_id" bigint primary key,
     "type_operation" varchar(3),
     "pourquoi_alerte" varchar(50),
     "moyen_alerte" varchar(100) not null,
@@ -101,7 +101,7 @@ CREATE INDEX ON resultats_humain(resultat_humain);
 
 DROP TABLE IF EXISTS public.operations_stats;
 CREATE TABLE public.operations_stats (
-    "operation_id" bigint references operations on delete cascade not null,
+    "operation_id" bigint primary key references operations on delete cascade not null,
     "annee" smallint not null,
     "mois" smallint not null,
     "jour" smallint not null,
