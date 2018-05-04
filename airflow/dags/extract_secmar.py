@@ -49,7 +49,7 @@ def secmar_transform(in_path, out_path, transformer, **kwargs):
 
 def create_tables_fn(**kwargs):
     def read_sql_schema():
-        filepath = helpers.base_path() + '/../opendata/schema.sql'
+        filepath = helpers.base_path() + '/../opendata/sql/schema.sql'
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
         return content

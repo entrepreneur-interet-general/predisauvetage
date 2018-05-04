@@ -32,6 +32,6 @@ class TestSqlSchema(TestSchemaMatches):
         )
 
     def sql_content(self):
-        with open(self.filepath('schema.sql'), 'r', encoding='utf-8') as f:
+        with open(self.filepath('sql/schema.sql'), 'r', encoding='utf-8') as f:
             content = f.read()
         return content
