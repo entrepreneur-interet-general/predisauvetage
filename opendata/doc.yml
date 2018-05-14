@@ -80,11 +80,13 @@ components:
           format: float
           description: Latitude de l'opération au format EPSG:4326 WGS84
           example: 48.3977
+          nullable: true
         longitude:
           type: number
           format: float
           description: Longitude de l'opération au format EPSG:4326 WGS84
           example: -4.9550
+          nullable: true
         vent_direction:
           type: number
           format: int32
@@ -123,9 +125,11 @@ components:
           type: integer
           format: int32
           minimum: 1
+          nullable: true
           description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h UTC et la numérotation est incrémentale par la suite. La numérotation des SITREP est indépendante pour chaque CROSS.
         cross_sitrep:
           type: string
+          nullable: true
           description: "Identifiant unique de l'opération. Il est composé du CROSS coordinateur de l'opération, de l'année et du numéro de SITREP"
           example: "Corsen 2017/42"
         fuseau_horaire:
@@ -216,6 +220,7 @@ components:
           description: Indique si le pavillon du flotteur impliqué est français ou étranger
           enum: [Étranger, Français]
           example: "Français"
+          nullable: true
         resultat_flotteur:
           type: string
           description: État du flotteur à la fin de l'intervention
@@ -233,14 +238,17 @@ components:
           type: string
           description: Numéro d'immatriculation du navire
           example: 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
+          nullable: true
         marque:
           type: string
           description: Marque du flotteur
           example: "SOPA"
+          nullable: true
         nom_serie:
           type: string
           description: Nom de série
           example: "CYRUS"
+          nullable: true
         assurance:
           type: boolean
           description: Indique si le flotteur possède une assurance
