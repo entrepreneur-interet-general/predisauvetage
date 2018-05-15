@@ -359,7 +359,7 @@ components:
         phase_journee:
           type: string
           enum: [matinée, déjeuner, après-midi, nuit]
-          description: "Indique à quel moment de la journée l'opération se déroule. La date de référence est la date de réception de l'alerte en UTC qui tient compte de l'heure locale du CROSS coordonnant l'opérateur. Définitions : la nuit est 30 minutes avant le coucher du soleil et 30 minutes après le lever du soleil, la matinée du lever du soleil jusqu'à 10:59, le déjeuner entre 11:00 et 14:59 et l'après-midi de 15:00 jusqu'au coucher du soleil."
+          description: "Indique à quel moment de la journée l'opération se déroule. La date de référence est la date de réception de l'alerte en UTC qui tient compte de l'heure locale du CROSS coordonnant l'opérateur. Définitions : la nuit est 30 minutes avant le coucher du soleil et 30 minutes après le lever du soleil, la matinée de 31 minutes après le lever du soleil jusqu'à 10:59, le déjeuner entre 11:00 et 14:59 et l'après-midi de 15:00 jusqu'à 31 minutes avant le coucher du soleil."
           example: nuit
           nullable: true
         concerne_snosan:
