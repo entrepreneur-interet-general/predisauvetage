@@ -11,6 +11,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.check_operator import CheckOperator
 from airflow.hooks.postgres_hook import PostgresHook
+from operators.pg_download_operator import PgDownloadOperator
 
 import config
 import helpers
@@ -72,6 +73,20 @@ def delete_invalid_operations_fn(**kwargs):
     )
 
 
+def set_operations_stats_extra_attributes_fn(**kwargs):
+    return PostgresHook('postgresql_local').run(
+        """
+        update operations_stats set phase_journee = t.phase_journee
+        from (
+            select *
+            from operations_stats_extras
+        ) t
+        where t.operation_id = operations_stats.operation_id;
+        drop table operations_stats_extras;
+        """
+    )
+
+
 def insert_operations_stats_fn(**kwargs):
     path = helpers.opendata_sql_path('insert_operations_stats')
     with open(path, 'r', encoding='utf-8') as f:
@@ -91,6 +106,7 @@ def embulk_import(dag, table):
 start = DummyOperator(task_id='start', dag=dag)
 end_transform = DummyOperator(task_id='end_transform', dag=dag)
 end_import = DummyOperator(task_id='end_import', dag=dag)
+start_checks = DummyOperator(task_id='start_checks', dag=dag)
 end_checks = DummyOperator(task_id='end_checks', dag=dag)
 
 # Convert input CSV files
@@ -145,6 +161,61 @@ insert_operations_stats = PythonOperator(
     dag=dag
 )
 insert_operations_stats.set_upstream(delete_invalid_operations)
+insert_operations_stats.set_downstream(start_checks)
+
+# Handle extra attributes for operations_stats
+sql = """
+select
+    op.operation_id,
+    op.date_heure_reception_alerte,
+    op.date_heure_reception_alerte at time zone 'utc' at time zone op.fuseau_horaire date_heure_reception_alerte_locale,
+    latitude,
+    longitude
+from operations op
+where latitude is not null
+    and longitude is not null
+"""
+download_operations_local_time = PgDownloadOperator(
+    task_id='download_operations_local_time',
+    postgres_conn_id='postgresql_local',
+    sql=sql,
+    pandas_sql_params={
+        'chunksize': 10000,
+    },
+    csv_path=in_path('operations_stats_extras'),
+    csv_params={
+        'sep': ',',
+        'index': False,
+    },
+    dag=dag
+)
+download_operations_local_time.set_upstream(delete_invalid_operations)
+
+transform_operations_stats = PythonOperator(
+    task_id='transform_operations_stats',
+    python_callable=secmar_transform,
+    provide_context=True,
+    dag=dag,
+    op_kwargs={
+        'in_path': in_path('operations_stats_extras'),
+        'out_path': out_path('operations_stats_extras'),
+        'transformer': config.secmar_transformer('operations_stats')
+    }
+)
+transform_operations_stats.set_upstream(download_operations_local_time)
+
+embulk_operations_stats_extras = embulk_import(dag, 'operations_stats_extras')
+embulk_operations_stats_extras.set_upstream(transform_operations_stats)
+
+set_operations_stats_extra_attributes = PythonOperator(
+    task_id='set_operations_stats_extra_attributes',
+    python_callable=set_operations_stats_extra_attributes_fn,
+    provide_context=True,
+    dag=dag
+)
+set_operations_stats_extra_attributes.set_upstream(embulk_operations_stats_extras)
+set_operations_stats_extra_attributes.set_upstream(insert_operations_stats)
+set_operations_stats_extra_attributes.set_downstream(start_checks)
 
 # Check consistency of data
 queries = {
@@ -193,11 +264,11 @@ for query_name, query in queries.items():
         conn_id='postgresql_local',
         dag=dag
     )
-    t.set_upstream(insert_operations_stats)
+    t.set_upstream(start_checks)
     t.set_downstream(end_checks)
 
 # Remove temporary CSV files
-for table in config.SECMAR_TABLES:
+for table in config.SECMAR_TABLES + ['operations_stats_extras']:
     t = BashOperator(
         task_id='delete_output_csv_' + table,
         bash_command="rm " + out_path(table),

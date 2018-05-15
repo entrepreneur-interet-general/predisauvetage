@@ -7,8 +7,7 @@ select
   extract(month from o.date_heure_reception_alerte) mois,
   extract(day from o.date_heure_reception_alerte) jour,
   '' mois_texte,
-  -- TODO: set it
-  '' phase_journee,
+  null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,

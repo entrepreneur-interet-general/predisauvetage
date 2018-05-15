@@ -1,0 +1,24 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    stop_on_invalid_record: true
+    columns:
+    - {name: operation_id, type: long}
+    - {name: phase_journee, type: string}
+{% include 'datasources/out_postgresql' %}
+  table: operations_stats_extras
+  mode: truncate_insert
+  column_options:
+    operation_id: {type: 'bigint references operations primary key'}
+    phase_journee: {type: varchar(10)}
