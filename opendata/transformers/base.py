@@ -22,7 +22,7 @@ class BaseTransformer(object):
     def to_csv(self, df, output):
         # Keep floats with up to 12 decimal if they need it, otherwise display as int
         # https://stackoverflow.com/questions/25789354/exporting-ints-with-missing-values-to-csv-in-pandas
-        for date_col in self.DATE_COLUMNS:
+        for date_col in [c for c in self.DATE_COLUMNS if c in df.columns]:
             df[date_col] = df[date_col].astype('datetime64[ns]')
         df.to_csv(
             output,

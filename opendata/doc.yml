@@ -358,10 +358,10 @@ components:
           example: Septembre
         phase_journee:
           type: string
-          # TODO: meilleurs définitions
-          enum: [matinee, milieu-journee, apres-midi, tombee-nuit, nuit, lever-soleil]
-          description: Indique à quel moment de la journée l'opération se déroule. La date de référence est la date de réception de l'alerte en UTC qui tient compte de l'heure locale du CROSS coordonnant l'opérateur.
-          example: pleine-nuit
+          enum: [matinée, déjeuner, après-midi, nuit]
+          description: "Indique à quel moment de la journée l'opération se déroule. La date de référence est la date de réception de l'alerte en UTC qui tient compte de l'heure locale du CROSS coordonnant l'opérateur. Définitions : la nuit est 30 minutes avant le coucher du soleil et 30 minutes après le lever du soleil, la matinée du lever du soleil jusqu'à 10:59, le déjeuner entre 11:00 et 14:59 et l'après-midi de 15:00 jusqu'au coucher du soleil."
+          example: nuit
+          nullable: true
         concerne_snosan:
           type: boolean
           description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques).
