@@ -352,6 +352,10 @@ components:
           example: 13
           minimum: 1
           maximum: 31
+        mois_texte:
+          type: string
+          description: Le mois de l'opération en UTC en français. La date de référence est la date de réception de l'alerte en UTC.
+          example: Septembre
         phase_journee:
           type: string
           # TODO: meilleurs définitions

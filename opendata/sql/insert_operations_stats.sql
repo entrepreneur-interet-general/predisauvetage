@@ -6,6 +6,7 @@ select
   extract(year from o.date_heure_reception_alerte) annee,
   extract(month from o.date_heure_reception_alerte) mois,
   extract(day from o.date_heure_reception_alerte) jour,
+  '' mois_texte,
   -- TODO: set it
   '' phase_journee,
   false concerne_snosan,
@@ -150,3 +151,20 @@ where operation_id in (
   from operations
   where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée en bouteille')
 );
+
+update operations_stats set mois_texte = t.mois_texte
+from (
+  select 1 mois, 'Janvier' mois_texte union
+  select 2 mois, 'Février' mois_texte union
+  select 3 mois, 'Mars' mois_texte union
+  select 4 mois, 'Avril' mois_texte union
+  select 5 mois, 'Mai' mois_texte union
+  select 6 mois, 'Juin' mois_texte union
+  select 7 mois, 'Juillet' mois_texte union
+  select 8 mois, 'Août' mois_texte union
+  select 9 mois, 'Septembre' mois_texte union
+  select 10 mois, 'Octobre' mois_texte union
+  select 11 mois, 'Novembre' mois_texte union
+  select 12 mois, 'Décembre' mois_texte
+) t
+where t.mois = operations_stats.mois;

@@ -105,6 +105,7 @@ CREATE TABLE public.operations_stats (
     "annee" smallint not null,
     "mois" smallint not null,
     "jour" smallint not null,
+    "mois_texte" varchar(10) not null,
     "phase_journee" varchar(20) not null,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
