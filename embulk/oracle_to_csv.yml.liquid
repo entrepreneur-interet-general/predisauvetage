@@ -1,0 +1,4 @@
+{% include 'datasources/in_oracle' %}
+  query: >
+    {{ env.EMBULK_QUERY }}
+{% include 'datasources/out_csv' %}

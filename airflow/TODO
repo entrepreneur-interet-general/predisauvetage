@@ -1,4 +1,4 @@
-- install Embulk
+- install Embulk (embulk gem install embulk-output-postgresql and embulk gem install embulk-input-oracle)
 - symlink opendata/transformers folder to airflow/dags/transformers
 - symlink opendata/sql folder airflow/opendata_sql
 - set env variable SECMAR_OPENDATA_HASH_SECRET

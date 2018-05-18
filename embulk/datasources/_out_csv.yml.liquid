@@ -1,0 +1,20 @@
+# Output only to a single file http://www.embulk.org/docs/built-in.html#local-executor-plugin
+exec:
+  min_output_tasks: 1
+out:
+  type: file
+  sequence_format: ""
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  file_ext: ''
+  formatter:
+    type: csv
+    delimiter: ","
+    quote: '"'
+    quote_policy: MINIMAL
+    escape: ""
+    header_line: true
+    null_string: ""
+    newline: CRLF
+    newline_in_field: LF
+    charset: UTF-8
+    default_timezone: 'UTC'

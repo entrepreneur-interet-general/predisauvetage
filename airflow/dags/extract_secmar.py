@@ -3,7 +3,7 @@
 # extract_secmar
 Extract, transform and load SECMAR data
 """
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -13,17 +13,13 @@ from airflow.operators.check_operator import CheckOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from operators.pg_download_operator import PgDownloadOperator
 
-import config
 import helpers
+from secmar_dags import in_path, out_path, secmar_transform
+from secmar_dags import SECMAR_TABLES, secmar_transformer
 
-default_args = {
-    'owner': 'antoine-augusti',
-    'depends_on_past': False,
+default_args = helpers.default_args({
     'start_date': datetime(2018, 4, 27, 5, 40),
-    'email': [],
-    'retries': 2,
-    'retry_delay': timedelta(minutes=3),
-}
+})
 
 dag = DAG(
     'extract_secmar',
@@ -36,26 +32,9 @@ dag = DAG(
 dag.doc_md = __doc__
 
 
-def in_path(table):
-    return helpers.data_path('in_' + table + '.csv')
-
-
-def out_path(table):
-    return helpers.data_path('out_' + table + '.csv')
-
-
-def secmar_transform(in_path, out_path, transformer, **kwargs):
-    transformer(in_path).transform(out_path)
-
-
 def create_tables_fn(**kwargs):
-    def read_sql_schema():
-        filepath = helpers.base_path() + '/../opendata/sql/schema.sql'
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content
     PostgresHook('postgresql_local').run(
-        read_sql_schema()
+        helpers.read_sql_query('schema')
     )
 
 
@@ -110,7 +89,7 @@ start_checks = DummyOperator(task_id='start_checks', dag=dag)
 end_checks = DummyOperator(task_id='end_checks', dag=dag)
 
 # Convert input CSV files
-for table in config.SECMAR_TABLES:
+for table in SECMAR_TABLES + ['operations_valides']:
     t = PythonOperator(
         task_id='transform_' + table,
         python_callable=secmar_transform,
@@ -119,7 +98,7 @@ for table in config.SECMAR_TABLES:
         op_kwargs={
             'in_path': in_path(table),
             'out_path': out_path(table),
-            'transformer': config.secmar_transformer(table)
+            'transformer': secmar_transformer(table)
         }
     )
     t.set_upstream(start)
@@ -138,13 +117,11 @@ embulk_operations = embulk_import(dag, 'operations')
 embulk_operations.set_upstream(create_tables)
 embulk_operations.set_downstream(end_import)
 
-for table in [t for t in config.SECMAR_TABLES if t not in ['operations']]:
+tables = [t for t in SECMAR_TABLES + ['operations_valides'] if t not in ['operations']]
+for table in tables:
     t = embulk_import(dag, table)
     t.set_upstream(embulk_operations)
     t.set_downstream(end_import)
-
-import_operations_valides = embulk_import(dag, 'operations_valides')
-import_operations_valides.set_upstream(end_import)
 
 delete_invalid_operations = PythonOperator(
     task_id='delete_invalid_operations',
@@ -152,7 +129,7 @@ delete_invalid_operations = PythonOperator(
     provide_context=True,
     dag=dag
 )
-delete_invalid_operations.set_upstream(import_operations_valides)
+delete_invalid_operations.set_upstream(end_import)
 
 insert_operations_stats = PythonOperator(
     task_id='insert_operations_stats',
@@ -199,7 +176,7 @@ transform_operations_stats = PythonOperator(
     op_kwargs={
         'in_path': in_path('operations_stats_extras'),
         'out_path': out_path('operations_stats_extras'),
-        'transformer': config.secmar_transformer('operations_stats')
+        'transformer': secmar_transformer('operations_stats')
     }
 )
 transform_operations_stats.set_upstream(download_operations_local_time)
@@ -268,7 +245,7 @@ for query_name, query in queries.items():
     t.set_downstream(end_checks)
 
 # Remove temporary CSV files
-for table in config.SECMAR_TABLES + ['operations_stats_extras']:
+for table in SECMAR_TABLES + ['operations_stats_extras', 'operations_valides']:
     t = BashOperator(
         task_id='delete_output_csv_' + table,
         bash_command="rm " + out_path(table),
