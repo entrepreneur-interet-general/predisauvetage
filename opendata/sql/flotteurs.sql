@@ -5,7 +5,6 @@ SELECT
   scrf.LIBELLE resultat_flotteur,
   sctp.LIBELLE type_flotteur,
   sccf.LIBELLE categorie_flotteur,
-  -- TODO: hash it
   t.NUM_IMMAT numero_immatriculation,
   t.MARQUE marque,
   t.NOM_SERIE nom_serie,

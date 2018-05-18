@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 import pandas as pd
 
 
@@ -14,7 +16,7 @@ class BaseTransformer(object):
         return pd.read_csv(
             self.filepath,
             delimiter=',',
-            parse_dates=self.DATE_COLUMNS,
+            converters=self.date_converters(),
             true_values=['Y'],
             false_values=['N']
         )
@@ -30,3 +32,16 @@ class BaseTransformer(object):
             float_format='%.12g',
             date_format=self.ISO_FORMAT
         )
+
+    def date_converters(self):
+        def to_datetime(val):
+            for date_format in ['%Y-%m-%d %H:%M:%S.%f %z', '%Y-%m-%d %H:%M:%S']:
+                try:
+                    return datetime.datetime.strptime(val, date_format)
+                except ValueError as e:
+                    pass
+            raise e
+        res = {}
+        for col in self.DATE_COLUMNS:
+            res[col] = to_datetime
+        return res
