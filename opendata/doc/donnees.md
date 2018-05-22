@@ -13,8 +13,7 @@ Les opérations sont classées de la manière suivante, par ordre de priorité 
     - Une opération de recherche a été menée et coordonnée avec ou sans résultat.
 - **MAS** : Opération d'assistance aux navires
     - Les personnes sont saines et sauves et le flotteur est intègre. Une
-    demande d'assistance a été formulée dans laquelle le CROSS ou le
-    MRCC est actif ;
+    demande d'assistance a été formulée dans laquelle le CROSS est actif ;
     - L'intégrité du flotteur est mise en cause sans présence humaine
     confirmée à bord ;
     - Le navire a subi une avarie et procède aux réparations ;
@@ -59,13 +58,13 @@ Afin d'éviter un nombre d'erreur dans le choix des zones, les choix ont éte�
 - **Plage et 300 mètres** : cette zone inclut également l'estran découvert pour les opérations coordonnant principalement des moyens de secours terrestres 
 - **Port et accès** : cette zone inclut les chenaux, zones d'attente portuaires à l'intérieur et à l'extérieur des limites administratives du port.
 - **Eaux territoriales** : cette zone inclut les eaux intérieures et la mer territoriale à l'exclusion des zones précitées.
-- **Responsabilité française** : cette zone inclut toutes les régions de recherche et de sauvetage attribuées des CROSS et MRCC français à l'exclusion des zones précitées. La notion de responsabilité française s'étend aux navires battant pavillon français dans les zones où aucune région de recherche et de sauvetage attribuée n'est déclarée et pour lesquelles aucun centre ne coordonnent l'opération.
+- **Responsabilité française** : cette zone inclut toutes les régions de recherche et de sauvetage attribuées des CROSS français à l'exclusion des zones précitées. La notion de responsabilité française s'étend aux navires battant pavillon français dans les zones où aucune région de recherche et de sauvetage attribuée n'est déclarée et pour lesquelles aucun centre ne coordonnent l'opération.
 - **Responsabilité étrangère** : cette catégorie est attribuées aux autres cas.
 
 ## Catégorie qui alerte
 Cette section explicite les colonnes `operations.qui_alerte` et `operations.categorie_qui_alerte`.
 
-Cette catégorie représente les personnes, navires, centres ou organismes qui donnent ou relaient l'alerte au premier CROSS ou MRCC coordonnateur.
+Cette catégorie représente les personnes, navires, centres ou organismes qui donnent ou relaient l'alerte au premier CROSS coordonnateur.
 
 ## Moyens de sauvetage
 Cette section explicite la table des `moyens`.
