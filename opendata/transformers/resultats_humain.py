@@ -2,9 +2,9 @@
 from transformers.base import BaseTransformer
 
 
-class ResultatHumainTransformer(BaseTransformer):
+class ResultatsHumainTransformer(BaseTransformer):
     def __init__(self, filepath):
-        super(ResultatHumainTransformer, self).__init__(filepath)
+        super(ResultatsHumainTransformer, self).__init__(filepath)
 
     def transform(self, output):
         df = self.read_csv()

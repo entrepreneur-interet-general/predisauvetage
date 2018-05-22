@@ -12,6 +12,8 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.check_operator import CheckOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from operators.pg_download_operator import PgDownloadOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
+
 
 import helpers
 from secmar_dags import in_path, out_path, secmar_transform
@@ -245,10 +247,20 @@ for query_name, query in queries.items():
     t.set_downstream(end_checks)
 
 # Remove temporary CSV files
-for table in SECMAR_TABLES + ['operations_stats_extras', 'operations_valides']:
+for table in ['operations_stats_extras', 'operations_valides']:
     t = BashOperator(
         task_id='delete_output_csv_' + table,
         bash_command="rm " + out_path(table),
         dag=dag,
     )
     t.set_upstream(end_checks)
+
+# Trigger DAG to generate final open data files
+dag_name = 'opendata_secmar'
+trigger_dag = TriggerDagRunOperator(
+    task_id='trigger_' + dag_name + '_dag',
+    trigger_dag_id=dag_name,
+    python_callable=lambda context, dag_run: dag_run,
+    dag=dag
+)
+trigger_dag.set_upstream(end_checks)

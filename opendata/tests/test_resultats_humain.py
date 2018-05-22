@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from transformers.resultats_humain import ResultatHumainTransformer
+from transformers.resultats_humain import ResultatsHumainTransformer
 from base import BaseTest
 
 
@@ -11,4 +11,4 @@ class TestResultatsHumainTransformer(BaseTest):
         self.run_for_files(in_file, expected_file)
 
     def subject(self):
-        return ResultatHumainTransformer
+        return ResultatsHumainTransformer

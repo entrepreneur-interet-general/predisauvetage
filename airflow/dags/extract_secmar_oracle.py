@@ -62,7 +62,7 @@ for table in SECMAR_TABLES + ['operations_valides']:
 
 dag_name = 'extract_secmar'
 trigger_dag = TriggerDagRunOperator(
-    task_id='trigger_' + dag_name,
+    task_id='trigger_' + dag_name + '_dag',
     trigger_dag_id=dag_name,
     python_callable=lambda context, dag_run: dag_run,
     dag=dag
