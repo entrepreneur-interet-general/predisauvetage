@@ -105,13 +105,7 @@ Le résultat sur le flotteur représente l'état du flotteur à la clôture
 ## Résultat sur les personnes
 Cette section explicite la table des `resultats_humain`.
 
-Le résultat sur les personnes est précisé à la clôture de l'opération.
-
-Par contre, pour ce qui concerne les personnes disparues une vigilance particulière est adoptée. À la découverte d'un corps, le CROSS ou le MRCC met tout en œuvre pour obtenir l'identification de la personne. L'objectif est de ne pas additionner aux disparus les personnes découvertes décédées. En cas de corrélation entre une disparition et la découverte d'un corps, il est possible de revenir sur une opération a posteriori en invalidant en venant la corriger. La donnée statistique sera représentative de la réalité.
-
-La découverte d'un corps fait l'objet d'un enregistrement, soit initial avec un numéro d'opération et une classification en DIV si le corps découvert ne peut être lié à une opération, soit d'une modification à l'opération relative à la disparition.
-
-Les résultats possibles sont :
+Le résultat sur les personnes est précisé à la clôture de l'opération. Les résultats possibles sont :
 - **Personne tirée d'affaire seule**
     - La personne n'a pas eu besoin d'aide extérieure pour surmonter sa difficulté.
 - **Personne retrouvée**
@@ -126,6 +120,10 @@ Les résultats possibles sont :
     - La personne était potentiellement en danger avant que la situation soit confirmée.
 
 Le résultat **Personne blessée** n'est utilisé que pour les personnes qui ont été accidentellement blessées qu'elles soient vivantes, décédées ou disparues. Une personne malade n'entre pas dans cette catégorie. La prise en charge médicale d'une personne malade donne un bilan de : 1 secouru / 0 blessé.
+
+Concernant les personnes disparues, une vigilance particulière est adoptée. À la découverte d'un corps, le CROSS met tout en œuvre pour obtenir l'identification de la personne. L'objectif est de ne pas additionner aux disparus les personnes découvertes décédées. En cas de corrélation entre une disparition et la découverte d'un corps, il est possible de revenir sur une opération a posteriori en venant corriger une opération.
+
+La découverte d'un corps fait l'objet d'un enregistrement, soit initial avec un numéro d'opération et une classification en DIV si le corps découvert ne peut être lié à une opération, soit d'une modification à l'opération relative à la disparition.
 
 ## Catégories de personne
 Cette section explicite la colonne `resultats_humain.categorie_personne`.
