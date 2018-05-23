@@ -1,3 +1,6 @@
+# Schéma de données
+![Schéma UML des tables](https://raw.githubusercontent.com/entrepreneur-interet-general/predisauvetage/master/opendata/uml/uml.png "Schéma UML des tables")
+
 # Signification des termes employés
 
 ## Classification des opérations
@@ -102,7 +105,7 @@ Le résultat sur le flotteur représente l'état du flotteur à la clôture
     - La notion d'assistance dénote une aide extérieure directe au flotteur. Une escorte est une assistance.
 
 ## Résultat sur les personnes
-Cette section explicite la table des `resultats_humain`.
+Cette section explicite la colonne `resultats_humain.resultat_humain`.
 
 Le résultat sur les personnes est précisé à la clôture de l'opération. Les résultats possibles sont :
 - **Personne tirée d'affaire seule**
@@ -133,6 +136,3 @@ Cette section explicite la colonne `resultats_humain.categorie_personne`.
 - **Marin étranger** : marin professionnel étranger toutes activités confondues ;
 - **Clandestin** : personne en situation irrégulière ou ne figurant pas sur la liste des personnes embarquées ;
 - **Autre** : toute personne autre que celles déjà mentionnées.
-
-# Schéma de données
-![Schéma UML des tables](https://raw.githubusercontent.com/entrepreneur-interet-general/predisauvetage/master/opendata/uml/uml.png "Schéma UML des tables")
