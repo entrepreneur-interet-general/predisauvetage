@@ -35,12 +35,17 @@ class BaseTransformer(object):
 
     def date_converters(self):
         def to_datetime(val):
-            for date_format in ['%Y-%m-%d %H:%M:%S.%f %z', '%Y-%m-%d %H:%M:%S']:
+            formats = [
+                '%Y-%m-%d %H:%M:%S.%f %z',
+                '%Y-%m-%d %H:%M:%S',
+                '%Y-%m-%d %H:%M:%S%z'
+            ]
+            for date_format in formats:
                 try:
                     return datetime.datetime.strptime(val, date_format)
-                except ValueError as e:
+                except ValueError:
                     pass
-            raise e
+            raise ValueError('Cannot parse ' + val)
         res = {}
         for col in self.DATE_COLUMNS:
             res[col] = to_datetime

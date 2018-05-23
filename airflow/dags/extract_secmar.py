@@ -146,8 +146,8 @@ insert_operations_stats.set_downstream(start_checks)
 sql = """
 select
     op.operation_id,
-    op.date_heure_reception_alerte,
-    op.date_heure_reception_alerte at time zone 'utc' at time zone op.fuseau_horaire date_heure_reception_alerte_locale,
+    op.date_heure_reception_alerte at time zone 'utc' date_heure_reception_alerte,
+    op.date_heure_reception_alerte at time zone op.fuseau_horaire date_heure_reception_alerte_locale,
     latitude,
     longitude
 from operations op

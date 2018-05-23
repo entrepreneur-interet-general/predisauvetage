@@ -19,8 +19,8 @@ CREATE TABLE public.operations (
     "vent_direction" smallint,
     "vent_force" smallint,
     "mer_force" smallint,
-    "date_heure_reception_alerte" timestamp without time zone not null,
-    "date_heure_fin_operation" timestamp without time zone not null,
+    "date_heure_reception_alerte" timestamp with time zone not null,
+    "date_heure_fin_operation" timestamp with time zone not null,
     "numero_sitrep" smallint,
     "cross_sitrep" varchar(50),
     "fuseau_horaire" varchar(25) not null
@@ -30,8 +30,8 @@ CREATE INDEX ON operations(type_operation);
 CREATE INDEX ON operations(pourquoi_alerte);
 CREATE INDEX ON operations("cross");
 CREATE INDEX ON operations(departement);
-CREATE INDEX ON operations((date_heure_reception_alerte::date));
-CREATE INDEX ON operations((date_heure_fin_operation::date));
+CREATE INDEX ON operations(date_heure_reception_alerte);
+CREATE INDEX ON operations(date_heure_fin_operation);
 
 
 DROP TABLE IF EXISTS public.flotteurs;
@@ -75,8 +75,8 @@ CREATE TABLE public.moyens (
     "categorie_moyen" varchar(100) not null,
     "domaine_action" varchar(50) not null,
     "autorite_moyen" varchar(100) not null,
-    "date_heure_debut" timestamp without time zone not null,
-    "date_heure_fin" timestamp without time zone not null
+    "date_heure_debut" timestamp with time zone not null,
+    "date_heure_fin" timestamp with time zone not null
 );
 
 CREATE INDEX ON moyens(operation_id);
