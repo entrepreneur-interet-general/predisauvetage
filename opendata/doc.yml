@@ -368,7 +368,7 @@ components:
           example: true
         concerne_plongee:
           type: boolean
-          description: Indique si cette opération est une opération qui concerne une activité de plongée ou de chasse sous-marine
+          description: Indique si cette opération est une opération qui concerne une activité de plongée (bouteille ou apnée) ou de chasse sous-marine
           example: true
         nombre_personnes_assistees:
           type: integer
