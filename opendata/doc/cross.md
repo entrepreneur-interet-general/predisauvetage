@@ -15,7 +15,7 @@ Un CROSS assure :
 ### Navigation : la surveillance de la navigation maritime
 Un CROSS analyse les comptes rendus d'avarie des navires. Les CROSS de la Manche relèvent le trafic maritime dans les zones soumises à une concentration élevée de navires, détectent les routes anormales ou à risque et identifient les contrevenants à la réglementation internationale pour prévenir les abordages en mer.
 
-### Pollutions : la surveillance des pol- lutions maritimes
+### Pollutions : la surveillance des pollutions maritimes
 Un CROSS recueille les informations sur les pollutions marines, concourt
 à la recherche des auteurs d'infractions et participe à la mise en œuvre du dispositif Polmar (1978) de lutte contre les pollutions marines accidentelles.
 
@@ -24,7 +24,7 @@ C'est le CROSS Étel qui exerce cette mission. Il héberge le centre national 
 de capture et la coordination opérationnelle des différents moyens maritimes et aériens mis à sa disposition.
 
 ### Information : la diffusion des renseignements relatifs à la sécurité maritime
-Un CROSS diffuse vers les navires les renseignements essentiels à la sécurité maritime, par radio pour les bulletins météorologiques et par Navtex (Navigational text messages) pour les avis urgents en cas de modification des conditions de navigation pouvant entraîner des dangers.
+Un CROSS diffuse vers les navires les renseignements essentiels à la sécurité maritime, par radio pour les bulletins météorologiques et par Navtex (*Navigational text messages*) pour les avis urgents en cas de modification des conditions de navigation pouvant entraîner des dangers.
 
 ### Protection : la sûreté maritime
 C'est le CROSS Gris-Nez qui assure cette mission. Le centre est le point de contact national pour la réception des attaques subies par les navires sous pavillon français.
