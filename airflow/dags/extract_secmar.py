@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 # extract_secmar
+This DAG is triggered by the DAG [extract_secmar_oracle](/admin/airflow/graph?dag_id=extract_secmar_oracle).
+
 Extract, transform and load SECMAR data
 """
 from datetime import datetime
