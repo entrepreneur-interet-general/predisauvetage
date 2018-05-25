@@ -1,0 +1,22 @@
+==
+<ul class="{{ class }}">
+    {% for item in items %}
+        <li
+            class="{{ item.isActive or item.isChildActive ? 'active' : '' }}
+            {{ item.items ? 'dropdown' : '' }}"
+        >
+            <a
+                {% if item.items %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}
+                href="{{ item.url }}"
+            >
+                {{ item.title }}
+
+                {% if item.items %}<span class="caret"></span>{% endif %}
+            </a>
+
+            {% if item.items %}
+                {% partial 'menu-items' items=item.items class='dropdown-menu' %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

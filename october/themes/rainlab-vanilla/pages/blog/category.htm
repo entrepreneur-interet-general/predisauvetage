@@ -1,0 +1,35 @@
+title = "Catégorie d'articles"
+url = "/blog/category/:slug/:page?"
+layout = "default"
+description = "Viewing blog posts in a specific category."
+hidden = "0"
+
+[blogPosts]
+pageNumber = "{{ :page }}"
+categoryFilter = "{{ :slug }}"
+postsPerPage = "10"
+noPostsMessage = "Pas d'articles trouvés"
+sortOrder = "published_at desc"
+categoryPage = "blog/category"
+postPage = "blog/post"
+
+[blogCategories]
+slug = "{{ :slug }}"
+displayEmpty = "0"
+categoryPage = "blog/category"
+==
+function onEnd()
+{
+    // Optional - set the page title to the category name
+    if ($this->category)
+        $this->page->description = 'Articles publiés dans '.$this->category->name;
+}
+==
+<div class="row">
+    <div class="col-md-8">
+        {% partial 'blog/posts' %}
+    </div>
+    <div class="col-md-4">
+        {% partial 'blog/categories' %}
+    </div>
+</div>

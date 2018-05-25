@@ -1,0 +1,20 @@
+name: 'Main menu - left'
+items:
+    -
+        title: 'All pages'
+        nesting: ''
+        type: all-static-pages
+        url: ''
+        code: ''
+        reference: ''
+        cmsPage: ''
+        replace: '1'
+    -
+        title: Blog
+        type: cms-page
+        code: blog
+        reference: blog
+        viewBag:
+            isHidden: '0'
+            cssClass: ''
+            isExternal: '0'

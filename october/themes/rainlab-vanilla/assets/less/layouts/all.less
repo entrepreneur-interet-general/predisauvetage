@@ -1,0 +1,50 @@
+//
+// Layouts
+//
+// Styles specific to different page layouts.
+//
+
+body {
+  padding-top: 50px;
+}
+
+header#layout-header {
+  .navbar-brand {
+    margin-top: -10px;
+  }
+  .navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border-top: 4px solid @orange;
+    margin-bottom: 0;
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+
+.card-header {
+  background: @blue;
+  color: #f8f9fa;
+  padding: .75rem 1.25rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}

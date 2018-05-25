@@ -1,0 +1,27 @@
+title = "Accueil"
+url = "/"
+layout = "default"
+is_hidden = 0
+==
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-4">
+            <img src="{{ '/assets/images/plaisance.jpg'|theme }}" alt="Navires de plaisance" class="img-thumbnail">
+        </div>
+
+        <div class="col-md-8">
+            {% content 'description-snosan' %}
+        </div>
+    </div>
+
+    <div class="row justify-content-center align-items-center mt-5">
+        <div class="col-md-8">
+            {% content 'pourquoi-snosan' %}
+        </div>
+
+        <div class="col-md-4">
+            <img src="{{ '/assets/images/sauvetage.jpg'|theme }}" alt="Exercice de sauvetage SNSM" class="img-thumbnail mb-5">
+            <img src="{{ '/assets/images/helicoptere.jpg'|theme }}" alt="Hélicoptère de la Marine Nationale" class="img-thumbnail mt-5">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+title = "Article"
+url = "/blog/post/:slug"
+layout = "default"
+description = "Consulter un seul article"
+hidden = "0"
+
+[blogPost]
+slug = "{{ :slug }}"
+categoryPage = "blog/category"
+==
+<?php
+function onEnd()
+{
+    $this->page->title = $this->post->title;
+    $this->page->description = $this->post->excerpt;
+}
+?>
+==
+{% partial 'blog/post' %}
