@@ -1,13 +1,14 @@
-<?php namespace RainLab\Pages\FormWidgets;
+<?php
+
+namespace RainLab\Pages\FormWidgets;
 
 use Backend\Classes\FormWidgetBase;
 use Cms\Classes\Theme;
 use RainLab\Pages\Classes\Page;
 
 /**
- * Static page picker widget
+ * Static page picker widget.
  *
- * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  */
 class PagePicker extends FormWidgetBase
@@ -15,16 +16,17 @@ class PagePicker extends FormWidgetBase
     protected $indent = '&nbsp;&nbsp;&nbsp;';
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function render()
     {
         $this->prepareVars();
+
         return $this->makePartial('~/modules/backend/widgets/form/partials/_field_dropdown.htm');
     }
 
     /**
-     * Prepares the view data
+     * Prepares the view data.
      */
     public function prepareVars()
     {
@@ -44,13 +46,12 @@ class PagePicker extends FormWidgetBase
 
         // Flatten page tree for dropdown options
         $options = [];
-        $iterator = function($items, $depth=0) use(&$iterator, &$tree, &$options, $indent) {
-
+        $iterator = function ($items, $depth = 0) use (&$iterator, &$tree, &$options, $indent) {
             foreach ($items as $code) {
                 $itemData = $tree[$code];
-                $options[$code] = str_repeat($indent, $depth) . $itemData['title'];
+                $options[$code] = str_repeat($indent, $depth).$itemData['title'];
                 if (!empty($itemData['items'])) {
-                    $iterator($itemData['items'], $depth+1);
+                    $iterator($itemData['items'], $depth + 1);
                 }
             }
 

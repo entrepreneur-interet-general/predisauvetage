@@ -1,12 +1,12 @@
-<?php namespace RainLab\Blog\Models;
+<?php
 
-use Str;
-use Model;
-use URL;
-use RainLab\Blog\Models\Post;
-use October\Rain\Router\Helper as RouterHelper;
+namespace RainLab\Blog\Models;
+
 use Cms\Classes\Page as CmsPage;
 use Cms\Classes\Theme;
+use Model;
+use Str;
+use URL;
 
 class Category extends Model
 {
@@ -31,7 +31,7 @@ class Category extends Model
     public $translatable = [
         'name',
         'description',
-        ['slug', 'index' => true]
+        ['slug', 'index' => true],
     ];
 
     protected $guarded = [];
@@ -40,8 +40,8 @@ class Category extends Model
         'posts' => ['RainLab\Blog\Models\Post',
             'table' => 'rainlab_blog_posts_categories',
             'order' => 'published_at desc',
-            'scope' => 'isPublished'
-        ]
+            'scope' => 'isPublished',
+        ],
     ];
 
     public function beforeValidate()
@@ -63,8 +63,9 @@ class Category extends Model
     }
 
     /**
-     * Sets the "url" attribute with a URL to this object
-     * @param string $pageName
+     * Sets the "url" attribute with a URL to this object.
+     *
+     * @param string                 $pageName
      * @param Cms\Classes\Controller $controller
      */
     public function setUrl($pageName, $controller)
@@ -91,7 +92,9 @@ class Category extends Model
      *   Optional, false if omitted.
      * - cmsPages - a list of CMS pages (objects of the Cms\Classes\Page class), if the item type requires a CMS page reference to
      *   resolve the item URL.
+     *
      * @param string $type Specifies the menu item type
+     *
      * @return array Returns an array
      */
     public static function getMenuTypeInfo($type)
@@ -102,13 +105,13 @@ class Category extends Model
             $result = [
                 'references'   => self::listSubCategoryOptions(),
                 'nesting'      => true,
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
 
         if ($type == 'all-blog-categories') {
             $result = [
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
 
@@ -144,17 +147,16 @@ class Category extends Model
     {
         $category = self::getNested();
 
-        $iterator = function($categories) use (&$iterator) {
+        $iterator = function ($categories) use (&$iterator) {
             $result = [];
 
             foreach ($categories as $category) {
                 if (!$category->children) {
                     $result[$category->id] = $category->name;
-                }
-                else {
+                } else {
                     $result[$category->id] = [
                         'title' => $category->name,
-                        'items' => $iterator($category->children)
+                        'items' => $iterator($category->children),
                     ];
                 }
             }
@@ -176,10 +178,12 @@ class Category extends Model
      *   return all available records.
      * - items - an array of arrays with the same keys (url, isActive, items) + the title key.
      *   The items array should be added only if the $item's $nesting property value is TRUE.
-     * @param \RainLab\Pages\Classes\MenuItem $item Specifies the menu item.
-     * @param \Cms\Classes\Theme $theme Specifies the current theme.
-     * @param string $url Specifies the current page URL, normalized, in lower case
-     * The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     *
+     * @param \RainLab\Pages\Classes\MenuItem $item  Specifies the menu item.
+     * @param \Cms\Classes\Theme              $theme Specifies the current theme.
+     * @param string                          $url   Specifies the current page URL, normalized, in lower case
+     *                                               The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     *
      * @return mixed Returns an array. Returns null if the item cannot be resolved.
      */
     public static function resolveMenuItem($item, $url, $theme)
@@ -210,11 +214,10 @@ class Category extends Model
 
             if ($item->nesting) {
                 $categories = $category->getNested();
-                $iterator = function($categories) use (&$iterator, &$item, &$theme, $url) {
+                $iterator = function ($categories) use (&$iterator, &$item, &$theme, $url) {
                     $branch = [];
 
                     foreach ($categories as $category) {
-
                         $branchItem = [];
                         $branchItem['url'] = self::getCategoryPageUrl($item->cmsPage, $category, $theme);
                         $branchItem['isActive'] = $branchItem['url'] == $url;
@@ -233,10 +236,9 @@ class Category extends Model
 
                 $result['items'] = $iterator($categories);
             }
-        }
-        elseif ($item->type == 'all-blog-categories') {
+        } elseif ($item->type == 'all-blog-categories') {
             $result = [
-                'items' => []
+                'items' => [],
             ];
 
             $categories = self::orderBy('name')->get();

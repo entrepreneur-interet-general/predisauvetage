@@ -1,52 +1,61 @@
-<?php namespace RainLab\Blog\Components;
+<?php
 
-use Redirect;
+namespace RainLab\Blog\Components;
+
 use BackendAuth;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
-use RainLab\Blog\Models\Post as BlogPost;
+use Cms\Classes\Page;
 use RainLab\Blog\Models\Category as BlogCategory;
+use RainLab\Blog\Models\Post as BlogPost;
+use Redirect;
 
 class Posts extends ComponentBase
 {
     /**
-     * A collection of posts to display
+     * A collection of posts to display.
+     *
      * @var Collection
      */
     public $posts;
 
     /**
-     * Parameter to use for the page number
+     * Parameter to use for the page number.
+     *
      * @var string
      */
     public $pageParam;
 
     /**
      * If the post list should be filtered by a category, the model to use.
+     *
      * @var Model
      */
     public $category;
 
     /**
      * Message to display when there are no messages.
+     *
      * @var string
      */
     public $noPostsMessage;
 
     /**
      * Reference to the page name for linking to posts.
+     *
      * @var string
      */
     public $postPage;
 
     /**
      * Reference to the page name for linking to categories.
+     *
      * @var string
      */
     public $categoryPage;
 
     /**
      * If the post list should be ordered by another attribute.
+     *
      * @var string
      */
     public $sortOrder;
@@ -55,7 +64,7 @@ class Posts extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.posts_title',
-            'description' => 'rainlab.blog::lang.settings.posts_description'
+            'description' => 'rainlab.blog::lang.settings.posts_description',
         ];
     }
 
@@ -72,7 +81,7 @@ class Posts extends ComponentBase
                 'title'       => 'rainlab.blog::lang.settings.posts_filter',
                 'description' => 'rainlab.blog::lang.settings.posts_filter_description',
                 'type'        => 'string',
-                'default'     => ''
+                'default'     => '',
             ],
             'postsPerPage' => [
                 'title'             => 'rainlab.blog::lang.settings.posts_per_page',
@@ -82,17 +91,17 @@ class Posts extends ComponentBase
                 'default'           => '10',
             ],
             'noPostsMessage' => [
-                'title'        => 'rainlab.blog::lang.settings.posts_no_posts',
-                'description'  => 'rainlab.blog::lang.settings.posts_no_posts_description',
-                'type'         => 'string',
-                'default'      => 'No posts found',
-                'showExternalParam' => false
+                'title'             => 'rainlab.blog::lang.settings.posts_no_posts',
+                'description'       => 'rainlab.blog::lang.settings.posts_no_posts_description',
+                'type'              => 'string',
+                'default'           => 'No posts found',
+                'showExternalParam' => false,
             ],
             'sortOrder' => [
                 'title'       => 'rainlab.blog::lang.settings.posts_order',
                 'description' => 'rainlab.blog::lang.settings.posts_order_description',
                 'type'        => 'dropdown',
-                'default'     => 'published_at desc'
+                'default'     => 'published_at desc',
             ],
             'categoryPage' => [
                 'title'       => 'rainlab.blog::lang.settings.posts_category',
@@ -148,8 +157,9 @@ class Posts extends ComponentBase
         if ($pageNumberParam = $this->paramName('pageNumber')) {
             $currentPage = $this->property('pageNumber');
 
-            if ($currentPage > ($lastPage = $this->posts->lastPage()) && $currentPage > 1)
+            if ($currentPage > ($lastPage = $this->posts->lastPage()) && $currentPage > 1) {
                 return Redirect::to($this->currentPageUrl([$pageNumberParam => $lastPage]));
+            }
         }
     }
 
@@ -187,10 +197,10 @@ class Posts extends ComponentBase
         /*
          * Add a "url" helper attribute for linking to each post and category
          */
-        $posts->each(function($post) {
+        $posts->each(function ($post) {
             $post->setUrl($this->postPage, $this->controller);
 
-            $post->categories->each(function($category) {
+            $post->categories->each(function ($category) {
                 $category->setUrl($this->categoryPage, $this->controller);
             });
         });
@@ -201,10 +211,10 @@ class Posts extends ComponentBase
     protected function loadCategory()
     {
         if (!$slug = $this->property('categoryFilter')) {
-            return null;
+            return;
         }
 
-        $category = new BlogCategory;
+        $category = new BlogCategory();
 
         $category = $category->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
             ? $category->transWhere('slug', $slug)
@@ -218,6 +228,7 @@ class Posts extends ComponentBase
     protected function checkEditor()
     {
         $backendUser = BackendAuth::getUser();
+
         return $backendUser && $backendUser->hasAccess('rainlab.blog.access_posts');
     }
 }

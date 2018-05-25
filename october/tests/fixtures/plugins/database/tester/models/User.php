@@ -1,4 +1,6 @@
-<?php namespace Database\Tester\Models;
+<?php
+
+namespace Database\Tester\Models;
 
 use Model;
 
@@ -18,13 +20,12 @@ class User extends Model
      * @var array Relations
      */
     public $attachOne = [
-        'avatar' => 'System\Models\File'
+        'avatar' => 'System\Models\File',
     ];
 
     public $attachMany = [
-        'photos' => 'System\Models\File'
+        'photos' => 'System\Models\File',
     ];
-
 }
 
 class SoftDeleteUser extends User

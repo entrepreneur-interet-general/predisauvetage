@@ -1,19 +1,20 @@
 <?php
 
-use System\Classes\UpdateManager;
-use System\Classes\PluginManager;
 use October\Rain\Database\Model as ActiveRecord;
+use System\Classes\PluginManager;
+use System\Classes\UpdateManager;
 
 abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 {
     /**
      * @var array Cache for storing which plugins have been loaded
-     * and refreshed.
+     *            and refreshed.
      */
     protected $pluginTestCaseLoadedPlugins = [];
 
     /**
      * Creates the application.
+     *
      * @return Symfony\Component\HttpKernel\HttpKernelInterface
      */
     public function createApplication()
@@ -31,7 +32,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
         $app['config']->set('database.connections.sqlite', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => ''
+            'prefix'   => '',
         ]);
 
         /*
@@ -44,6 +45,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Perform test case set up.
+     *
      * @return void
      */
     public function setUp()
@@ -53,7 +55,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
          */
         PluginManager::forgetInstance();
         UpdateManager::forgetInstance();
-        
+
         /*
          * Create application instance
          */
@@ -82,6 +84,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Flush event listeners and collect garbage.
+     *
      * @return void
      */
     public function tearDown()
@@ -93,6 +96,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Migrate database using october:up command.
+     *
      * @return void
      */
     protected function runOctoberUpCommand()
@@ -104,12 +108,16 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
      * Since the test environment has loaded all the test plugins
      * natively, this method will ensure the desired plugin is
      * loaded in the system before proceeding to migrate it.
+     *
      * @return void
      */
     protected function runPluginRefreshCommand($code, $throwException = true)
     {
         if (!preg_match('/^[\w+]*\.[\w+]*$/', $code)) {
-            if (!$throwException) return;
+            if (!$throwException) {
+                return;
+            }
+
             throw new Exception(sprintf('Invalid plugin code: "%s"', $code));
         }
 
@@ -124,7 +132,10 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
             $path = array_get($manager->getPluginNamespaces(), $namespace);
 
             if (!$path) {
-                if (!$throwException) return;
+                if (!$throwException) {
+                    return;
+                }
+
                 throw new Exception(sprintf('Unable to find plugin with code: "%s"', $code));
             }
 
@@ -138,8 +149,9 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
         if (!empty($plugin->require)) {
             foreach ((array) $plugin->require as $dependency) {
-
-                if (isset($this->pluginTestCaseLoadedPlugins[$dependency])) continue;
+                if (isset($this->pluginTestCaseLoadedPlugins[$dependency])) {
+                    continue;
+                }
 
                 $this->runPluginRefreshCommand($dependency);
             }
@@ -153,6 +165,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Returns a plugin object from its code, useful for registering events, etc.
+     *
      * @return PluginBase
      */
     protected function getPluginObject($code = null)
@@ -170,6 +183,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
      * The models in October use a static property to store their events, these
      * will need to be targeted and reset ready for a new test cycle.
      * Pivot models are an exception since they are internally managed.
+     *
      * @return void
      */
     protected function flushModelEventListeners()
@@ -196,6 +210,7 @@ abstract class PluginTestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Locates the plugin code based on the test file location.
+     *
      * @return string|bool
      */
     protected function guessPluginCodeFromTest()

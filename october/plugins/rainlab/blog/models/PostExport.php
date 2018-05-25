@@ -1,10 +1,11 @@
-<?php namespace RainLab\Blog\Models;
+<?php
+
+namespace RainLab\Blog\Models;
 
 use Backend\Models\ExportModel;
-use ApplicationException;
 
 /**
- * Post Export Model
+ * Post Export Model.
  */
 class PostExport extends ExportModel
 {
@@ -16,26 +17,27 @@ class PostExport extends ExportModel
     public $belongsTo = [
         'post_user' => [
             'Backend\Models\User',
-            'key' => 'user_id'
-        ]
+            'key' => 'user_id',
+        ],
     ];
 
     public $belongsToMany = [
         'post_categories' => [
             'RainLab\Blog\Models\Category',
-            'table' => 'rainlab_blog_posts_categories',
-            'key' => 'post_id',
-            'otherKey' => 'category_id'
-        ]
+            'table'    => 'rainlab_blog_posts_categories',
+            'key'      => 'post_id',
+            'otherKey' => 'category_id',
+        ],
     ];
 
     /**
      * The accessors to append to the model's array form.
+     *
      * @var array
      */
     protected $appends = [
         'author_email',
-        'categories'
+        'categories',
     ];
 
     public function exportData($columns, $sessionKey = null)
@@ -43,11 +45,10 @@ class PostExport extends ExportModel
         $result = self::make()
             ->with([
                 'post_user',
-                'post_categories'
+                'post_categories',
             ])
             ->get()
-            ->toArray()
-        ;
+            ->toArray();
 
         return $result;
     }

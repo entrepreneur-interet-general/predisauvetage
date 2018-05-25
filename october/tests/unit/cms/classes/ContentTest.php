@@ -1,11 +1,10 @@
 <?php
 
-use Cms\Classes\Theme;
 use Cms\Classes\Content;
+use Cms\Classes\Theme;
 
 class ContentTest extends TestCase
 {
-
     public function testMarkdownContent()
     {
         $theme = Theme::load('test');
@@ -32,5 +31,4 @@ class ContentTest extends TestCase
         $this->assertEquals('<a href="#">Stephen Saucier</a> changed his profile picture &mdash; <small>7 hrs ago</small></div>', $content->markup);
         $this->assertEquals('<a href="#">Stephen Saucier</a> changed his profile picture &mdash; <small>7 hrs ago</small></div>', $content->parsedMarkup);
     }
-
 }

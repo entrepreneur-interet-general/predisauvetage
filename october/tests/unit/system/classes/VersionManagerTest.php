@@ -4,7 +4,6 @@ use System\Classes\VersionManager;
 
 class VersionManagerTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -24,6 +23,7 @@ class VersionManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -33,6 +33,7 @@ class VersionManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->getValue($object);
     }
 
@@ -42,6 +43,7 @@ class VersionManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->setValue($object, $value);
     }
 
@@ -72,7 +74,7 @@ class VersionManagerTest extends TestCase
 
         $sample = $result['1.0.1'];
         $comment = array_shift($sample);
-        $this->assertEquals("Added some upgrade file and some seeding", $comment);
+        $this->assertEquals('Added some upgrade file and some seeding', $comment);
 
         /*
          * Test junk file
@@ -87,7 +89,7 @@ class VersionManagerTest extends TestCase
 
         $sample = array_shift($result);
         $comment = array_shift($sample);
-        $this->assertEquals("JUNK JUNK JUNK", $comment);
+        $this->assertEquals('JUNK JUNK JUNK', $comment);
 
         /*
          * Test empty file
@@ -118,5 +120,4 @@ class VersionManagerTest extends TestCase
         $this->assertArrayHasKey('1.0.4', $result);
         $this->assertArrayHasKey('1.0.5', $result);
     }
-
 }

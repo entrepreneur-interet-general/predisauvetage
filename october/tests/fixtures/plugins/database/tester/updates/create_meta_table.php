@@ -1,15 +1,15 @@
-<?php namespace Database\Tester\Updates;
+<?php
 
-use Schema;
+namespace Database\Tester\Updates;
+
 use October\Rain\Database\Updates\Migration;
+use Schema;
 
 class CreateMetaTable extends Migration
 {
-
     public function up()
     {
-        Schema::create('database_tester_meta', function ($table)
-        {
+        Schema::create('database_tester_meta', function ($table) {
             $table->engine = 'InnoDB';
             $table->increments('id')->unsigned();
             $table->integer('taggable_id')->unsigned()->index()->nullable();
@@ -28,5 +28,4 @@ class CreateMetaTable extends Migration
     {
         Schema::dropIfExists('database_tester_meta');
     }
-
 }

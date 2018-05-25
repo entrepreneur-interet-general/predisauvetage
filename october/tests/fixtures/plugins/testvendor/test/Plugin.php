@@ -1,16 +1,17 @@
-<?php namespace TestVendor\Test;
+<?php
+
+namespace TestVendor\Test;
 
 use System\Classes\PluginBase;
 
 class Plugin extends PluginBase
 {
-
     public function pluginDetails()
     {
         return [
-            'name' => 'Another Test Plugin',
+            'name'        => 'Another Test Plugin',
             'description' => 'Test plugin used by unit tests with the same name.',
-            'author' => 'Test Vendor'
+            'author'      => 'Test Vendor',
         ];
     }
 
@@ -19,9 +20,8 @@ class Plugin extends PluginBase
         return [
             'TestVendor\Test\FormWidgets\Sample' => [
                 'label' => 'Sample',
-                'code'  => 'sample'
-            ]
+                'code'  => 'sample',
+            ],
         ];
     }
-
 }

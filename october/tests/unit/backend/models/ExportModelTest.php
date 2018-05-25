@@ -2,7 +2,9 @@
 
 use Backend\Models\ExportModel;
 
-if (!class_exists('Model')) class_alias('October\Rain\Database\Model', 'Model');
+if (!class_exists('Model')) {
+    class_alias('October\Rain\Database\Model', 'Model');
+}
 
 class ExampleExportModel extends ExportModel
 {
@@ -14,7 +16,6 @@ class ExampleExportModel extends ExportModel
 
 class ExportModelTest extends TestCase
 {
-
     //
     // Helpers
     //
@@ -25,6 +26,7 @@ class ExportModelTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -34,7 +36,7 @@ class ExportModelTest extends TestCase
 
     public function testEncodeArrayValue()
     {
-        $model = new ExampleExportModel;
+        $model = new ExampleExportModel();
         $data = ['foo', 'bar'];
         $result = self::callProtectedMethod($model, 'encodeArrayValue', [$data]);
         $this->assertEquals('foo|bar', $result);
@@ -47,5 +49,4 @@ class ExportModelTest extends TestCase
         $result = self::callProtectedMethod($model, 'encodeArrayValue', [$data, '-']);
         $this->assertEquals('art direction-roman empire-sci\-fi', $result);
     }
-
 }

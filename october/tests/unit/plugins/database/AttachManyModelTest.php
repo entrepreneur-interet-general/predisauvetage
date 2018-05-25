@@ -1,7 +1,7 @@
 <?php
 
-use System\Models\File as FileModel;
 use Database\Tester\Models\User;
+use System\Models\File as FileModel;
 
 class AttachManyModelTest extends PluginTestCase
 {

@@ -1,14 +1,16 @@
-<?php namespace October\Tester\Components;
+<?php
 
-use Cms\Classes\ComponentBase;
+namespace October\Tester\Components;
+
 use Cms\Classes\CodeBase;
+use Cms\Classes\ComponentBase;
 use October\Tester\Classes\Users;
 
 class Comments extends ComponentBase
 {
     private $users;
 
-    public function __construct(CodeBase $cmsObject = null, $properties = [], Users $users)
+    public function __construct(CodeBase $cmsObject = null, $properties, Users $users)
     {
         parent::__construct($cmsObject, $properties);
         $this->users = $users;
@@ -17,8 +19,8 @@ class Comments extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name' => 'Blog Comments Dummy Component',
-            'description' => 'Displays the list of comments on a post.'
+            'name'        => 'Blog Comments Dummy Component',
+            'description' => 'Displays the list of comments on a post.',
         ];
     }
 
@@ -26,7 +28,7 @@ class Comments extends ComponentBase
     {
         return [
             ['title' => 'Lorum ipsum', 'content' => 'Post Content #1'],
-            ['title' => 'La Playa Nudista', 'content' => 'Second Post Content']
+            ['title' => 'La Playa Nudista', 'content' => 'Second Post Content'],
         ];
     }
 
@@ -39,5 +41,4 @@ class Comments extends ComponentBase
     {
         return $this->users;
     }
-
 }

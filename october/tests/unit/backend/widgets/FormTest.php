@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class FormTestModel extends Model
 {
-
 }
 
 class FormTest extends TestCase
@@ -13,24 +12,24 @@ class FormTest extends TestCase
     public function testCheckboxlistTrigger()
     {
         $form = new Form(null, [
-            'model' => new FormTestModel,
+            'model'     => new FormTestModel(),
             'arrayName' => 'array',
-            'fields' => [
+            'fields'    => [
                 'trigger' => [
-                    'type' => 'checkboxlist',
+                    'type'    => 'checkboxlist',
                     'options' => [
-                        '1' => 'Value One'
-                    ]
+                        '1' => 'Value One',
+                    ],
                 ],
                 'triggered' => [
-                    'type' => 'text',
+                    'type'    => 'text',
                     'trigger' => [
-                        'field' => 'trigger[]',
-                        'action' => 'show',
-                        'condition' => 'value[1]'
-                    ]
-                ]
-            ]
+                        'field'     => 'trigger[]',
+                        'action'    => 'show',
+                        'condition' => 'value[1]',
+                    ],
+                ],
+            ],
         ]);
 
         $form->render();

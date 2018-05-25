@@ -1,18 +1,16 @@
-<?php namespace RainLab\Pages\FormWidgets;
+<?php
 
-use Str;
-use Lang;
-use Input;
-use Request;
-use Response;
+namespace RainLab\Pages\FormWidgets;
+
 use Backend\Classes\FormWidgetBase;
-use Cms\Classes\Theme;
+use Input;
+use Lang;
 use RainLab\Pages\Classes\MenuItem;
+use Str;
 
 /**
  * Menu item reference search.
  *
- * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  */
 class MenuItemSearch extends FormWidgetBase
@@ -23,6 +21,7 @@ class MenuItemSearch extends FormWidgetBase
 
     /**
      * Renders the widget.
+     *
      * @return string
      */
     public function render()
@@ -46,7 +45,7 @@ class MenuItemSearch extends FormWidgetBase
     protected function getData()
     {
         return [
-            'results' => $this->getMatches()
+            'results' => $this->getMatches(),
         ];
     }
 
@@ -74,15 +73,15 @@ class MenuItemSearch extends FormWidgetBase
                 if ($this->textMatchesSearch($words, $title)) {
                     $typeMatches[] = [
                         'id'   => "$type::$key",
-                        'text' => $title
+                        'text' => $title,
                     ];
                 }
             }
 
             if (!empty($typeMatches)) {
                 $types[] = [
-                    'text' => trans($typeTitle),
-                    'children' => $typeMatches
+                    'text'     => trans($typeTitle),
+                    'children' => $typeMatches,
                 ];
             }
         }

@@ -4,7 +4,6 @@ use System\Classes\PluginManager;
 
 class PluginManagerTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -22,6 +21,7 @@ class PluginManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -31,6 +31,7 @@ class PluginManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->getValue($object);
     }
 
@@ -40,6 +41,7 @@ class PluginManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->setValue($object, $value);
     }
 
@@ -71,7 +73,7 @@ class PluginManagerTest extends TestCase
         $manager = PluginManager::instance();
         $result = $manager->getPluginPath('October\Tester');
         $basePath = str_replace('\\', '/', base_path());
-        $this->assertEquals($basePath . '/tests/fixtures/plugins/october/tester', $result);
+        $this->assertEquals($basePath.'/tests/fixtures/plugins/october/tester', $result);
     }
 
     public function testGetPlugins()
@@ -158,5 +160,4 @@ class PluginManagerTest extends TestCase
         $manager->unregisterAll();
         $this->assertEmpty($manager->getPlugins());
     }
-
 }

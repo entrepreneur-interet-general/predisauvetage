@@ -4,7 +4,6 @@ use System\Classes\MarkupManager;
 
 class MarkupManagerTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -22,6 +21,7 @@ class MarkupManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -31,6 +31,7 @@ class MarkupManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->getValue($object);
     }
 
@@ -40,6 +41,7 @@ class MarkupManagerTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->setValue($object, $value);
     }
 
@@ -62,7 +64,9 @@ class MarkupManagerTest extends TestCase
         $result = self::callProtectedMethod($manager, 'isWildCallable', [$callable]);
         $this->assertFalse($result);
 
-        $callable = function () { return 'O, Hai!'; };
+        $callable = function () {
+            return 'O, Hai!';
+        };
         $result = self::callProtectedMethod($manager, 'isWildCallable', [$callable]);
         $this->assertFalse($result);
 
@@ -109,5 +113,4 @@ class MarkupManagerTest extends TestCase
         $this->assertEquals('MyFood', $result[0]);
         $this->assertEquals('myFood', $result[1]);
     }
-
 }

@@ -1,10 +1,10 @@
-<?php namespace RainLab\Blog\Controllers;
+<?php
 
-use Flash;
-use Redirect;
-use BackendMenu;
+namespace RainLab\Blog\Controllers;
+
 use Backend\Classes\Controller;
-use ApplicationException;
+use BackendMenu;
+use Flash;
 use RainLab\Blog\Models\Post;
 
 class Posts extends Controller
@@ -12,7 +12,7 @@ class Posts extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-        'Backend.Behaviors.ImportExportController'
+        'Backend.Behaviors.ImportExportController',
     ];
 
     public $formConfig = 'config_form.yaml';
@@ -86,7 +86,6 @@ class Posts extends Controller
     public function index_onDelete()
     {
         if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
-
             foreach ($checkedIds as $postId) {
                 if ((!$post = Post::find($postId)) || !$post->canEdit($this->user)) {
                     continue;
@@ -102,7 +101,7 @@ class Posts extends Controller
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function listInjectRowClass($record, $definition = null)
     {
@@ -123,7 +122,7 @@ class Posts extends Controller
         $previewHtml = Post::formatHtml($data['content'], true);
 
         return [
-            'preview' => $previewHtml
+            'preview' => $previewHtml,
         ];
     }
 }

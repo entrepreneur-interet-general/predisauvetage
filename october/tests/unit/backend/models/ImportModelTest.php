@@ -2,7 +2,9 @@
 
 use Backend\Models\ImportModel;
 
-if (!class_exists('Model')) class_alias('October\Rain\Database\Model', 'Model');
+if (!class_exists('Model')) {
+    class_alias('October\Rain\Database\Model', 'Model');
+}
 
 class ExampleImportModel extends ImportModel
 {
@@ -16,7 +18,6 @@ class ExampleImportModel extends ImportModel
 
 class ImportModelTest extends TestCase
 {
-
     //
     // Helpers
     //
@@ -27,6 +28,7 @@ class ImportModelTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -36,7 +38,7 @@ class ImportModelTest extends TestCase
 
     public function testDecodeArrayValue()
     {
-        $model = new ExampleImportModel;
+        $model = new ExampleImportModel();
         $data = 'foo|bar';
         $result = self::callProtectedMethod($model, 'decodeArrayValue', [$data]);
         $this->assertEquals(['foo', 'bar'], $result);
@@ -49,5 +51,4 @@ class ImportModelTest extends TestCase
         $result = self::callProtectedMethod($model, 'decodeArrayValue', [$data, '-']);
         $this->assertEquals(['art direction', 'roman empire', 'sci-fi'], $result);
     }
-
 }

@@ -1,12 +1,13 @@
-<?php namespace RainLab\User\Updates;
+<?php
 
-use File;
-use Schema;
-use October\Rain\Database\Updates\Migration;
-use Cms\Classes\Theme;
+namespace RainLab\User\Updates;
+
 use Cms\Classes\Partial;
+use Cms\Classes\Theme;
+use File;
+use October\Rain\Database\Updates\Migration;
 
-class SnippetsRenameViewbagProperties extends Migration
+class snippets_rename_viewbag_properties extends Migration
 {
     public function up()
     {
@@ -17,13 +18,16 @@ class SnippetsRenameViewbagProperties extends Migration
                 try {
                     $path = $partial->getFilePath();
                     $contents = File::get($path);
-                    if (strpos($contents, 'staticPageSnippetCode') === false) continue;
+                    if (strpos($contents, 'staticPageSnippetCode') === false) {
+                        continue;
+                    }
                     $contents = str_replace('staticPageSnippetName', 'snippetName', $contents);
                     $contents = str_replace('staticPageSnippetCode', 'snippetCode', $contents);
                     $contents = str_replace('staticPageSnippetProperties', 'snippetProperties', $contents);
                     File::put($path, $contents);
+                } catch (\Exception $ex) {
+                    continue;
                 }
-                catch (\Exception $ex) { continue; }
             }
         }
     }

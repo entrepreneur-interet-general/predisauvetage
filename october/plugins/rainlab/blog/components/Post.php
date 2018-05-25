@@ -1,8 +1,10 @@
-<?php namespace RainLab\Blog\Components;
+<?php
+
+namespace RainLab\Blog\Components;
 
 use BackendAuth;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
+use Cms\Classes\Page;
 use RainLab\Blog\Models\Post as BlogPost;
 
 class Post extends ComponentBase
@@ -21,7 +23,7 @@ class Post extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.post_title',
-            'description' => 'rainlab.blog::lang.settings.post_description'
+            'description' => 'rainlab.blog::lang.settings.post_description',
         ];
     }
 
@@ -32,7 +34,7 @@ class Post extends ComponentBase
                 'title'       => 'rainlab.blog::lang.settings.post_slug',
                 'description' => 'rainlab.blog::lang.settings.post_slug_description',
                 'default'     => '{{ :slug }}',
-                'type'        => 'string'
+                'type'        => 'string',
             ],
             'categoryPage' => [
                 'title'       => 'rainlab.blog::lang.settings.post_category',
@@ -65,7 +67,7 @@ class Post extends ComponentBase
     {
         $slug = $this->property('slug');
 
-        $post = new BlogPost;
+        $post = new BlogPost();
 
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
             ? $post->transWhere('slug', $slug)
@@ -81,7 +83,7 @@ class Post extends ComponentBase
          * Add a "url" helper attribute for linking to each category
          */
         if ($post && $post->categories->count()) {
-            $post->categories->each(function($category) {
+            $post->categories->each(function ($category) {
                 $category->setUrl($this->categoryPage, $this->controller);
             });
         }
@@ -115,7 +117,7 @@ class Post extends ComponentBase
 
         $post->setUrl($postPage, $this->controller);
 
-        $post->categories->each(function($category) {
+        $post->categories->each(function ($category) {
             $category->setUrl($this->categoryPage, $this->controller);
         });
 
@@ -125,6 +127,7 @@ class Post extends ComponentBase
     protected function checkEditor()
     {
         $backendUser = BackendAuth::getUser();
+
         return $backendUser && $backendUser->hasAccess('rainlab.blog.access_posts');
     }
 }

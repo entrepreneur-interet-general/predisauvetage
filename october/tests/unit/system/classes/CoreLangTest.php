@@ -1,6 +1,5 @@
 <?php
 
-use System\Classes\PluginManager;
 
 class CoreLangTest extends TestCase
 {
@@ -10,8 +9,8 @@ class CoreLangTest extends TestCase
         $translator->setLocale('en');
 
         $validator = Validator::make(
-            array('name' => 'me'),
-            array('name' => 'required|min:5')
+            ['name' => 'me'],
+            ['name' => 'required|min:5']
         );
 
         $this->assertTrue($validator->fails());
@@ -34,8 +33,10 @@ class CoreLangTest extends TestCase
         foreach ($modules as $module) {
             foreach ($locales as $locale) {
                 foreach ($files as $file) {
-                    $srcPath = base_path() . '/modules/'.$module.'/lang/'.$locale.'/'.$file;
-                    if (!file_exists($srcPath)) continue;
+                    $srcPath = base_path().'/modules/'.$module.'/lang/'.$locale.'/'.$file;
+                    if (!file_exists($srcPath)) {
+                        continue;
+                    }
                     $messages = require $srcPath;
                     $this->assertNotEmpty($messages);
                     $this->assertNotCount(0, $messages);

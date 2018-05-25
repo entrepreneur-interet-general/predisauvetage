@@ -61,8 +61,9 @@ class CmsObjectTest extends TestCase
         $themePath = $theme->getPath();
 
         $filePath = $themePath .= '/temporary/test.htm';
-        if (file_exists($filePath))
+        if (file_exists($filePath)) {
             @unlink($filePath);
+        }
 
         $this->assertFileNotExists($filePath);
 
@@ -126,7 +127,7 @@ class CmsObjectTest extends TestCase
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
             'fileName' => 'mytestobj',
-            'content' => $testContents
+            'content'  => $testContents,
         ]);
 
         $this->assertEquals($testContents, $obj->getContent());
@@ -141,7 +142,7 @@ class CmsObjectTest extends TestCase
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
             'something' => 'mytestobj',
-            'content' => $testContents
+            'content'   => $testContents,
         ]);
 
         $this->assertNull($obj->something);
@@ -158,7 +159,7 @@ class CmsObjectTest extends TestCase
         $testContents = 'mytestcontent';
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
-            'fileName' => '@name'
+            'fileName' => '@name',
         ]);
         $obj->save();
     }
@@ -174,7 +175,7 @@ class CmsObjectTest extends TestCase
         $testContents = 'mytestcontent';
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
-            'fileName' => '../somefile'
+            'fileName' => '../somefile',
         ]);
         $obj->save();
     }
@@ -190,7 +191,7 @@ class CmsObjectTest extends TestCase
         $testContents = 'mytestcontent';
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
-            'fileName' => '/somefile'
+            'fileName' => '/somefile',
         ]);
         $obj->save();
     }
@@ -206,7 +207,7 @@ class CmsObjectTest extends TestCase
         $testContents = 'mytestcontent';
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
-            'fileName' => ' '
+            'fileName' => ' ',
         ]);
         $obj->save();
     }
@@ -216,8 +217,9 @@ class CmsObjectTest extends TestCase
         $theme = Theme::load('apitest');
 
         $destFilePath = $theme->getPath().'/testobjects/mytestobj.htm';
-        if (file_exists($destFilePath))
+        if (file_exists($destFilePath)) {
             unlink($destFilePath);
+        }
 
         $this->assertFileNotExists($destFilePath);
 
@@ -225,7 +227,7 @@ class CmsObjectTest extends TestCase
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
             'fileName' => 'mytestobj',
-            'content' => $testContents
+            'content'  => $testContents,
         ]);
         $obj->save();
 
@@ -244,15 +246,16 @@ class CmsObjectTest extends TestCase
         $this->assertFileExists($srcFilePath);
 
         $destFilePath = $theme->getPath().'/testobjects/anotherobj.htm';
-        if (file_exists($destFilePath))
+        if (file_exists($destFilePath)) {
             unlink($destFilePath);
+        }
 
         $testContents = 'mytestcontent';
         $obj = TestCmsObject::load($theme, 'mytestobj.htm');
         $this->assertEquals($testContents, $obj->getContent());
 
         $obj->fill([
-            'fileName' => 'anotherobj'
+            'fileName' => 'anotherobj',
         ]);
         $obj->save();
 
@@ -274,8 +277,9 @@ class CmsObjectTest extends TestCase
         $this->assertFileExists($srcFilePath);
 
         $destFilePath = $theme->getPath().'/testobjects/existingobj.htm';
-        if (!file_exists($destFilePath))
+        if (!file_exists($destFilePath)) {
             file_put_contents($destFilePath, 'str');
+        }
         $this->assertFileExists($destFilePath);
 
         $obj = TestCmsObject::load($theme, 'anotherobj.htm');
@@ -298,7 +302,7 @@ class CmsObjectTest extends TestCase
 
         $obj->fill([
             'fileName' => 'anotherobj',
-            'content' => $testContents
+            'content'  => $testContents,
         ]);
         $obj->save();
 
@@ -311,12 +315,14 @@ class CmsObjectTest extends TestCase
         $theme = Theme::load('apitest');
 
         $destFilePath = $theme->getPath().'/testobjects/testsubdir/mytestobj.htm';
-        if (file_exists($destFilePath))
+        if (file_exists($destFilePath)) {
             unlink($destFilePath);
+        }
 
         $destDirPath = dirname($destFilePath);
-        if (file_exists($destDirPath) && is_dir($destDirPath))
+        if (file_exists($destDirPath) && is_dir($destDirPath)) {
             rmdir($destDirPath);
+        }
 
         $this->assertFileNotExists($destFilePath);
         $this->assertFileNotExists($destDirPath);
@@ -325,7 +331,7 @@ class CmsObjectTest extends TestCase
         $obj = TestCmsObject::inTheme($theme);
         $obj->fill([
             'fileName' => 'testsubdir/mytestobj.htm',
-            'content' => $testContents
+            'content'  => $testContents,
         ]);
         $obj->save();
 

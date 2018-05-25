@@ -1,18 +1,19 @@
-<?php namespace RainLab\Blog\Updates;
+<?php
+
+namespace RainLab\Blog\Updates;
 
 use Carbon\Carbon;
-use RainLab\Blog\Models\Post;
-use RainLab\Blog\Models\Category;
 use October\Rain\Database\Updates\Seeder;
+use RainLab\Blog\Models\Category;
+use RainLab\Blog\Models\Post;
 
-class SeedAllTables extends Seeder
+class seed_all_tables extends Seeder
 {
-
     public function run()
     {
         Post::create([
-            'title' => 'First blog post',
-            'slug' => 'first-blog-post',
+            'title'   => 'First blog post',
+            'slug'    => 'first-blog-post',
             'content' => '
 This is your first ever **blog post**! It might be a good idea to update this post with some more relevant content.
 
@@ -20,9 +21,9 @@ You can edit this content by selecting **Blog** from the administration back-end
 
 *Enjoy the good times!*
             ',
-            'excerpt' => 'The first ever blog post is here. It might be a good idea to update this post with some more relevant content.',
+            'excerpt'      => 'The first ever blog post is here. It might be a good idea to update this post with some more relevant content.',
             'published_at' => Carbon::now(),
-            'published' => true
+            'published'    => true,
         ]);
 
         Category::create([
@@ -30,5 +31,4 @@ You can edit this content by selecting **Blog** from the administration back-end
             'slug' => 'uncategorized',
         ]);
     }
-
 }

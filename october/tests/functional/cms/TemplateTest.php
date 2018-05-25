@@ -2,12 +2,11 @@
 
 class TemplateTest extends UiTestCase
 {
-
     public function testOpenTemplates()
     {
         $this->signInToBackend();
         $this->open('cms');
-        $this->waitForPageToLoad("30000");
+        $this->waitForPageToLoad('30000');
 
         // Fix the sidebar
         $this->click("xpath=(//a[@class='fix-button'])[1]");
@@ -18,7 +17,7 @@ class TemplateTest extends UiTestCase
 
         // Create a new page
         $this->click("xpath=(//form[@data-template-type='page']//button[@data-control='create-template'])[1]");
-        $this->waitForElementPresent("name=settings[title]");
+        $this->waitForElementPresent('name=settings[title]');
 
         // Populate page details
         $this->type('name=settings[title]', 'Functional Test Page');
@@ -35,14 +34,14 @@ class TemplateTest extends UiTestCase
         // Reopen the tab
         $this->waitForElementPresent("xpath=(//div[@id='TemplateList-pageList-template-list']//li[@data-item-path='xxx_functional_test_page.htm']/a)[1]");
         $this->click("xpath=(//div[@id='TemplateList-pageList-template-list']//li[@data-item-path='xxx_functional_test_page.htm']/a)[1]");
-        $this->waitForElementPresent("name=settings[title]");
+        $this->waitForElementPresent('name=settings[title]');
         sleep(1);
 
         // Delete the page
         $this->click("xpath=(//button[@data-request='onDelete'])[1]");
         $this->getSweetConfirmation('Do you really want delete this page?');
         // $this->assertTrue((bool)preg_match('/^Do you really want delete this page[\s\S]$/',$this->getConfirmation()));
-        $this->waitForElementNotPresent("name=settings[title]");
+        $this->waitForElementNotPresent('name=settings[title]');
 
         /*
          * Partial
@@ -53,7 +52,7 @@ class TemplateTest extends UiTestCase
 
         // Create a new partial
         $this->click("xpath=(//form[@data-template-type='partial']//button[@data-control='create-template'])[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
 
         // Populate partial details
         $this->type('name=fileName', 'xxx_functional_test_partial');
@@ -69,13 +68,13 @@ class TemplateTest extends UiTestCase
         // Reopen the tab
         $this->waitForElementPresent("xpath=(//div[@id='TemplateList-partialList-template-list']//li[@data-item-path='xxx_functional_test_partial.htm']/a)[1]");
         $this->click("xpath=(//div[@id='TemplateList-partialList-template-list']//li[@data-item-path='xxx_functional_test_partial.htm']/a)[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
         sleep(1);
 
         // Delete the partial
         $this->click("xpath=(//button[@data-request='onDelete'])[1]");
         $this->getSweetConfirmation('Do you really want delete this partial?');
-        $this->waitForElementNotPresent("name=fileName");
+        $this->waitForElementNotPresent('name=fileName');
 
         /*
          * Layout
@@ -86,7 +85,7 @@ class TemplateTest extends UiTestCase
 
         // Create a new layout
         $this->click("xpath=(//form[@data-template-type='layout']//button[@data-control='create-template'])[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
 
         // Populate layout details
         $this->type('name=fileName', 'xxx_functional_test_layout');
@@ -102,13 +101,13 @@ class TemplateTest extends UiTestCase
         // Reopen the tab
         $this->waitForElementPresent("xpath=(//div[@id='TemplateList-layoutList-template-list']//li[@data-item-path='xxx_functional_test_layout.htm']/a)[1]");
         $this->click("xpath=(//div[@id='TemplateList-layoutList-template-list']//li[@data-item-path='xxx_functional_test_layout.htm']/a)[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
         sleep(1);
 
         // Delete the layout
         $this->click("xpath=(//button[@data-request='onDelete'])[1]");
         $this->getSweetConfirmation('Do you really want delete this layout?');
-        $this->waitForElementNotPresent("name=fileName");
+        $this->waitForElementNotPresent('name=fileName');
 
         /*
          * Content
@@ -119,7 +118,7 @@ class TemplateTest extends UiTestCase
 
         // Create a new content
         $this->click("xpath=(//form[@data-template-type='content']//button[@data-control='create-template'])[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
 
         // Populate content details
         $this->type('name=fileName', 'xxx_functional_test_content.txt');
@@ -134,14 +133,12 @@ class TemplateTest extends UiTestCase
         // Reopen the tab
         $this->waitForElementPresent("xpath=(//div[@id='TemplateList-contentList-template-list']//li[@data-item-path='xxx_functional_test_content.txt']/a)[1]");
         $this->click("xpath=(//div[@id='TemplateList-contentList-template-list']//li[@data-item-path='xxx_functional_test_content.txt']/a)[1]");
-        $this->waitForElementPresent("name=fileName");
+        $this->waitForElementPresent('name=fileName');
         sleep(1);
 
         // Delete the content
         $this->click("xpath=(//button[@data-request='onDelete'])[1]");
         $this->getSweetConfirmation('Do you really want delete this content file?');
-        $this->waitForElementNotPresent("name=fileName");
-
+        $this->waitForElementNotPresent('name=fileName');
     }
-
 }

@@ -1,13 +1,14 @@
-<?php namespace Database\Tester\Models;
+<?php
+
+namespace Database\Tester\Models;
 
 use Model;
 
 /**
- * Role Model
+ * Role Model.
  */
 class Role extends Model
 {
-
     /**
      * @var string The database table used by the model.
      */
@@ -29,8 +30,7 @@ class Role extends Model
     public $belongsToMany = [
         'authors' => [
             'Database\Tester\Models\User',
-            'table' => 'database_tester_authors_roles'
+            'table' => 'database_tester_authors_roles',
         ],
     ];
-
 }

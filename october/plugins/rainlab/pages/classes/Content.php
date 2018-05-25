@@ -1,11 +1,12 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
+
+namespace RainLab\Pages\Classes;
 
 use Cms\Classes\Content as ContentBase;
 
 /**
  * Represents a content template.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Content extends ContentBase
@@ -16,7 +17,7 @@ class Content extends ContentBase
      * @var array Attributes that support translation, if available.
      */
     public $translatable = [
-        'markup'
+        'markup',
     ];
 
     public $translatableModel = 'RainLab\Translate\Classes\MLContent';
@@ -24,12 +25,14 @@ class Content extends ContentBase
     /**
      * Converts the content object file name in to something nicer
      * for humans to read.
+     *
      * @return string
      */
     public function getNiceTitleAttribute()
     {
         $title = basename($this->getBaseFileName());
         $title = ucwords(str_replace(['-', '_'], ' ', $title));
+
         return $title;
     }
 }

@@ -1,26 +1,25 @@
-<?php namespace RainLab\Blog\FormWidgets;
+<?php
 
-use Lang;
-use Input;
-use Response;
-use Validator;
-use RainLab\Blog\Models\Post as PostModel;
-use Backend\Classes\FormWidgetBase;
+namespace RainLab\Blog\FormWidgets;
+
 use Backend\FormWidgets\MarkdownEditor;
-use System\Models\File;
-use ValidationException;
-use SystemException;
 use Exception;
+use Input;
+use Lang;
+use RainLab\Blog\Models\Post as PostModel;
+use Response;
+use System\Models\File;
+use SystemException;
+use ValidationException;
+use Validator;
 
 /**
  * Special markdown editor for the Create/Edit Post form.
  *
- * @package rainlab\blog
  * @author Alexey Bobkov, Samuel Georges
  */
 class BlogMarkdown extends MarkdownEditor
 {
-
     public function init()
     {
         $this->viewPath = base_path().'/modules/backend/formwidgets/markdowneditor/partials';
@@ -43,22 +42,24 @@ class BlogMarkdown extends MarkdownEditor
         $previewHtml = PostModel::formatHtml($content, true);
 
         return [
-            'preview' => $previewHtml
+            'preview' => $previewHtml,
         ];
     }
 
     protected function checkUploadPostback()
     {
-        if (!post('X_BLOG_IMAGE_UPLOAD'))
+        if (!post('X_BLOG_IMAGE_UPLOAD')) {
             return;
+        }
 
         $uploadedFileName = null;
 
         try {
             $uploadedFile = Input::file('file');
 
-            if ($uploadedFile)
+            if ($uploadedFile) {
                 $uploadedFileName = $uploadedFile->getClientOriginalName();
+            }
 
             $validationRules = ['max:'.File::getMaxFilesize()];
             $validationRules[] = 'mimes:jpg,jpeg,bmp,png,gif';
@@ -68,12 +69,12 @@ class BlogMarkdown extends MarkdownEditor
                 ['file_data' => $validationRules]
             );
 
-            if ($validation->fails())
+            if ($validation->fails()) {
                 throw new ValidationException($validation);
-
-            if (!$uploadedFile->isValid())
+            }
+            if (!$uploadedFile->isValid()) {
                 throw new SystemException(Lang::get('cms::lang.asset.file_not_valid'));
-
+            }
             $fileRelation = $this->model->content_images();
 
             $file = new File();
@@ -84,22 +85,21 @@ class BlogMarkdown extends MarkdownEditor
             $fileRelation->add($file, $this->sessionKey);
             $result = [
                 'file' => $uploadedFileName,
-                'path' => $file->getPath()
+                'path' => $file->getPath(),
             ];
 
             $response = Response::make()->setContent($result);
             $response->send();
 
             die();
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $message = $uploadedFileName
                 ? Lang::get('cms::lang.asset.error_uploading_file', ['name' => $uploadedFileName, 'error' => $ex->getMessage()])
                 : $ex->getMessage();
 
             $result = [
                 'error' => $message,
-                'file' => $uploadedFileName
+                'file'  => $uploadedFileName,
             ];
 
             $response = Response::make()->setContent($result);

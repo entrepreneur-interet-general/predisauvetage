@@ -1,12 +1,9 @@
 <?php
 
-use Cms\Classes\Page;
-use Cms\Classes\Theme;
-use Cms\Classes\Router;
-use Cms\Classes\Layout;
-use Cms\Classes\Controller;
 use Cms\Classes\CmsException;
 use Cms\Classes\CodeParser;
+use Cms\Classes\Router;
+use Cms\Classes\Theme;
 use October\Rain\Exception\SystemException;
 
 class CmsExceptionTest extends TestCase
@@ -21,6 +18,7 @@ class CmsExceptionTest extends TestCase
         $class = new ReflectionClass($className);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $params);
     }
 
@@ -30,6 +28,7 @@ class CmsExceptionTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->getValue($object);
     }
 
@@ -39,6 +38,7 @@ class CmsExceptionTest extends TestCase
         $class = new ReflectionClass($className);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property->setValue($object, $value);
     }
 
@@ -71,5 +71,4 @@ class CmsExceptionTest extends TestCase
         $this->assertEquals('PHP Content', $exception->getErrorType());
         $this->assertEquals('This is a general error', $exception->getMessage());
     }
-
 }

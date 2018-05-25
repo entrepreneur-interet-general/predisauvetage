@@ -1,9 +1,9 @@
 <?php
 
-use System\Models\File as FileModel;
-use Database\Tester\Models\User;
 use Database\Tester\Models\SoftDeleteUser;
+use Database\Tester\Models\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use System\Models\File as FileModel;
 
 class AttachOneModelTest extends PluginTestCase
 {
