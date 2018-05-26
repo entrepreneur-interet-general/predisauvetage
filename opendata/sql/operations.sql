@@ -10,7 +10,7 @@ select
   sce.LIBELLE evenement,
   scce.LIBELLE categorie_evenement,
   sca.LIBELLE autorite,
-  sca.LIBELLE sous_autorite,
+  sca2.LIBELLE sous_autorite,
   sczr.LIBELLE zone_responsabilite,
   so.LATITUDE latitude,
   so.LONGITUDE longitude,
