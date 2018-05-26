@@ -93,7 +93,7 @@ components:
           nullable: true
           minimum: 0
           maximum: 360
-          description: Direction du vent, en degrès
+          description: Direction du vent, en degrés
           example: 42
         vent_force:
           type: number
