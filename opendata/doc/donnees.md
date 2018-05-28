@@ -45,7 +45,7 @@ Ces cas ne sont pas des fausses alertes mais des évènements dont la classifi
 Il est possible de modifier une opération pour refléter les changements à la suite d'éléments nouveaux parvenus au centre.
 
 ## Autorité
-Cette section explicite les colonnes `operations.autorite` et `operations.sous_autorite`.
+Cette section explicite les colonnes `operations.autorite` et `operations.seconde_autorite`.
 
 L'autorité est le responsable juridique de la conduite des opérations. Ce n'est pas le coordonnateur ni l'acteur. Le centre qui reçoit une alerte est responsable de la coordination s'il ne parvient pas à retransmettre l'alerte au centre territorialement compétent.
 

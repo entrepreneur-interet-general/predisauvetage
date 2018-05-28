@@ -67,10 +67,11 @@ components:
           type: string
           description: Autorité en charge de la coordination de l'opération
           example: Préfet maritime
-        sous_autorite:
+        seconde_autorite:
           type: string
-          description: Sous-autorité en charge de la coordination de l'opération
-          example: SG-Mer
+          description: Seconde autorité en charge de la coordination de l'opération
+          example: MRCC étranger
+          nullable: true
         zone_responsabilite:
           type: string
           description: Où se situe l'intervention

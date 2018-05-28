@@ -12,7 +12,7 @@ CREATE TABLE public.operations (
     "evenement" varchar(100) not null,
     "categorie_evenement" varchar(50) not null,
     "autorite" varchar(100) not null,
-    "sous_autorite" varchar(100) not null,
+    "seconde_autorite" varchar(100),
     "zone_responsabilite" varchar(50) not null,
     "latitude" numeric(7, 4),
     "longitude" numeric(7, 4),
