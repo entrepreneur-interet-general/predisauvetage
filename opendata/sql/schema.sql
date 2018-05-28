@@ -157,7 +157,7 @@ CREATE TABLE public.operations_stats (
     "nombre_flotteurs_planche_a_voile_impliques" smallint not null,
     "nombre_flotteurs_ski_nautique_impliques" smallint not null,
     "nombre_flotteurs_surf_impliques" smallint not null,
-    "sans_flotteur" boolean not null, 
+    "sans_flotteur_implique" boolean not null, 
 );
 
 CREATE INDEX ON operations_stats(operation_id);
