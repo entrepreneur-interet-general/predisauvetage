@@ -237,7 +237,7 @@ components:
           example: "Plaisance"
         numero_immatriculation:
           type: string
-          description: Numéro d'immatriculation du navire
+          description: Numéro d'immatriculation du navire. Cette donnée est chiffrée et ne correspond pas à l'immatriculation originale du navire.
           example: 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
           nullable: true
         marque:
@@ -661,5 +661,5 @@ components:
           minimum: 0
         sans_flotteur_implique:
           type: boolean
-          description: Indique une opération où la catégorie de flotteur n'est pas renseignée. 
+          description: Indique une opération où la catégorie de flotteur n'est pas renseignée.
           example: true
