@@ -10,7 +10,6 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
-  false sans_flotteur_implique,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
   coalesce(rh.nombre_personnes_decedees_accidentellement, 0) nombre_personnes_decedees_accidentellement,
@@ -58,7 +57,8 @@ select
   coalesce(f.nombre_flotteurs_plaisance_a_voile_impliques, 0) nombre_flotteurs_plaisance_a_voile_impliques,
   coalesce(f.nombre_flotteurs_planche_a_voile_impliques, 0) nombre_flotteurs_planche_a_voile_impliques,
   coalesce(f.nombre_flotteurs_ski_nautique_impliques, 0) nombre_flotteurs_ski_nautique_impliques,
-  coalesce(f.nombre_flotteurs_surf_impliques, 0) nombre_flotteurs_surf_impliques
+  coalesce(f.nombre_flotteurs_surf_impliques, 0) nombre_flotteurs_surf_impliques,
+  false sans_flotteur_implique
 from operations o
 left join (
   select
@@ -169,6 +169,11 @@ from (
 ) t
 where t.mois = operations_stats.mois;
 
-update operations_stats set sans_flotteur_implique = true 
-  where operation_id not in (select operation_id from flotteurs)
-;
+update operations_stats set sans_flotteur_implique = true
+where operation_id not in (
+  select
+    os.operation_id
+  from operations_stats os
+  left join flotteurs f on f.operation_id = os.operation_id
+  where f.operation_id is null
+);
