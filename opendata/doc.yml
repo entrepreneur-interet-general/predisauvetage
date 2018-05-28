@@ -659,3 +659,7 @@ components:
           description: Le nombre de surfs impliqués dans l'opération.
           example: 1
           minimum: 0
+        sans_flotteur_implique:
+          type: boolean
+          description: Indique une opération où la catégorie de flotteur n'est pas renseignée. 
+          example: true

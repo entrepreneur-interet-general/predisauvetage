@@ -10,6 +10,7 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
+  false sans_flotteur_implique,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
   coalesce(rh.nombre_personnes_decedees_accidentellement, 0) nombre_personnes_decedees_accidentellement,
@@ -167,3 +168,7 @@ from (
   select 12 mois, 'Décembre' mois_texte
 ) t
 where t.mois = operations_stats.mois;
+
+update operations_stats set sans_flotteur_implique = true 
+  where operation_id not in (select operation_id from flotteurs)
+;
