@@ -662,4 +662,3 @@ components:
           type: boolean
           description: Indique une opération où la catégorie de flotteur n'est pas renseignée. 
           example: true
-          nullable: false
