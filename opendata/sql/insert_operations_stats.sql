@@ -169,6 +169,6 @@ from (
 ) t
 where t.mois = operations_stats.mois;
 
-update sans_flotteur_implique set sans_flotteur_implique = true 
+update operations_stats set sans_flotteur_implique = true 
   where operation_id not in (select operation_id from flotteurs)
 ;
