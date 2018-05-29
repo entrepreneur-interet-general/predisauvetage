@@ -19,6 +19,13 @@ class OperationsTransformer(BaseTransformer):
         df.insert(1, 'type_operation', self.type_operation(df.pourquoi_alerte))
         df['pourquoi_alerte'] = self.pourquoi_alerte(df.pourquoi_alerte)
 
+        # Clean coordinates:
+        # - 0 to NULL
+        # - if at least a coordinate is null, both should be NULL
+        df.replace({'latitude': {0.0: np.nan}, 'longitude': {0.0: np.nan}}, inplace=True)
+        df.loc[df.longitude.isna(), 'latitude'] = np.nan
+        df.loc[df.latitude.isna(), 'longitude'] = np.nan
+
         self.to_csv(df, output)
 
     def cross_sitrep(self, row):
