@@ -170,7 +170,7 @@ from (
 where t.mois = operations_stats.mois;
 
 update operations_stats set sans_flotteur_implique = true
-where operation_id not in (
+where operation_id in (
   select
     os.operation_id
   from operations_stats os
