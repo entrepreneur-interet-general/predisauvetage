@@ -1,0 +1,34 @@
+{
+  "flotteurs":[
+    "numero_immatriculation",
+    "marque",
+    "nom_serie",
+    "assurance",
+    "longueur",
+    "largeur",
+    "jauge",
+    "nombre_personnes_recommande",
+    "puissance_maximum_autorisee",
+    "surface_voilure",
+    "puissance_moteurs",
+    "coque",
+    "materiau",
+    "propulsion",
+    "type_moteur",
+    "type_navire",
+    "utilisation"
+  ],
+  "moyens":[
+    "date_heure_debut",
+    "date_heure_fin"
+  ],
+  "operations":[
+
+  ],
+  "operations_stats":[
+    "concerne_snosan"
+  ],
+  "resultats_humain":[
+
+  ]
+}
