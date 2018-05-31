@@ -10,6 +10,9 @@ class BaseTest(unittest.TestCase):
     def filepath(self, f):
         return op.join(op.abspath(op.join(__file__, op.pardir, op.pardir, op.pardir)), f)
 
+    def model_is(self, value):
+        self.assertEquals(value, self.first_transformer().MODEL)
+
     def run_for_files(self, in_file):
         out_file = '/tmp/out.csv'
 
@@ -31,8 +34,11 @@ class BaseTest(unittest.TestCase):
 
         os.remove(out_file)
 
+    def first_transformer(self):
+        return (self.transformers()[1])('/tmp/fake')
+
     def cols_to_delete(self):
-        return (self.transformers()[1]).DROP_COLUMNS
+        return self.first_transformer().columns_to_drop()
 
     def transformers(self):
         raise NotImplementedError

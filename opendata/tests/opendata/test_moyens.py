@@ -14,3 +14,6 @@ class TestMoyensTransformer(BaseTest):
             MoyensTransformer,
             OpendataMoyensTransformer
         ]
+
+    def test_model(self):
+        self.model_is('Moyen')

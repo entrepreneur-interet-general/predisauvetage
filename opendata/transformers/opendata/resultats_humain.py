@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class ResultatsHumainTransformer(DefaultTransformer):
-    DROP_COLUMNS = []
+    MODEL = 'ResultatHumain'

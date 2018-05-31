@@ -14,3 +14,6 @@ class TestFlotteursTransformer(BaseTest):
             FlotteursTransformer,
             OpendataFlotteursTransformer
         ]
+
+    def test_model(self):
+        self.model_is('Flotteur')

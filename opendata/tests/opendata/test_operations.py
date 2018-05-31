@@ -14,3 +14,6 @@ class TestOperationsTransformer(BaseTest):
             OperationsTransformer,
             OpendataOperationsTransformer
         ]
+
+    def test_model(self):
+        self.model_is('Operation')

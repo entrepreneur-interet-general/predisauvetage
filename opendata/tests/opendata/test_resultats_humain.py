@@ -14,3 +14,6 @@ class TestResultatsHumainTransformer(BaseTest):
             ResultatsHumainTransformer,
             OpendataResultatsHumainTransformer
         ]
+
+    def test_model(self):
+        self.model_is('ResultatHumain')

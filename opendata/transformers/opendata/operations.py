@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class OperationsTransformer(DefaultTransformer):
-    DROP_COLUMNS = []
+    MODEL = 'Operation'
