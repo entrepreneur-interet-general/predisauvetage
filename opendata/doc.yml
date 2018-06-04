@@ -16,7 +16,7 @@ components:
         operation_id:
           type: integer
           format: int64
-          description: Le numéro unique de l'opération
+          description: Le numéro unique de l'opération.
           example: 1119920371
         type_operation:
           type: string
@@ -142,7 +142,7 @@ components:
         operation_id:
           type: integer
           format: int64
-          description: Le numéro unique de l'opération
+          description: Le numéro unique de l'opération.
           example: 1119920371
         categorie_personne:
           type: string
@@ -170,7 +170,7 @@ components:
         operation_id:
           type: integer
           format: int64
-          description: Le numéro unique de l'opération
+          description: Le numéro unique de l'opération.
           example: 1119920371
         numero_ordre:
           type: integer
@@ -215,7 +215,7 @@ components:
         operation_id:
           type: integer
           format: int64
-          description: Le numéro unique de l'opération
+          description: Le numéro unique de l'opération.
           example: 1119920371
         numero_ordre:
           type: integer
@@ -338,7 +338,7 @@ components:
         operation_id:
           type: integer
           format: int64
-          description: Le numéro unique de l'opération
+          description: Le numéro unique de l'opération.
           example: 1119920371
         annee:
           type: integer
@@ -667,5 +667,5 @@ components:
           minimum: 0
         sans_flotteur_implique:
           type: boolean
-          description: Indique une opération où la catégorie de flotteur n'est pas renseignée.
+          description: Indique si aucun flotteur n'est impliqué dans cette opération.
           example: true
