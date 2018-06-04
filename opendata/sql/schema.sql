@@ -76,7 +76,8 @@ CREATE TABLE public.moyens (
     "domaine_action" varchar(50) not null,
     "autorite_moyen" varchar(100) not null,
     "date_heure_debut" timestamp with time zone not null,
-    "date_heure_fin" timestamp with time zone not null
+    "date_heure_fin" timestamp with time zone not null,
+    "duree_engagement_minutes" int not null
 );
 
 CREATE INDEX ON moyens(operation_id);

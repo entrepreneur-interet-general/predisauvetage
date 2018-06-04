@@ -204,6 +204,12 @@ components:
           format: "date-time"
           description: Date et heure de fin de mise en oeuvre du moyen en UTC au format ISO8601
           example: "1992-12-06T15:07:00Z"
+        duree_engagement_minutes:
+          type: integer
+          format: int32
+          description: Durée d'engagement du moyen en minutes
+          example: 30
+          minimum: 0
     Flotteur:
      properties:
         operation_id:

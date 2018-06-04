@@ -1,10 +1,10 @@
-operation_id,numero_ordre,moyen,categorie_moyen,domaine_action,autorite_moyen,date_heure_debut,date_heure_fin
--43201,1,TMAS,Moyen terrestre,Terrestre,Centre de consultation médical,2013-11-26T09:53:00Z,2013-11-26T10:09:00Z
--27731,2,Plaisance,Navire,Nautique,Privé / Particulier,2012-08-02T16:14:00Z,2012-08-02T17:00:00Z
-1120000031,4,Hélicoptère moyen,Avion-Hélicoptère,Aérien,Marine nationale,2000-01-22T09:14:00Z,2000-01-22T18:02:00Z
--69233,3,Patrouille,Moyen terrestre,Terrestre,Mairie / Collectivité locale,2016-04-07T09:51:00Z,2016-04-07T10:37:00Z
-2220090968,4,Plongeur,Plongeur,Terrestre,Mairie / Collectivité locale,2009-07-20T15:43:00Z,2009-07-20T16:23:00Z
-3119971164,2,Hélicoptère léger,Avion-Hélicoptère,Aérien,Douane,1997-08-30T11:40:00Z,1997-08-30T12:30:00Z
--67585,3,Autre embarcation légère (pneumat...),Navire,Nautique,Police-CRS,2016-02-03T06:42:00Z,2016-02-03T07:26:00Z
-2120050667,2,Hélicoptère moyen,Avion-Hélicoptère,Aérien,Marine nationale,2005-10-29T18:20:00Z,2005-10-29T20:30:00Z
-3119950893,1,Commerce,Navire,Nautique,Navire sur zone,1995-07-21T21:25:00Z,1995-07-21T21:51:00Z
+operation_id,numero_ordre,moyen,categorie_moyen,domaine_action,autorite_moyen,date_heure_debut,date_heure_fin,duree_engagement_minutes
+-43201,1,TMAS,Moyen terrestre,Terrestre,Centre de consultation médical,2013-11-26T09:53:00Z,2013-11-26T10:09:00Z,16
+-27731,2,Plaisance,Navire,Nautique,Privé / Particulier,2012-08-02T16:14:00Z,2012-08-02T17:00:00Z,46
+1120000031,4,Hélicoptère moyen,Avion-Hélicoptère,Aérien,Marine nationale,2000-01-22T09:14:00Z,2000-01-22T18:02:00Z,528
+-69233,3,Patrouille,Moyen terrestre,Terrestre,Mairie / Collectivité locale,2016-04-07T09:51:00Z,2016-04-07T10:37:00Z,46
+2220090968,4,Plongeur,Plongeur,Terrestre,Mairie / Collectivité locale,2009-07-20T15:43:00Z,2009-07-20T16:23:00Z,40
+3119971164,2,Hélicoptère léger,Avion-Hélicoptère,Aérien,Douane,1997-08-30T11:40:00Z,1997-08-30T12:30:00Z,50
+-67585,3,Autre embarcation légère (pneumat...),Navire,Nautique,Police-CRS,2016-02-03T06:42:00Z,2016-02-03T07:26:00Z,44
+2120050667,2,Hélicoptère moyen,Avion-Hélicoptère,Aérien,Marine nationale,2005-10-29T18:20:00Z,2005-10-29T20:30:00Z,130
+3119950893,1,Commerce,Navire,Nautique,Navire sur zone,1995-07-21T21:25:00Z,1995-07-21T21:51:00Z,26

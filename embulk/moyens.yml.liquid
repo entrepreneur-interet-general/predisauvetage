@@ -22,6 +22,7 @@ in:
     - {name: autorite_moyen, type: string}
     - {name: date_heure_debut, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
     - {name: date_heure_fin, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: duree_engagement_moyens, type: long}
 {% include 'datasources/out_postgresql' %}
   table: moyens
   mode: truncate_insert
