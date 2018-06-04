@@ -6,7 +6,7 @@ from codecs import open
 from transformers.opendata.config import ColumnDropper
 
 
-class FilterYamlDocumentation:
+class FilterYamlDocumentation(object):
     def __init__(self, configuration_filepath):
         super(FilterYamlDocumentation, self)
         self.configuration_filepath = configuration_filepath

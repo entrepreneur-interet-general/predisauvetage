@@ -64,15 +64,33 @@ jobs:
       - checkout:
           path: ~/repo
       - run:
-          name: Check doc file against OpenAPI specification
+          name: Create documentation for open data
+          command: |
+            python -c "from transformers.opendata.filter_doc import FilterYamlDocumentation;FilterYamlDocumentation('config/drop_columns.json').filter_yaml('doc.yml', 'opendata_doc.yml')"
+      - run:
+          name: Check doc files against OpenAPI specification
           command: |
             speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
+            speccy lint opendata_doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
       - run:
-          name: Build Markdown documentation
+          name: Prepare Grip
           command: |
-            oa-to-md doc.yml schema.md
             mkdir ~/.grip
             mv grip/settings.py ~/.grip/settings.py
+      - run:
+          name: Build Markdown documentation for opendata
+          command: |
+            oa-to-md opendata_doc.yml opendata_schema.md
+            python -m SimpleHTTPServer 8000 &> /dev/null &
+            pid=$!
+            cat doc/preambule.md doc/cross.md doc/donnees.md opendata_schema.md > all.md
+            grip all.md --export opendata_schema.html
+            kill "${pid}"
+            xvfb-run wkhtmltopdf opendata_schema.html opendata_schema.pdf
+      - run:
+          name: Build Markdown documentation for SNOSAN
+          command: |
+            oa-to-md doc.yml schema.md
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
             cat doc/preambule.md doc/cross.md doc/donnees.md schema.md > all.md
@@ -88,6 +106,15 @@ jobs:
       - store_artifacts:
           path: schema.html
           destination: schema.html
+      - store_artifacts:
+          path: opendata_schema.md
+          destination: opendata_schema.md
+      - store_artifacts:
+          path: opendata_schema.pdf
+          destination: opendata_schema.pdf
+      - store_artifacts:
+          path: opendata_schema.html
+          destination: opendata_schema.html
 
   opendata_test:
     docker:
