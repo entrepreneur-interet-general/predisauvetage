@@ -85,6 +85,12 @@ jobs:
             pid=$!
             cat doc/preambule.md doc/cross.md doc/donnees.md opendata_schema.md > all.md
             grip all.md --export opendata_schema.html
+            sed -i 's/.*html lang.*/<html lang="fr">/' opendata_schema.html
+            sed -i 's~.*<title>.*~<title>Documentation du jeu de données SECMAR</title>~' opendata_schema.html
+            sed -i 's~.*grip/static/octicons/octicons.css.*~~' opendata_schema.html
+            sed -i 's~.*<th>Field</th>~<th>Colonne</th>~' opendata_schema.html
+            sed -i 's~.*<th>Example</th>~<th>Exemple</th>~' opendata_schema.html
+            sed -i 's~.*<th>Properties</th>~<th>Propriétés</th>~' opendata_schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf opendata_schema.html opendata_schema.pdf
       - run:
