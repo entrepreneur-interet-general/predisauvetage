@@ -1,4 +1,5 @@
 venv
 data/*.csv
 dags/transformers
+dags/config
 opendata_sql
