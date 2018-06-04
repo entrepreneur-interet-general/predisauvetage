@@ -1,0 +1,43 @@
+openapi: "3.0.0"
+info:
+  version: "0"
+  title: SECMAR
+paths:
+  /demo:
+    get:
+      summary: Demo
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Operation:
+      properties:
+        default:
+          type: string
+          description: Description.
+          nullable: true
+        lorem:
+          type: integer
+          format: int64
+          description: Description.
+          example: 1119920371
+        ipsum:
+          type: string
+          description: Description.
+          nullable: true
+    Moyen:
+      properties:
+        lorem:
+          type: integer
+          format: int64
+          description: Description.
+          example: 1119920371
+        ipsum:
+          type: string
+          description: Description.
+          nullable: true
+        default:
+          type: string
+          description: Description.
+          nullable: true
