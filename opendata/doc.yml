@@ -125,6 +125,7 @@ components:
         numero_sitrep:
           type: integer
           format: int32
+          example: 17
           minimum: 1
           nullable: true
           description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h UTC et la numérotation est incrémentale par la suite. La numérotation des SITREP est indépendante pour chaque CROSS.
