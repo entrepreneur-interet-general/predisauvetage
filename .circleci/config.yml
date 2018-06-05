@@ -58,7 +58,7 @@ jobs:
       - run: ./vendor/bin/phpunit
   opendata_build:
     docker:
-      - image: antoineaugusti/secmar-opendata-build:0.0.2
+      - image: antoineaugusti/secmar-opendata-build:0.0.3
     working_directory: ~/repo/opendata
     steps:
       - checkout:
