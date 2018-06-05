@@ -58,7 +58,7 @@ jobs:
       - run: ./vendor/bin/phpunit
   opendata_build:
     docker:
-      - image: antoineaugusti/secmar-opendata-build:0.0.1
+      - image: antoineaugusti/secmar-opendata-build:0.0.2
     working_directory: ~/repo/opendata
     steps:
       - checkout:
@@ -80,7 +80,7 @@ jobs:
       - run:
           name: Build Markdown documentation for opendata
           command: |
-            oa-to-md opendata_doc.yml opendata_schema.md
+            oa-to-md opendata_doc.yml opendata_schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
             cat doc/preambule.md doc/cross.md doc/donnees.md opendata_schema.md > all.md
@@ -88,15 +88,12 @@ jobs:
             sed -i 's/.*html lang.*/<html lang="fr">/' opendata_schema.html
             sed -i 's~.*<title>.*~<title>Documentation du jeu de données SECMAR</title>~' opendata_schema.html
             sed -i 's~.*grip/static/octicons/octicons.css.*~~' opendata_schema.html
-            sed -i 's~.*<th>Field</th>~<th>Colonne</th>~' opendata_schema.html
-            sed -i 's~.*<th>Example</th>~<th>Exemple</th>~' opendata_schema.html
-            sed -i 's~.*<th>Properties</th>~<th>Propriétés</th>~' opendata_schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf opendata_schema.html opendata_schema.pdf
       - run:
           name: Build Markdown documentation for SNOSAN
           command: |
-            oa-to-md doc.yml schema.md
+            oa-to-md doc.yml schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
             cat doc/preambule.md doc/cross.md doc/donnees.md schema.md > all.md
