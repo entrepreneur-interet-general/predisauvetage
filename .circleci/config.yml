@@ -165,7 +165,13 @@ jobs:
             git config --global user.name "Circle CI"
             git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
             cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
-            cd /tmp/secmar-documentation && git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1" && git push -q origin master
+            cd /tmp/secmar-documentation
+            git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
+            if [ -n "$(git status --porcelain)" ]; then
+              git push -q origin master
+            else
+              echo "No changes to documentation";
+            fi
 workflows:
   version: 2
   all_jobs:
@@ -179,3 +185,6 @@ workflows:
       - opendata_push_documentation:
           requires:
             - opendata_build
+          filters:
+            branches:
+              only: master
