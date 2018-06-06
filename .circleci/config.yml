@@ -166,8 +166,8 @@ jobs:
             git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
             cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
             cd /tmp/secmar-documentation
-            git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
             if [ -n "$(git status --porcelain)" ]; then
+              git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
               git push -q origin master
             else
               echo "No changes to documentation";
