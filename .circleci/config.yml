@@ -153,6 +153,8 @@ jobs:
             nosetests .
 
   opendata_push_documentation:
+    docker:
+      - image: circleci/python:3.6
     steps:
       - attach_workspace:
           at: /tmp/opendata_build
