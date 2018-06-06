@@ -2,15 +2,32 @@
 ' Ceci est un fichier PlantUML http://plantuml.com
 ' Il est possible de générer le graphique en ligne https://www.planttext.com
 !define Table(name,desc) class name as "desc" << (T, #FFAAAA) >>
+!define primary_key(x) <color:red>x</color>
+!define foreign_key(x) <color:green>x</color>
 hide methods
 hide stereotypes
 
 
-Table(operations, "operations\n(Opérations des CROSS)")
-Table(flotteurs, "flotteurs\n(Flotteurs impliqués dans une opération)")
-Table(operations_stats, "operations_stats\n(Les statistiques aggrégées d'une opération)")
-Table(resultats_humain, "resultats_humain\n(Bilan humain d'une opération)")
-Table(moyens, "moyens\n(Moyens engagés dans une opération)")
+Table(operations, "operations\n(Opérations des CROSS)") {
+    primary_key(operation_id) bigint
+    ...
+}
+Table(flotteurs, "flotteurs\n(Flotteurs impliqués dans une opération)") {
+    foreign_key(operation_id) bigint
+    ...
+}
+Table(operations_stats, "operations_stats\n(Les statistiques aggrégées d'une opération)") {
+    foreign_key(operation_id) bigint
+    ...
+}
+Table(resultats_humain, "resultats_humain\n(Bilan humain d'une opération)") {
+    foreign_key(operation_id) bigint
+    ...
+}
+Table(moyens, "moyens\n(Moyens engagés dans une opération)") {
+    foreign_key(operation_id) bigint
+    ...
+}
 
 
 operations "1" -- "1" operations_stats : "Chaque opération comporte\nune ligne de statistiques"
