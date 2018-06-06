@@ -107,7 +107,7 @@ jobs:
             git config --global user.name "Circle CI"
             git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
             cp opendata_schema.html /tmp/secmar-documentation/index.html
-            cd /tmp/secmar-documentation && git commit -am "Update after $CIRCLE_SHA1" && git push -q origin master
+            cd /tmp/secmar-documentation && git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1" && git push -q origin master
       - store_artifacts:
           path: schema.md
           destination: schema.md
