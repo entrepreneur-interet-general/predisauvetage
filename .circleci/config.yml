@@ -100,6 +100,12 @@ jobs:
             grip all.md --export schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
+      - run:
+          name: Push opendata documentation to GitHub
+          command: |
+            git clone git@github.com:MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
+            cp opendata_schema.html /tmp/secmar-documentation/index.html
+            cd /tmp/secmar-documentation && git commit -am "Update after $CIRCLE_SHA1" && git push origin master
       - store_artifacts:
           path: schema.md
           destination: schema.md
