@@ -4,7 +4,6 @@ jobs:
     docker:
       - image: circleci/python:2.7.13
     working_directory: ~/repo
-
     steps:
       - checkout
 
@@ -25,6 +24,7 @@ jobs:
           key: requirements-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
+
   laravel:
     docker:
       - image: circleci/php:7.1-node-browsers
@@ -56,6 +56,7 @@ jobs:
       - run: touch storage/testing.sqlite
       - run: php artisan migrate --env=testing
       - run: ./vendor/bin/phpunit
+
   opendata_build:
     docker:
       - image: antoineaugusti/secmar-opendata-build:0.0.3
@@ -100,6 +101,10 @@ jobs:
             grip all.md --export schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
+      - persist_to_workspace:
+          root: .
+          paths:
+            - opendata_schema.html
       - store_artifacts:
           path: schema.md
           destination: schema.md
@@ -146,6 +151,27 @@ jobs:
           command: |
             . venv/bin/activate
             nosetests .
+
+  opendata_push_documentation:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - attach_workspace:
+          at: /tmp/opendata_build
+      - run:
+          name: Push opendata documentation to GitHub
+          command: |
+            git config --global user.email "robot@circleci.com"
+            git config --global user.name "Circle CI"
+            git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
+            cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
+            cd /tmp/secmar-documentation
+            git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
+            if [ -n "$(git status --porcelain)" ]; then
+              git push -q origin master
+            else
+              echo "No changes to documentation";
+            fi
 workflows:
   version: 2
   all_jobs:
@@ -156,3 +182,9 @@ workflows:
       - opendata_build:
           requires:
             - opendata_test
+      - opendata_push_documentation:
+          requires:
+            - opendata_build
+          filters:
+            branches:
+              only: master
