@@ -17,29 +17,29 @@ library(plotly)
 library(RPostgreSQL)
 library(shinyWidgets)
 
-pg = dbDriver("PostgreSQL")
-
-
-#con = dbConnect(pg, user = 'snosan', password = 'snosan',
-               # host='localhost', port=5433, dbname='snosan')
-
-#query <- dbSendQuery(con, 'select * from operations;')
-#operations <- fetch(query, n=-1)
-#dbClearResult(query) 
-
-#query <- dbSendQuery(con, 'select * from operations_stats;')
-#operations_stat <- fetch(query, n=-1)
-#dbClearResult(query)
-
-#dbDisconnect (con)
+# pg = dbDriver("PostgreSQL")
+# 
+# 
+# con = dbConnect(pg, user = 'snosan', password = 'snosan',
+#                 host='localhost', port=5433, dbname='snosan')
+# 
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query) 
+# 
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect (con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
-secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<9, 'Haute saison', 'Basse saison')) %>% 
-                     mutate(sans_flotteur = ifelse(nombre_flotteurs_commerce_impliques > 0 |  
-                                                          nombre_flotteurs_plaisance_impliques > 0 |  
-                                                          nombre_flotteurs_loisirs_nautiques_impliques > 0 |  
-                                                          nombre_flotteurs_peche_impliques > 0 |  
-                                                          nombre_flotteurs_autre_impliques > 0 |  
+secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<9, 'Haute saison', 'Basse saison')) %>%
+                     mutate(sans_flotteur = ifelse(nombre_flotteurs_commerce_impliques > 0 |
+                                                          nombre_flotteurs_plaisance_impliques > 0 |
+                                                          nombre_flotteurs_loisirs_nautiques_impliques > 0 |
+                                                          nombre_flotteurs_peche_impliques > 0 |
+                                                          nombre_flotteurs_autre_impliques > 0 |
                                                           nombre_aeronefs_impliques, 0, 1 ))
 
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
@@ -143,36 +143,37 @@ ui <- dashboardPage(
   ## Body content
   dashboardBody(
     tabItems(
-      # First tab content
       tabItem(tabName = "dashboard",
               fluidPage(
-              mainPanel(
-                column(6, leafletOutput("mymap", height = "900px", width = "2000px")),
-                br(), 
-                DT::dataTableOutput("text"),
+                div(class="outer",
+                tags$style(type = "text/css", ".outer {position: fixed; top: 41px; left: 0; right: 0; bottom: 0; overflow: hidden; padding: 0}"),
+                leafletOutput("mymap", height = "100%", width = "100%"),
                 column(5, verbatimTextOutput("textbounds")),
                 absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                               draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                               width = 330, height = "auto",
-                  
-                     textOutput("operation"),
                      br(),
-                     h4("Bilan humain"),
-                     plotlyOutput(outputId= "bilan", height = "250px"),
+                     h4(textOutput("operation")),
+                     br(),   
+                     selectizeInput(inputId = "pie", label = "Choisissez votre visualisation",
+                                    multiple = FALSE, 
+                                    choices = c('Répartition du top 5 événements',
+                                                'Répartition du bilan humain', 
+                                                'Répartition phase de la journée',
+                                                'Répartition des flotteurs',
+                                                'Répartition des moyens engagés'),
+                                    selected = 'Répartition du bilan humain'),
+                     plotlyOutput(outputId= "camembert", height = "250px"),
                      br(),
-                     plotlyOutput(outputId= "vent", height = "250px"),
+                     selectizeInput(inputId = "histo", multiple = FALSE, 
+                                    label = "Choisissez votre visualisation",
+                                    choices = c('Force du vent', 'Force de la mer', 'Direction du vent'),
+                                    selected = 'Force du vent'),
                      br(),
-                     plotlyOutput(outputId= "mer", height = "250px"),
-                     plotlyOutput("plot", height = "250px", width = "500px")
-                     
-              )
+                     plotOutput(outputId = "hist", height = "200px")
+                )     
             )
          )
-      ),
-      
-      # Second tab content
-      tabItem(tabName = "data",
-              h2("Data")
       )
     )
   )
@@ -237,7 +238,7 @@ server <- function(input, output, session) {
   
   aerienInput <- reactive({
     if (input$aerien == FALSE) {
-      decesInput()
+     decesInput()
     } else {
       decesInput() %>% filter(nombre_moyens_aeriens_engages > 0)
     }
@@ -245,21 +246,15 @@ server <- function(input, output, session) {
   })
   
   
-   flotteurInput <- reactive({
-     # if (input$cross == 'Commerce') {
-     #   aerienInput()
-     # } else {
-     #   aerienInput() %>% filter(nombre_moyens_aeriens_engages > 0)
-     # }
-    
-  if (length(input$flotteur) == length(flotteur_choices_value)){
-   aerienInput() 
+  flotteurInput <- reactive({
+   if (length(input$flotteur) == length(flotteur_choices)){
+    aerienInput() 
    } else if (is.null(input$flotteur)) {
-     aerienInput() %>% filter(evenement %in% (""))
+      aerienInput() %>% filter(evenement %in% (""))
   } else {
 #Mapper la liste des noms et il faut ajouter une colonne sans navire aussi
-    list <- plyr::revalue(input$flotteur, flotteur_choices_dico)
-    filter_at(aerienInput(), vars(list), any_vars(. > 0))
+     list <- plyr::revalue(input$flotteur, flotteur_choices_dico)
+     filter_at(aerienInput(), vars(list), any_vars(. > 0))
   }
   
   })
@@ -283,18 +278,18 @@ server <- function(input, output, session) {
   #  latRng <- range(bounds$north, bounds$south)
    # lngRng <- range(bounds$east, bounds$west)
     leaflet(secmar_2017) %>% 
-      addTiles() %>%  setView(lng =  7.7455300, lat = 48.5839200, zoom = 6) %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
+      addTiles() %>%  setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
   })
   
   #  %>% fitBounds(bounds$east, bounds$north, bounds$west,  bounds$south ) 
 
  # observe({
-  #  m <- leafletProxy("mymap", data = snosanInput()) %>% clearMarkerClusters() 
-  #  m %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
+ #  m <- leafletProxy("mymap", data = snosanInput()) %>% clearMarkerClusters()
+ #  m %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
  # })
-  
+
   observe({
-    m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters() 
+    m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
     m %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
   })
   
@@ -311,6 +306,7 @@ server <- function(input, output, session) {
    zipsInBounds()
  })
  
+
 # output$plot <- renderPlotly({
  #  gg <- zipsInBounds() %>% ggplot(aes(x=moyen_alerte)) + geom_bar() + labs(x="Moyen d'alerte", y="Fréquence") + theme_minimal() 
    #ggplotly(gg)
@@ -320,44 +316,79 @@ server <- function(input, output, session) {
  output$operation <- renderText({
      paste(nrow(zipsInBounds()), " interventions aux CROSS sur la période selectionnée et sur la zone affichée") 
  })
-  
- output$vent <- renderPlotly({
-    #If no zipcodes are in view, don't plot
-    if (nrow(zipsInBounds()) == 0)
+ 
+ 
+ histogram <- reactive({
+   if (input$histo == 'Force du vent'){
+     ggplot(zipsInBounds(), aes(x=as.factor(vent_force)))+
+       geom_bar(fill="lightgrey") +
+       labs(x= "Force du vent", y="Fréquence")+
+       theme_minimal()
+   } else if (input$histo == 'Force de la mer'){
+     ggplot(zipsInBounds(), aes(x=as.factor(mer_force)))+ 
+        geom_bar(fill="#56B4E9") +
+        labs(x= "Force de la mer", y="Fréquence")+
+        theme_minimal()
+   } else if (input$histo == 'Direction du vent') {
+     ggplot(zipsInBounds(), aes(x=vent_direction))+ 
+       geom_histogram(fill="#FF0000") +
+       labs(x= "Direction du vent", y="Fréquence")+
+       theme_minimal()
+   }
+ })
+
+ output$hist <- renderPlot({
+   if (nrow(zipsInBounds()) == 0)
      return("a")
-    vent <- ggplot(zipsInBounds(), aes(x=as.factor(vent_force)))+
-      geom_bar(fill="lightgrey") +
-      labs(x= "Force du vent", y="Fréquence")+
-      theme_minimal()
-    ggplotly(vent)
-   # hist(zipsInBounds()$vent_force)
+   histogram()
   })
-  
-  #output$mer <- renderPlotly({
-    #If no zipcodes are in view, don't plot
-   # if (nrow(zipsInBounds()) == 0)
-   #   return("a")
-   # mer <- ggplot(zipsInBounds(), aes(x=as.factor(mer_force)))+ 
-   #   geom_bar(fill="#56B4E9") +
-   #   labs(x= "Force de la mer", y="Fréquence")+
-   #   theme_minimal()
-   # ggplotly(mer)
-  #})
-  
-  output$bilan <- renderPlotly({
-    secmar_bilan <- zipsInBounds() %>% filter(!is.na(date_heure_reception_alerte)) %>% select(nombre_personnes_disparues, nombre_personnes_assistees, nombre_personnes_impliquees_dans_fausse_alerte, nombre_personnes_tirees_daffaire_seule, nombre_personnes_retrouvees, nombre_personnes_secourues, nombre_personnes_tous_deces)  %>% replace(is.na(.), 0)
-    names(secmar_bilan) <- c("personnes diparues", "personnes assistées", "personnes impliquées dans fausses alertes", "personnes tirées d'affaires elles mêmes", "personnes retrouvées", "personnes secourues", "personnes décédées")
-    sumdata <- data.frame(value=apply(secmar_bilan,2,sum))
-    sumdata$key=rownames(sumdata)
-    #bilan <- ggplot(data=sumdata, aes(x="", y=value, fill=key)) +
+ 
+ 
+ cam <- reactive({
+   if (input$pie == 'Répartition du bilan humain'){
+     secmar_bilan <- zipsInBounds()  %>% select(nombre_personnes_disparues, nombre_personnes_assistees, nombre_personnes_impliquees_dans_fausse_alerte, nombre_personnes_tirees_daffaire_seule, nombre_personnes_retrouvees, nombre_personnes_secourues, nombre_personnes_tous_deces)  %>% replace(is.na(.), 0)
+     names(secmar_bilan) <- c("Diparues", "Assistées", "Impliquées dans fausses alertes", "Tirées d'affaires elles mêmes", "Retrouvées", "Secourues", "Décédées")
+     sumdata <- data.frame(value=apply(secmar_bilan,2,sum))
+     sumdata$key=rownames(sumdata)
+     #bilan <- ggplot(data=sumdata, aes(x="", y=value, fill=key)) +
      # geom_bar(position_fill="stack", stat = "identity") + coord_polar("y", start=0) + theme(legend.position = "none")
-    #ggplotly(bilan)
-    plot_ly(sumdata, labels=~key, values=~value)%>% add_pie(hole = 0.4) 
+     #ggplotly(bilan)
+     plot_ly(sumdata, labels=~key, values=~value)%>% add_pie(hole = 0.4) %>% layout(showlegend = TRUE, legend = list(font = list(size=5),
+                                                                                                                     orientation = 'v'),
+                                                                                    margin = list(b = 0))
+   } else if (input$pie == 'Répartition des flotteurs'){
+     secmar_flotteur <- zipsInBounds() %>% select(nombre_flotteurs_commerce_impliques, nombre_flotteurs_peche_impliques, nombre_flotteurs_plaisance_impliques, nombre_flotteurs_loisirs_nautiques_impliques, nombre_flotteurs_autre_impliques)  %>% replace(is.na(.), 0)
+     names(secmar_flotteur) <- c("Commerce", "Pêche", "Plaisance", "Loisirs nautiques", "Autre")
+     sumdata_flotteur <- data.frame(value=apply(secmar_flotteur,2,sum))
+     sumdata_flotteur$key=rownames(sumdata_flotteur)
+     plot_ly(sumdata_flotteur, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+   } else if (input$pie == "Répartition des moyens engagés") {
+     secmar_moyens <- zipsInBounds() %>% select(nombre_moyens_nautiques_engages, nombre_moyens_terrestres_engages, nombre_moyens_aeriens_engages)  %>% replace(is.na(.), 0)
+     names(secmar_moyens) <- c('Moyens nautiques', "Moyens terrestres", 'Moyens aériens')
+     sumdata_moyens <- data.frame(value=apply(secmar_moyens,2,sum))
+     sumdata_moyens$key=rownames(sumdata_moyens)
+     plot_ly(sumdata_moyens, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+   } else if (input$pie == 'Répartition du top 5 événements'){
+     grouped_event <- zipsInBounds() %>% dplyr::group_by(evenement) %>% summarize(count = n()) %>% top_n(5) %>% arrange(desc(count))
+     grouped_event$evenement <- factor(grouped_event$evenement, levels = unique(grouped_event$evenement)[order(grouped_event$count, decreasing = TRUE)])
+     plot_ly(grouped_event, x= ~evenement, y = ~count, type = 'bar') %>%
+       layout(xaxis = list(title = "", tickangle = -25),
+              yaxis = list(title = ""),
+              font = list(size = 9),
+              margin = list(b = 60))
+   } else if (input$pie == "Répartition phase de la journée"){
+     grouped_phase <- zipsInBounds() %>% dplyr::group_by(phase_journee) %>% summarize(count = n())
+     plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>% add_pie(hole = 0.4)
+   } 
+ }) 
+  
+  output$camembert <- renderPlotly({
+    if (nrow(zipsInBounds()) == 0)
+      return("a")
+    cam()
 
   })
-  
 
-  
 }
 
 shinyApp(ui, server)
