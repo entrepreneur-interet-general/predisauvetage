@@ -16,6 +16,7 @@ library(DT)
 library(plotly)
 library(RPostgreSQL)
 library(shinyWidgets)
+library(leaflet.extras)
 
 # pg = dbDriver("PostgreSQL")
 # 
@@ -208,9 +209,6 @@ server <- function(input, output, session) {
   })
   
   evenementInput <- reactive({
-   # if (input$evenement == "all") {
-   #   crossInput()
-   # } else {
       crossInput() %>% filter(evenement %in% input$evenement)
   #  }
   
@@ -259,12 +257,6 @@ server <- function(input, output, session) {
   
   })
   
-   #  observe({
-   #  updateCheckboxGroupInput(
-   #   session, 'flotteur', choices = flotteur_choices,
-   #   selected = if (input$bar) flotteur_choices
-   # )
-   #  })
   
   icons <- awesomeIcons(
     icon = 'ios-close',
@@ -274,23 +266,31 @@ server <- function(input, output, session) {
   )
   
   output$mymap <- renderLeaflet({
-   # bounds <- input$mymap_bounds
-  #  latRng <- range(bounds$north, bounds$south)
-   # lngRng <- range(bounds$east, bounds$west)
-    leaflet(secmar_2017) %>% 
-      addTiles() %>%  setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
-  })
-  
-  #  %>% fitBounds(bounds$east, bounds$north, bounds$west,  bounds$south ) 
 
- # observe({
- #  m <- leafletProxy("mymap", data = snosanInput()) %>% clearMarkerClusters()
- #  m %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
- # })
+    leaflet(secmar_2017) %>% 
+      addTiles(group = "Open street map") %>% 
+      addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>% 
+      addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>% 
+      setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
+      addMarkers(~longitude, ~latitude,
+                 popup=~paste("CROSS : ", cross,
+                              "</br> Evénement : " , evenement,
+                              "</br> Sitrep : ", numero_sitrep,
+                              "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
+                              "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
+                 icon=icons, clusterOptions = markerClusterOptions(disableClusteringAtZoom = 14, spiderfyOnMaxZoom = F)) %>% 
+      addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN"))
+  })
 
   observe({
     m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
-    m %>% addMarkers(~longitude, ~latitude, popup=~paste("CROSS : ", cross_sitrep, "</br> Evénement :" , evenement), icon=icons, clusterOptions = markerClusterOptions())
+    m %>% addMarkers(~longitude, ~latitude, 
+                     popup=~paste("CROSS : ", cross,
+                                  "</br> Evénement : " , evenement,
+                                  "</br> Sitrep : ", numero_sitrep,
+                                  "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
+                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues), 
+                     icon=icons, clusterOptions = markerClusterOptions()) %>% addSearchGoogle()
   })
   
   zipsInBounds <- reactive({
