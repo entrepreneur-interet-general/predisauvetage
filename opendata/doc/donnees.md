@@ -51,7 +51,7 @@ L'autorité est le responsable juridique de la conduite des opérations. Ce n'
 
 Le centre qui coordonne une opération dans une zone étrangère parce qu'il n'a pas pu entrer en contact avec l'autorité dont la zone relève, coordonne sous couvert de l'autorité responsable de sa propre zone de compétence.
 
-Le centre qui reçoit une demande d'aide de la part d'une autorité étrangère pour agir dans une zone étrangère, agît sous la responsabilité de l'autorité étrangère.
+Le centre qui reçoit une demande d'aide de la part d'une autorité étrangère pour agir dans une zone étrangère, agit sous la responsabilité de l'autorité étrangère.
 
 ## Zone de responsabilité
 Cette section explicite la colonne `operations.zone_responsabilite`.
@@ -70,9 +70,9 @@ Cette catégorie représente les personnes, navires, centres ou organismes qui
 ## Moyens de sauvetage
 Cette section explicite la table des `moyens`.
 
-Les moyens de sauvetage sont les unités privées, public ou d'organisme agréés de toute nature, qui interviennent dans l'opération. Leur participation peut être spontanée ou ordonnée par le centre coordonnateur. Ils agissent sous son autorité pour toutes opérations de recherche et de sauvetage.
+Les moyens de sauvetage sont les unités privées, publics ou d'organisme agréés de toute nature, qui interviennent dans l'opération. Leur participation peut être spontanée ou ordonnée par le centre coordonnateur. Ils agissent sous son autorité pour toutes opérations de recherche et de sauvetage.
 
-Le cas particulier du plongeur n'est utilisé que pour les demandes d'intervention dans le cadre d'un travail subaquatique. Il ne s'agît pas du plongeur embarqué dans un aéronef au titre de l'équipage d'intervention.
+Le cas particulier du plongeur n'est utilisé que pour les demandes d'intervention dans le cadre d'un travail subaquatique. Il ne s'agit pas du plongeur embarqué dans un aéronef au titre de l'équipage d'intervention.
 
 ## Catégories et types de flotteur impliqués
 Cette section explicite la table des `flotteurs`.
@@ -121,7 +121,7 @@ Le résultat sur les personnes est précisé à la clôture de l'opératio
 
 Le résultat **Personne blessée** n'est utilisé que pour les personnes qui ont été accidentellement blessées qu'elles soient vivantes, décédées ou disparues. Une personne malade n'entre pas dans cette catégorie. La prise en charge médicale d'une personne malade donne un bilan de : 1 secouru / 0 blessé.
 
-En cas de découverte d'un corps, le CROSS met tout en œuvre pour obtenir l'identification de la personne. Si un lien est établi avec une disparition antérieure, le résultat dans l'opération concernée est mise à jour afin de ne pas additionner aux disparus les personnes découvertes décédées. Ainsi, la découverte d'un corps peut, soit faire l'objet d'une opération spécifique DIV si la personne n'a pas fait l'objet d'une opération de recherche antérieure, soit d'une modification dans l'opération relative à la disparition.
+En cas de découverte d'un corps, le CROSS met tout en œuvre pour obtenir l'identification de la personne. Si un lien est établi avec une disparition antérieure, le résultat dans l'opération concernée est mis à jour afin de ne pas additionner aux disparus les personnes découvertes décédées. Ainsi, la découverte d'un corps peut, soit faire l'objet d'une opération spécifique DIV si la personne n'a pas fait l'objet d'une opération de recherche antérieure, soit d'une modification dans l'opération relative à la disparition.
 
 La découverte d'un corps fait l'objet d'un enregistrement, soit initial avec un numéro d'opération et une classification en DIV si le corps découvert ne peut être lié à une opération, soit d'une modification à l'opération relative à la disparition.
 

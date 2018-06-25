@@ -1,5 +1,6 @@
 # Préambule et avertissement
-Ce jeu de données contient toutes les données statistiques disponibles informatiquement sur les interventions d'assistance et de sauvetage coordonnées par les CROSS.
+Ce jeu de données contient toutes les données statistiques centralisées au 
+niveau national et disponibles informatiquement sur les interventionss d'assistance et de sauvetage coordonnées par les CROSS.
 
 Ce jeu de données ne reflète ni l'accidentologie totale survenue au-delà de la bande des 300 mètres ni même l'activité globale des CROSS pour la mission de sauvetage.
  
