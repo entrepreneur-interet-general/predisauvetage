@@ -25,7 +25,13 @@
 
   ],
   "operations_stats":[
-    "concerne_snosan"
+    "concerne_snosan",
+    "nombre_moyens_nautiques_engages",
+    "nombre_moyens_terrestres_engages",
+    "nombre_moyens_aeriens_engages",
+    "duree_engagement_moyens_nautiques_minutes",
+    "duree_engagement_moyens_terrestres_minutes",
+    "duree_engagement_moyens_aeriens_minutes"
   ],
   "resultats_humain":[
 
