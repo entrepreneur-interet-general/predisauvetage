@@ -29,7 +29,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Adresse e-mail') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required placeholder="prenom.nom@exemple.fr">
+                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') ?? $email }}" required placeholder="prenom.nom@exemple.fr">
 
                                 @if ($errors->has('email'))
                                     <span class="invalid-feedback">
