@@ -513,7 +513,7 @@ components:
         nombre_personnes_tous_deces_ou_disparues_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de, sans prendre en compte les clandestins l'opération.
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération, sans prendre en compte les clandestins.
           example: 42
           minimum: 0
         nombre_personnes_impliquees_sans_clandestins:
