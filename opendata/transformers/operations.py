@@ -18,6 +18,11 @@ class OperationsTransformer(BaseTransformer):
         df['fuseau_horaire'] = self.fuseau_horaire(df.cross)
         df.insert(1, 'type_operation', self.type_operation(df.pourquoi_alerte))
         df['pourquoi_alerte'] = self.pourquoi_alerte(df.pourquoi_alerte)
+        df['evenement'].replace(
+            to_replace='Plongée en bouteille',
+            value='Plongée avec bouteille',
+            inplace=True
+        )
 
         # Clean coordinates:
         # - 0 to NULL

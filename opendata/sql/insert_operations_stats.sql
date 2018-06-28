@@ -149,7 +149,7 @@ update operations_stats set concerne_plongee = true
 where operation_id in (
   select operation_id
   from operations
-  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée en bouteille')
+  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine')
 );
 
 update operations_stats set mois_texte = t.mois_texte
