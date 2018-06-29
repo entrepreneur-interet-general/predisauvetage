@@ -32,9 +32,7 @@ def out_path(table):
 
 
 def opendata_path(table):
-    the_date = datetime.datetime.utcnow().strftime('%Y%m%d')
-
-    return helpers.data_path(the_date + '_' + table + '.csv')
+    return helpers.opendata_git_path() + '/' + table + '.csv'
 
 
 def secmar_transform(in_path, out_path, transformer, **kwargs):

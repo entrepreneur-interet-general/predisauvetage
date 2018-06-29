@@ -9,11 +9,14 @@ It prepares files for open data after they've been transformed.
 
 Some `operations` are duplicated and are cleaned directly in SQL. We therefore need to
 filter out these operations first before creating final CSV files.
+
+When datasets are available, we push them to the dedicated GitHub repository.
 """
 from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
 from operators.pg_download_operator import PgDownloadOperator
 import pandas as pd
@@ -46,6 +49,7 @@ def filter_operations_fn(**kwargs):
     df.to_csv(out_path('operations'), index=False)
 
 start = DummyOperator(task_id='start', dag=dag)
+end_transform = DummyOperator(task_id='end_transform', dag=dag)
 
 download_operations_stats = PgDownloadOperator(
     task_id='download_operations_stats',
@@ -86,3 +90,21 @@ for table in SECMAR_TABLES + ['operations_stats']:
         }
     )
     t.set_upstream(start)
+    t.set_downstream(end_transform)
+
+
+push_datasets_github = BashOperator(
+    task_id='push_datasets_github',
+    bash_command=' && '.join([
+        'cd ' + helpers.opendata_git_path(),
+        'git reset --hard master',
+        'git pull',
+        'rm -f moyens.csv',
+        'git commit -am "Jeux de données au {today}"'.format(
+            today=datetime.utcnow().strftime('%Y-%m-%d')
+        ),
+        'git push'
+    ]),
+    dag=dag,
+)
+push_datasets_github.set_upstream(end_transform)

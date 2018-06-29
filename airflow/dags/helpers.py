@@ -31,6 +31,10 @@ def embulk_filepath(filename):
     )
 
 
+def opendata_git_path():
+    return Variable.get('OPENDATA_GIT_PATH')
+
+
 def default_env():
     return {
         # PostgreSQL
