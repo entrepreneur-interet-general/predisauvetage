@@ -97,8 +97,9 @@ push_datasets_github = BashOperator(
     task_id='push_datasets_github',
     bash_command=' && '.join([
         'cd ' + helpers.opendata_git_path(),
-        'git reset --hard master',
-        'git pull',
+        'git stash',
+        'git pull --rebase',
+        'git stash pop',
         'rm -f moyens.csv',
         'git commit -am "Jeux de données au {today}"'.format(
             today=datetime.utcnow().strftime('%Y-%m-%d')
