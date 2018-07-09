@@ -59,7 +59,9 @@ def delete_invalid_operations_fn(**kwargs):
 def set_operations_stats_extra_attributes_fn(**kwargs):
     return PostgresHook('postgresql_local').run(
         """
-        update operations_stats set phase_journee = t.phase_journee
+        update operations_stats set
+            phase_journee = t.phase_journee,
+            est_jour_ferie = t.est_jour_ferie
         from (
             select *
             from operations_stats_extras
@@ -153,8 +155,6 @@ select
     latitude,
     longitude
 from operations op
-where latitude is not null
-    and longitude is not null
 """
 download_operations_local_time = PgDownloadOperator(
     task_id='download_operations_local_time',

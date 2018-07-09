@@ -54,8 +54,7 @@ def filter_operations_fn(**kwargs):
 
 def update_last_date_data_gouv_fn(api_key, **kwargs):
     last_week = (datetime.datetime.utcnow() - datetime.timedelta(days=7))
-    last_week_str = last_week.replace(hour=0, minute=0, second=0, microsecond=0)
-        .isoformat() + "Z"
+    last_week_str = last_week.replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + "Z"
 
     r = requests.put(
         'https://www.data.gouv.fr/api/1/datasets/operations-coordonnees-par-les-cross/',

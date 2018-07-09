@@ -344,26 +344,38 @@ components:
         annee:
           type: integer
           format: int32
-          description: L'année de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
+          description: L'année de l'opération. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: 2012
         mois:
           type: integer
           format: int32
-          description: Le mois de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
+          description: Le mois de l'opération. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: 3
           minimum: 1
           maximum: 12
         jour:
           type: integer
           format: int32
-          description: Le jour de l'opération en UTC. La date de référence est la date de réception de l'alerte en UTC.
+          description: Le jour de l'opération. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: 13
           minimum: 1
           maximum: 31
+        jour_semaine:
+          type: string
+          description: Le jour de la semaine de l'opération en français. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
+          example: Lundi
         mois_texte:
           type: string
-          description: Le mois de l'opération en UTC en français. La date de référence est la date de réception de l'alerte en UTC.
+          description: Le mois de l'opération en UTC en français. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: Septembre
+        est_weekend:
+          type: boolean
+          description: Indique si l'opération se déroule pendant un week-end. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur. L'opération se déroule durant le week-end si elle débute un samedi ou un dimanche.
+          example: true
+        est_jour_ferie:
+          type: boolean
+          description: Indique si l'opération se déroule pendant un jour férié. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
+          example: true
         phase_journee:
           type: string
           enum: [matinée, déjeuner, après-midi, nuit]

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from transformers.sunrise_sunset import SunriseSunset
-from datetime import timedelta
-from transformers.base import BaseTransformer
 import numpy as np
+from jours_feries_france.compute import JoursFeries
+
+from datetime import timedelta
+
+from transformers.sunrise_sunset import SunriseSunset
+from transformers.base import BaseTransformer
 
 
 class OperationsStatsTransformer(BaseTransformer):
@@ -13,6 +16,7 @@ class OperationsStatsTransformer(BaseTransformer):
 
     def __init__(self, filepath):
         super(OperationsStatsTransformer, self).__init__(filepath)
+        self.bank_holidays = {}
 
     def transform(self, output):
         def phase_journee(row):
@@ -38,8 +42,19 @@ class OperationsStatsTransformer(BaseTransformer):
             else:
                 raise ValueError('Date is invalid' + heure_locale)
 
+        def est_jour_ferie(row):
+            date = row['date_heure_reception_alerte_locale'].date()
+
+            if date.year not in self.bank_holidays:
+                dates = JoursFeries.for_year(date.year).values()
+                self.bank_holidays[date.year] = dates
+
+            return date in self.bank_holidays[date.year]
+
         df = self.read_csv()
         df['phase_journee'] = df.apply(lambda row: phase_journee(row), axis=1)
+        df['est_jour_ferie'] = df.apply(lambda row: est_jour_ferie(row), axis=1)
+
         df.drop(
             ['latitude', 'longitude'] + self.DATE_COLUMNS,
             axis=1,
