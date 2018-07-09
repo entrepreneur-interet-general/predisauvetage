@@ -3,10 +3,13 @@ delete from operations_stats;
 insert into operations_stats
 select
   o.operation_id,
-  extract(year from o.date_heure_reception_alerte) annee,
-  extract(month from o.date_heure_reception_alerte) mois,
-  extract(day from o.date_heure_reception_alerte) jour,
+  extract(year from o.date_heure_reception_alerte at time zone o.fuseau_horaire) annee,
+  extract(month from o.date_heure_reception_alerte at time zone o.fuseau_horaire) mois,
+  extract(day from o.date_heure_reception_alerte at time zone o.fuseau_horaire) jour,
+  extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire)::text jour_semaine,
   '' mois_texte,
+  extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire) in (6, 7) est_weekend,
+  false est_jour_ferie,
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
@@ -168,6 +171,18 @@ from (
   select 12 mois, 'Décembre' mois_texte
 ) t
 where t.mois = operations_stats.mois;
+
+update operations_stats set jour_semaine = t.jour_semaine
+from (
+  select '1' jour, 'Lundi' jour_semaine union
+  select '2' jour, 'Mardi' jour_semaine union
+  select '3' jour, 'Mercredi' jour_semaine union
+  select '4' jour, 'Jeudi' jour_semaine union
+  select '5' jour, 'Vendredi' jour_semaine union
+  select '6' jour, 'Samedi' jour_semaine union
+  select '7' jour, 'Dimanche' jour_semaine
+) t
+where t.jour = operations_stats.jour_semaine;
 
 update operations_stats set sans_flotteur_implique = true
 where operation_id in (
