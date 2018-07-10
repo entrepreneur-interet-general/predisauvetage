@@ -103,11 +103,13 @@ CREATE INDEX ON resultats_humain(resultat_humain);
 DROP TABLE IF EXISTS public.operations_stats;
 CREATE TABLE public.operations_stats (
     "operation_id" bigint primary key references operations on delete cascade not null,
+    "date" date not null,
     "annee" smallint not null,
     "mois" smallint not null,
     "jour" smallint not null,
-    "jour_semaine" varchar(8) not null,
     "mois_texte" varchar(10) not null,
+    "numero_semaine" varchar(7) not null,
+    "jour_semaine" varchar(8) not null,
     "est_weekend" boolean not null,
     "est_jour_ferie" boolean not null,
     "phase_journee" varchar(20),
@@ -165,6 +167,7 @@ CREATE TABLE public.operations_stats (
 );
 
 CREATE INDEX ON operations_stats(operation_id);
+CREATE INDEX ON operations_stats("date");
 CREATE INDEX ON operations_stats(annee);
 CREATE INDEX ON operations_stats(phase_journee);
 CREATE INDEX ON operations_stats(concerne_snosan);
