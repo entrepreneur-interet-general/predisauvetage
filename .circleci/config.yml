@@ -84,7 +84,7 @@ jobs:
             oa-to-md opendata_doc.yml opendata_schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
-            cat doc/preambule.md doc/cross.md doc/donnees.md opendata_schema.md > all.md
+            cat doc/preambule.md doc/cross.md doc/donnees.md doc/schema.md opendata_schema.md > all.md
             grip all.md --export opendata_schema.html
             sed -i 's/.*html lang.*/<html lang="fr">/' opendata_schema.html
             sed -i 's~.*<title>.*~<title>Documentation du jeu de données SECMAR</title>~' opendata_schema.html
@@ -97,7 +97,7 @@ jobs:
             oa-to-md doc.yml schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
-            cat doc/preambule.md doc/cross.md doc/donnees.md schema.md > all.md
+            cat doc/schema.md schema.md > all.md
             grip all.md --export schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
@@ -105,6 +105,7 @@ jobs:
           root: .
           paths:
             - opendata_schema.html
+            - schema.html
       - store_artifacts:
           path: schema.md
           destination: schema.md
@@ -159,13 +160,28 @@ jobs:
       - attach_workspace:
           at: /tmp/opendata_build
       - run:
-          name: Push opendata documentation to GitHub
+          name: Setup Git
           command: |
             git config --global user.email "robot@circleci.com"
             git config --global user.name "Circle CI"
+      - run:
+          name: Push opendata documentation to GitHub
+          command: |
             git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
             cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
             cd /tmp/secmar-documentation
+            if [ -n "$(git status --porcelain)" ]; then
+              git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
+              git push -q origin master
+            else
+              echo "No changes to documentation";
+            fi
+      - run:
+          name: Push SNOSAN documentation to GitHub
+          command: |
+            git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/entrepreneur-interet-general/snosan-documentation.git /tmp/snosan-documentation
+            cp /tmp/opendata_build/schema.html /tmp/snosan-documentation/index.html
+            cd /tmp/snosan-documentation
             if [ -n "$(git status --porcelain)" ]; then
               git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
               git push -q origin master
