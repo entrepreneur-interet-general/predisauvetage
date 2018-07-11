@@ -99,6 +99,8 @@ jobs:
             pid=$!
             cat doc/schema.md schema.md > all.md
             grip all.md --export schema.html
+            sed -i 's/.*html lang.*/<html lang="fr">/' schema.html
+            sed -i 's~.*<title>.*~<title>Documentation du jeu de données</title>~' schema.html
             kill "${pid}"
             xvfb-run wkhtmltopdf schema.html schema.pdf
       - persist_to_workspace:
