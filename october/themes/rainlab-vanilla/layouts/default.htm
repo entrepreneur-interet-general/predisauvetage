@@ -47,15 +47,11 @@ default = 0
                     </div>
                 </div>
             </nav>
-
-
         </header>
-
-        {% set jumbotronTexture = random(['carbon', 'dustnscratches', 'elegant', 'grunge', 'leather', 'lines', 'plaid', 'wood']) %}
 
         <!-- Content -->
         <section id="layout-content">
-            <div class="jumbotron" style="background-image:url({{ ('/themes/rainlab-vanilla/assets/images/textures/'~jumbotronTexture~'.png') }})">
+            <div class="jumbotron" style="background-image:url({{ ('/themes/rainlab-vanilla/assets/images/textures/grunge.png') }})">
                 <div class="container">
                     <h1>{{ this.page.title }}</h1>
                     <p>{{ this.page.description }}</p>
