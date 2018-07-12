@@ -1,7 +1,4 @@
 static-pages:
-    projects:
-        projects-website-development: {  }
-        projects-applications: {  }
     about: {  }
     contact-us: {  }
-    terms: {  }
+    mentions-legales: {  }
