@@ -10,7 +10,7 @@ items:
         cmsPage: ''
         replace: '1'
     -
-        title: Blog
+        title: Articles
         type: cms-page
         code: blog
         reference: blog
