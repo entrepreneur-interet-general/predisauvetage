@@ -17,22 +17,24 @@ library(plotly)
 library(RPostgreSQL)
 library(shinyWidgets)
 library(leaflet.extras)
+library(htmlwidgets)
+library(shinyjs)
 
-# pg = dbDriver("PostgreSQL")
-# 
-# 
-# con = dbConnect(pg, user = 'snosan', password = 'snosan',
-#                 host='localhost', port=5433, dbname='snosan')
-# 
-# query <- dbSendQuery(con, 'select * from operations;')
-# operations <- fetch(query, n=-1)
-# dbClearResult(query) 
-# 
-# query <- dbSendQuery(con, 'select * from operations_stats;')
-# operations_stat <- fetch(query, n=-1)
-# dbClearResult(query)
-# 
-# dbDisconnect (con)
+pg = dbDriver("PostgreSQL")
+
+
+con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+
+query <- dbSendQuery(con, 'select * from operations;')
+operations <- fetch(query, n=-1)
+dbClearResult(query)
+
+query <- dbSendQuery(con, 'select * from operations_stats;')
+operations_stat <- fetch(query, n=-1)
+dbClearResult(query)
+
+dbDisconnect (con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<9, 'Haute saison', 'Basse saison')) %>%
@@ -55,12 +57,6 @@ flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
 secmar_2017 <- secmar %>% filter(annee == 2017)
 
 #secmar <- read_feather("../../sauvamer/accident2017.feather")
-
-#secmar = secmar %>%
-  #mutate(longitude = as.numeric(as.character(str_replace_all(secmar$longitude, ",", ".")))) %>% 
-  #mutate(latitude = as.numeric(as.character(str_replace_all(secmar$latitude, ",", ".")))) %>% 
-  #mutate(saison = ifelse(date_operation >= "2017-06-01" & date_operation <= "2017-08-31" , "Haute saison", "Basse saison")) %>% 
-  #mutate(color = ifelse(nb_decedes_disparus == 0, "green", "red"))
 
 
 ui <- dashboardPage(
@@ -138,8 +134,7 @@ ui <- dashboardPage(
       menuItem("Source code", icon = icon("file-code-o"), 
                href = "https://github.com/entrepreneur-interet-general/predisauvetage")
     ),
-    sidebarSearchForm(textId = "searchText", buttonId = "searchButton",
-                      label = "Search...")
+   downloadButton("downloadData", "Télécharger les données dans la zone")
   ),
   ## Body content
   dashboardBody(
@@ -278,8 +273,12 @@ server <- function(input, output, session) {
                               "</br> Sitrep : ", numero_sitrep,
                               "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
-                 icon=icons, clusterOptions = markerClusterOptions(disableClusteringAtZoom = 14, spiderfyOnMaxZoom = F)) %>% 
-      addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN"))
+                 icon=icons, clusterOptions = markerClusterOptions()) %>% 
+      addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
+            # function(el,x) {    
+            #    var map = this
+            #    var markers = L.markerClusterGroup({ maxClusterRadius: function(zoom) {return (zoom > 10) ? 40 : 80}}).addTo(map);
+            #  }")
   })
 
   observe({
@@ -290,7 +289,7 @@ server <- function(input, output, session) {
                                   "</br> Sitrep : ", numero_sitrep,
                                   "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
                                   "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues), 
-                     icon=icons, clusterOptions = markerClusterOptions()) %>% addSearchGoogle()
+                     icon=icons, clusterOptions = markerClusterOptions()) 
   })
   
   zipsInBounds <- reactive({
@@ -372,9 +371,9 @@ server <- function(input, output, session) {
      grouped_event <- zipsInBounds() %>% dplyr::group_by(evenement) %>% summarize(count = n()) %>% top_n(5) %>% arrange(desc(count))
      grouped_event$evenement <- factor(grouped_event$evenement, levels = unique(grouped_event$evenement)[order(grouped_event$count, decreasing = TRUE)])
      plot_ly(grouped_event, x= ~evenement, y = ~count, type = 'bar') %>%
-       layout(xaxis = list(title = "", tickangle = -25),
+       layout(xaxis = list(title = "", tickangle = -35),
               yaxis = list(title = ""),
-              font = list(size = 9),
+              font = list(size = 8),
               margin = list(b = 60))
    } else if (input$pie == "Répartition phase de la journée"){
      grouped_phase <- zipsInBounds() %>% dplyr::group_by(phase_journee) %>% summarize(count = n())
@@ -388,6 +387,12 @@ server <- function(input, output, session) {
     cam()
 
   })
+  
+  output$downloadData <- downloadHandler(
+    filename = "map_data.csv",
+    content = function(file) {
+      write.csv(zipsInBounds(), file, row.names = FALSE)
+    })
 
 }
 
