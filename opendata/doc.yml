@@ -399,6 +399,16 @@ components:
           type: boolean
           description: Indique si cette opération est une opération qui concerne une activité de plongée (bouteille ou apnée) ou de chasse sous-marine
           example: true
+        distance_cote_metres:
+          type: integer
+          format: int32
+          description: La distance entre la plus proche côte ou frontière terrestre en territoire français en mètres. Cette distance peut être égale à 0 si l'opération se déroule très près des côtes ou à l'intérieur des terres en cas de fausse alerte. La distance peut être très élevée lors d'un déclenchement d'une balise par erreur ou en cas de coordination d'une opération impliquant un flotteur français en eaux internationales.
+          nullable: true
+        distance_cote_milles_nautiques:
+          type: number
+          format: float
+          description: La distance entre la plus proche côte ou frontière terrestre en territoire français en milles nautiques. Cette distance peut être égale à 0 si l'opération se déroule très près des côtes ou à l'intérieur des terres en cas de fausse alerte. La distance peut être très élevée lors d'un déclenchement d'une balise par erreur ou en cas de coordination d'une opération impliquant un flotteur français en eaux internationales.
+          nullable: true
         nombre_personnes_assistees:
           type: integer
           format: int32

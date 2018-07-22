@@ -72,8 +72,16 @@ def set_operations_stats_extra_attributes_fn(**kwargs):
     )
 
 
+def compute_operations_distances_fn(**kwargs):
+    return execute_sql_file('compute_distances')
+
+
 def insert_operations_stats_fn(**kwargs):
-    path = helpers.opendata_sql_path('insert_operations_stats')
+    return execute_sql_file('insert_operations_stats')
+
+
+def execute_sql_file(filename):
+    path = helpers.opendata_sql_path(filename)
     with open(path, 'r', encoding='utf-8') as f:
         content = f.read()
     return PostgresHook('postgresql_local').run(content)
@@ -145,6 +153,15 @@ insert_operations_stats = PythonOperator(
 )
 insert_operations_stats.set_upstream(delete_invalid_operations)
 insert_operations_stats.set_downstream(start_checks)
+
+compute_operations_distances = PythonOperator(
+    task_id='compute_operations_distances',
+    python_callable=compute_operations_distances_fn,
+    provide_context=True,
+    dag=dag
+)
+compute_operations_distances.set_upstream(delete_invalid_operations)
+compute_operations_distances.set_downstream(insert_operations_stats)
 
 # Handle extra attributes for operations_stats
 sql = """

@@ -115,6 +115,8 @@ CREATE TABLE public.operations_stats (
     "phase_journee" varchar(20),
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
+    "distance_cote_metres" int,
+    "distance_cote_milles_nautiques" numeric(6, 2),
     "nombre_personnes_assistees" smallint not null,
     "nombre_personnes_decedees" smallint not null,
     "nombre_personnes_decedees_accidentellement" smallint not null,
