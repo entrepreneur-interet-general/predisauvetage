@@ -15,6 +15,8 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
+  op.distance_cote_metres distance_cote_metres,
+  op.distance_cote_milles_nautiques distance_cote_milles_nautiques,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
   coalesce(rh.nombre_personnes_decedees_accidentellement, 0) nombre_personnes_decedees_accidentellement,
@@ -142,6 +144,7 @@ left join (
   from flotteurs f
   group by f.operation_id
 ) f on f.operation_id = o.operation_id
+join operations_points op on op.operation_id = o.operation_id
 ;
 
 update operations_stats set concerne_snosan = true where
