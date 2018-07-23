@@ -19,31 +19,39 @@ library(shinyWidgets)
 library(leaflet.extras)
 library(htmlwidgets)
 library(shinyjs)
+library(shinyBS)
 
-pg = dbDriver("PostgreSQL")
-
-
-con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
-
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect (con)
+# pg = dbDriver("PostgreSQL")
+# 
+# 
+# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect (con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
-secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<9, 'Haute saison', 'Basse saison')) %>%
+secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
                      mutate(sans_flotteur = ifelse(nombre_flotteurs_commerce_impliques > 0 |
                                                           nombre_flotteurs_plaisance_impliques > 0 |
                                                           nombre_flotteurs_loisirs_nautiques_impliques > 0 |
                                                           nombre_flotteurs_peche_impliques > 0 |
                                                           nombre_flotteurs_autre_impliques > 0 |
-                                                          nombre_aeronefs_impliques, 0, 1 ))
+                                                          nombre_aeronefs_impliques, 0, 1 )) %>% 
+                     mutate(distance_cote_milles_nautiques = if_else(is.na(distance_cote_milles_nautiques), 0, distance_cote_milles_nautiques)) 
+
+secmar <- secmar %>%
+  mutate(distance_cote_milles_nautiques_cat = as.character(cut(distance_cote_milles_nautiques,
+                                                               breaks = c(-Inf, 2, 6, 60, Inf),
+                                                               labels = c("0-2 milles", "2-6 milles", "6-60 milles", "+60 milles"))))
+
 
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
 flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
@@ -60,30 +68,27 @@ secmar_2017 <- secmar %>% filter(annee == 2017)
 
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Carte SECMAR",
-                  dropdownMenu(type = "tasks", badgeStatus = "success",
-                               taskItem(value = 90, color = "green",
-                                        "Documentation"
-                               ),
-                               taskItem(value = 17, color = "aqua",
-                                        "Project X"
-                               ),
-                               taskItem(value = 75, color = "yellow",
-                                        "Server deployment"
-                               ),
-                               taskItem(value = 80, color = "red",
-                                        "Overall project"
-                               )
-                  )),
+  dashboardHeader(title = "Carte SECMAR"
+                  ),
 
   ## Sidebar content
   dashboardSidebar(
     width = 280,
-    switchInput("snosan", value = FALSE, label = "SNOSAN")
-   ,
     sidebarMenu(
-
-      menuItem("Carte", tabName = "dashboard", icon = icon("map")),
+      div(
+        div(style="width:50%; display:inline-block;",
+            switchInput("snosan", value = FALSE, label = "SNOSAN")
+            ),
+        div(
+          style="display:inline-block; ",
+          bsButton("q1", label = "", icon = icon("question"),
+                   style = "info", size = "extra-small"),
+          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes.", 
+                    placement = "right",  options = list(container = "body")
+                    )
+        )
+      )
+     , 
       pickerInput(inputId="cross", label=h4("Quel CROSS a coordoné l'intervention ?"),
                            choices=unique(secmar$cross),
                            options = list(
@@ -103,8 +108,10 @@ ui <- dashboardPage(
                                        status = "primary",
                                        checkIcon = list(yes = icon("ok", lib = "glyphicon"), no = icon("remove", lib = "glyphicon")),
                                        choices = unique(secmar$saison), selected = unique(secmar$saison)),
+      bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
+                placement = "right", options = list(container = "body")),
       menuItem("Evenement", tabName = "event", icon = icon("anchor"),
-               checkboxInput('eve', 'all', value = TRUE),
+               checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
                selectizeInput(inputId="evenement", label=h4("Quel motif d'intervention ?"),
                            choices=unique(secmar$evenement),
                            multiple = TRUE)),
@@ -131,15 +138,30 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
-      menuItem("Source code", icon = icon("file-code-o"),
+     menuItem("Distance des côtes", tabName = "cote", icon = icon("globe"),
+              "",
+              pickerInput(inputId="cotes", label=h4("A quelle distance des côtes se déroule les interventions ?"),
+                                                choices=unique(secmar$distance_cote_milles_nautiques_cat),
+                                                options = list(
+                                                  `selected-text-format` = "count > 5",
+                                                  `count-selected-text` = "Toutes les distances",
+                                                  `actions-box` = TRUE,
+                                                  `deselect-all-text` = "Tout désélectionner",
+                                                  `select-all-text` = "Tout sélectionner"
+                                                ),
+                                                selected = unique(secmar$distance_cote_milles_nautiques_cat),
+                                                multiple = TRUE)
+              
+     ),
+      menuItem("Code source", icon = icon("file-code-o"),
                href = "https://github.com/entrepreneur-interet-general/predisauvetage")
     ),
    downloadButton("downloadData", "Télécharger les données dans la zone")
   ),
   ## Body content
   dashboardBody(
-    tabItems(
-      tabItem(tabName = "dashboard",
+    #tabItems(
+     # tabItem(tabName = "dashboard",
               fluidPage(
                 div(class="outer",
                 tags$style(type = "text/css", ".outer {position: fixed; top: 41px; left: 0; right: 0; bottom: 0; overflow: hidden; padding: 0}"),
@@ -147,7 +169,8 @@ ui <- dashboardPage(
                 column(5, verbatimTextOutput("textbounds")),
                 absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                               draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-                              width = 330, height = "auto",
+                              width = 350, height = "auto",
+                     div(style="padding: 10px;",          
                      br(),
                      h4(textOutput("operation")),
                      br(),
@@ -166,9 +189,9 @@ ui <- dashboardPage(
                                     choices = c('Force du vent', 'Force de la mer', 'Direction du vent'),
                                     selected = 'Force du vent'),
                      br(),
-                     plotOutput(outputId = "hist", height = "200px")
-                )
-            )
+                     plotOutput(outputId = "hist", height = "200px"))
+               # )
+          #  )
          )
       )
     )
@@ -205,14 +228,18 @@ server <- function(input, output, session) {
 
   evenementInput <- reactive({
       crossInput() %>% filter(evenement %in% input$evenement)
-  #  }
 
   })
 
+  
+  cotesInput <- reactive({
+    evenementInput() %>% filter(distance_cote_milles_nautiques_cat %in% input$cotes)
+    
+  })
 
 
   dateInput <- reactive({
-    evenementInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
+    cotesInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
   })
 
   saisonInput <- reactive({
@@ -270,9 +297,10 @@ server <- function(input, output, session) {
       addMarkers(~longitude, ~latitude,
                  popup=~paste("CROSS : ", cross,
                               "</br> Evénement : " , evenement,
-                              "</br> Sitrep : ", numero_sitrep,
-                              "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
-                              "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
+                              "</br> Sitrep : ", cross_sitrep,
+                              "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                              "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
+                              "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                  icon=icons, clusterOptions = markerClusterOptions()) %>%
       addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
             # function(el,x) {
@@ -286,9 +314,10 @@ server <- function(input, output, session) {
     m %>% addMarkers(~longitude, ~latitude,
                      popup=~paste("CROSS : ", cross,
                                   "</br> Evénement : " , evenement,
-                                  "</br> Sitrep : ", numero_sitrep,
-                                  "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
-                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
+                                  "</br> Sitrep : ", cross_sitrep,
+                                  "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
+                                  "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                      icon=icons, clusterOptions = markerClusterOptions())
   })
 
