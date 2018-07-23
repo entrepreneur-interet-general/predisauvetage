@@ -21,21 +21,21 @@ library(htmlwidgets)
 library(shinyjs)
 library(shinyBS)
 
-pg = dbDriver("PostgreSQL")
-
-
-con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
-
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect (con)
+# pg = dbDriver("PostgreSQL")
+# 
+# 
+# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect (con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
@@ -68,7 +68,8 @@ secmar_2017 <- secmar %>% filter(annee == 2017)
 
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Carte SECMAR"
+  dashboardHeader(title = tags$a(href='https://www.snosan.fr/',
+                                 'Carte Secmar')
                   ),
 
   ## Sidebar content
@@ -180,7 +181,8 @@ ui <- dashboardPage(
                                                 'Répartition du bilan humain',
                                                 'Répartition phase de la journée',
                                                 'Répartition des flotteurs',
-                                                'Répartition des moyens engagés'),
+                                                'Répartition des moyens engagés',
+                                                'Evolution temporelle'),
                                     selected = 'Répartition du bilan humain'),
                      plotlyOutput(outputId= "camembert", height = "250px"),
                      br(),
@@ -390,12 +392,14 @@ server <- function(input, output, session) {
      sumdata_flotteur <- data.frame(value=apply(secmar_flotteur,2,sum))
      sumdata_flotteur$key=rownames(sumdata_flotteur)
      plot_ly(sumdata_flotteur, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+     
    } else if (input$pie == "Répartition des moyens engagés") {
      secmar_moyens <- zipsInBounds() %>% select(nombre_moyens_nautiques_engages, nombre_moyens_terrestres_engages, nombre_moyens_aeriens_engages)  %>% replace(is.na(.), 0)
      names(secmar_moyens) <- c('Moyens nautiques', "Moyens terrestres", 'Moyens aériens')
      sumdata_moyens <- data.frame(value=apply(secmar_moyens,2,sum))
      sumdata_moyens$key=rownames(sumdata_moyens)
      plot_ly(sumdata_moyens, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+     
    } else if (input$pie == 'Répartition du top 5 événements'){
      grouped_event <- zipsInBounds() %>% dplyr::group_by(evenement) %>% summarize(count = n()) %>% top_n(5) %>% arrange(desc(count))
      grouped_event$evenement <- factor(grouped_event$evenement, levels = unique(grouped_event$evenement)[order(grouped_event$count, decreasing = TRUE)])
@@ -404,9 +408,14 @@ server <- function(input, output, session) {
               yaxis = list(title = ""),
               font = list(size = 8),
               margin = list(b = 60))
+     
    } else if (input$pie == "Répartition phase de la journée"){
      grouped_phase <- zipsInBounds() %>% dplyr::group_by(phase_journee) %>% summarize(count = n())
      plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>% add_pie(hole = 0.4)
+     
+   } else if (input$pie == 'Evolution temporelle') {
+     grouped_date = zipsInBounds() %>% count(date)
+     plot_ly(grouped_date, x = ~date, y= ~n, mode='lines') %>% layout(yaxis=list(title="Nombre d'opérations"))
    }
  })
 
