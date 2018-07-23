@@ -68,8 +68,9 @@ secmar_2017 <- secmar %>% filter(annee == 2017)
 
 
 ui <- dashboardPage(
-  dashboardHeader(title = tags$a(href='https://www.snosan.fr/',
-                                 'Carte Secmar')
+  dashboardHeader(title = #tags$a(href='https://www.snosan.fr/',
+                                 'Carte Secmar'
+                                 #)
                   ),
 
   ## Sidebar content
