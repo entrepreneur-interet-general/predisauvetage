@@ -46,11 +46,11 @@ secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<9, 'Haute saison', 'Ba
                                                           nombre_aeronefs_impliques, 0, 1 ))
 
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
-flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques', 
-                            'Plaisance' = 'nombre_flotteurs_plaisance_impliques', 
+flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
+                            'Plaisance' = 'nombre_flotteurs_plaisance_impliques',
                             'Loisirs nautiques' = 'nombre_flotteurs_loisirs_nautiques_impliques',
-                            'Pêche' = 'nombre_flotteurs_peche_impliques', 
-                            'Autre' = 'nombre_flotteurs_autre_impliques', 
+                            'Pêche' = 'nombre_flotteurs_peche_impliques',
+                            'Autre' = 'nombre_flotteurs_autre_impliques',
                             'Aeronéf' = 'nombre_aeronefs_impliques',
                             'Sans flotteur' = 'sans_flotteur')
 
@@ -60,7 +60,7 @@ secmar_2017 <- secmar %>% filter(annee == 2017)
 
 
 ui <- dashboardPage(
-  dashboardHeader(title = "PrediSauvetage Map", 
+  dashboardHeader(title = "Carte SECMAR",
                   dropdownMenu(type = "tasks", badgeStatus = "success",
                                taskItem(value = 90, color = "green",
                                         "Documentation"
@@ -75,23 +75,23 @@ ui <- dashboardPage(
                                         "Overall project"
                                )
                   )),
-  
+
   ## Sidebar content
   dashboardSidebar(
     width = 280,
     switchInput("snosan", value = FALSE, label = "SNOSAN")
    ,
     sidebarMenu(
-      
+
       menuItem("Carte", tabName = "dashboard", icon = icon("map")),
-      pickerInput(inputId="cross", label=h4("Quel CROSS a coordoné l'intervention? "), 
+      pickerInput(inputId="cross", label=h4("Quel CROSS a coordoné l'intervention ?"),
                            choices=unique(secmar$cross),
                            options = list(
                              `selected-text-format` = "count > 5",
                              `count-selected-text` = "{0} CROSS sélectionnés",
                              `actions-box` = TRUE,
-                             `deselect-all-text` = "Tous désélectionner",
-                             `select-all-text` = "Tous sélectionner"
+                             `deselect-all-text` = "Tout désélectionner",
+                             `select-all-text` = "Tout sélectionner"
                            ),
                            selected = unique(secmar$cross),
                            multiple = TRUE),
@@ -105,24 +105,24 @@ ui <- dashboardPage(
                                        choices = unique(secmar$saison), selected = unique(secmar$saison)),
       menuItem("Evenement", tabName = "event", icon = icon("anchor"),
                checkboxInput('eve', 'all', value = TRUE),
-               selectizeInput(inputId="evenement", label=h4("Quel motif d'intervention? "), 
-                           choices=unique(secmar$evenement), 
+               selectizeInput(inputId="evenement", label=h4("Quel motif d'intervention ?"),
+                           choices=unique(secmar$evenement),
                            multiple = TRUE)),
       menuItem("Flotteur", tabName = "boat", icon = icon("ship"),
                h4("Quel type de flotteur a été impliqué ?"),
-               pickerInput(inputId="flotteur", 
+               pickerInput(inputId="flotteur",
                            choices=flotteur_choices,
                            options = list(
                              `selected-text-format` = "count > 5",
                              `count-selected-text` = "{0} flotteur sélectionnés",
                              `actions-box` = TRUE,
-                             `deselect-all-text` = "Tous désélectionner",
-                             `select-all-text` = "Tous sélectionner"
+                             `deselect-all-text` = "Tout désélectionner",
+                             `select-all-text` = "Tout sélectionner"
                            ),
                            selected = flotteur_choices,
                            multiple = TRUE)
                # checkboxInput('bar', 'all', value = TRUE),
-               # checkboxGroupInput('flotteur', label="", 
+               # checkboxGroupInput('flotteur', label="",
                #             choices =  flotteur_choices)
                ),
       menuItem("Gravité", tabName = "gravite", icon = icon("heartbeat"),
@@ -131,7 +131,7 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
-      menuItem("Source code", icon = icon("file-code-o"), 
+      menuItem("Source code", icon = icon("file-code-o"),
                href = "https://github.com/entrepreneur-interet-general/predisauvetage")
     ),
    downloadButton("downloadData", "Télécharger les données dans la zone")
@@ -150,24 +150,24 @@ ui <- dashboardPage(
                               width = 330, height = "auto",
                      br(),
                      h4(textOutput("operation")),
-                     br(),   
+                     br(),
                      selectizeInput(inputId = "pie", label = "Choisissez votre visualisation",
-                                    multiple = FALSE, 
+                                    multiple = FALSE,
                                     choices = c('Répartition du top 5 événements',
-                                                'Répartition du bilan humain', 
+                                                'Répartition du bilan humain',
                                                 'Répartition phase de la journée',
                                                 'Répartition des flotteurs',
                                                 'Répartition des moyens engagés'),
                                     selected = 'Répartition du bilan humain'),
                      plotlyOutput(outputId= "camembert", height = "250px"),
                      br(),
-                     selectizeInput(inputId = "histo", multiple = FALSE, 
+                     selectizeInput(inputId = "histo", multiple = FALSE,
                                     label = "Choisissez votre visualisation",
                                     choices = c('Force du vent', 'Force de la mer', 'Direction du vent'),
                                     selected = 'Force du vent'),
                      br(),
                      plotOutput(outputId = "hist", height = "200px")
-                )     
+                )
             )
          )
       )
@@ -183,65 +183,65 @@ server <- function(input, output, session) {
     } else {
       secmar %>% filter(concerne_snosan == TRUE)
     }
-    
+
   })
-  
+
   crossInput <- reactive({
    # if (input$cross == "all") {
     #  snosanInput()
    # } else {
       snosanInput() %>% filter(cross %in% input$cross)
   #  }
-    
+
   })
-  
-  
+
+
   observe({
     updateSelectizeInput(
       session, 'evenement', choices = unique(secmar$evenement),
       selected = if (input$eve) unique(secmar$evenement)
     )
   })
-  
+
   evenementInput <- reactive({
       crossInput() %>% filter(evenement %in% input$evenement)
   #  }
-  
-  })
-  
 
-  
+  })
+
+
+
   dateInput <- reactive({
     evenementInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
   })
-  
+
   saisonInput <- reactive({
     dateInput() %>% filter(saison %in% input$saison)
   })
-  
-  
+
+
   decesInput <- reactive({
     if (input$deces == FALSE) {
       saisonInput()
     } else {
       saisonInput() %>% filter(nombre_personnes_tous_deces_ou_disparues > 0)
     }
-    
+
   })
-  
+
   aerienInput <- reactive({
     if (input$aerien == FALSE) {
      decesInput()
     } else {
       decesInput() %>% filter(nombre_moyens_aeriens_engages > 0)
     }
-    
+
   })
-  
-  
+
+
   flotteurInput <- reactive({
    if (length(input$flotteur) == length(flotteur_choices)){
-    aerienInput() 
+    aerienInput()
    } else if (is.null(input$flotteur)) {
       aerienInput() %>% filter(evenement %in% (""))
   } else {
@@ -249,23 +249,23 @@ server <- function(input, output, session) {
      list <- plyr::revalue(input$flotteur, flotteur_choices_dico)
      filter_at(aerienInput(), vars(list), any_vars(. > 0))
   }
-  
+
   })
-  
-  
+
+
   icons <- awesomeIcons(
     icon = 'ios-close',
     iconColor = 'black',
     library = 'ion',
     markerColor = secmar$color
   )
-  
+
   output$mymap <- renderLeaflet({
 
-    leaflet(secmar_2017) %>% 
-      addTiles(group = "Open street map") %>% 
-      addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>% 
-      addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>% 
+    leaflet(secmar_2017) %>%
+      addTiles(group = "Open street map") %>%
+      addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>%
+      addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>%
       setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
       addMarkers(~longitude, ~latitude,
                  popup=~paste("CROSS : ", cross,
@@ -273,9 +273,9 @@ server <- function(input, output, session) {
                               "</br> Sitrep : ", numero_sitrep,
                               "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
-                 icon=icons, clusterOptions = markerClusterOptions()) %>% 
+                 icon=icons, clusterOptions = markerClusterOptions()) %>%
       addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
-            # function(el,x) {    
+            # function(el,x) {
             #    var map = this
             #    var markers = L.markerClusterGroup({ maxClusterRadius: function(zoom) {return (zoom > 10) ? 40 : 80}}).addTo(map);
             #  }")
@@ -283,40 +283,40 @@ server <- function(input, output, session) {
 
   observe({
     m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
-    m %>% addMarkers(~longitude, ~latitude, 
+    m %>% addMarkers(~longitude, ~latitude,
                      popup=~paste("CROSS : ", cross,
                                   "</br> Evénement : " , evenement,
                                   "</br> Sitrep : ", numero_sitrep,
                                   "</br> Date et heure de l'alerte : ", date_heure_reception_alerte,
-                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues), 
-                     icon=icons, clusterOptions = markerClusterOptions()) 
+                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues),
+                     icon=icons, clusterOptions = markerClusterOptions())
   })
-  
+
   zipsInBounds <- reactive({
     req(input$mymap_bounds)
     bounds <- input$mymap_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
-    
+
     subset(flotteurInput(),  latitude >= latRng[1] & latitude <= latRng[2] & longitude >= lngRng[1] & longitude <= lngRng[2])
   })
-  
+
  output$text <- DT::renderDataTable({
    zipsInBounds()
  })
- 
+
 
 # output$plot <- renderPlotly({
- #  gg <- zipsInBounds() %>% ggplot(aes(x=moyen_alerte)) + geom_bar() + labs(x="Moyen d'alerte", y="Fréquence") + theme_minimal() 
+ #  gg <- zipsInBounds() %>% ggplot(aes(x=moyen_alerte)) + geom_bar() + labs(x="Moyen d'alerte", y="Fréquence") + theme_minimal()
    #ggplotly(gg)
   # plot_ly(zipsInBounds(), y = ~moyen_alerte)
  #})
- 
+
  output$operation <- renderText({
-     paste(nrow(zipsInBounds()), " interventions aux CROSS sur la période selectionnée et sur la zone affichée") 
+     paste(nrow(zipsInBounds()), " interventions aux CROSS sur la période selectionnée et sur la zone affichée")
  })
- 
- 
+
+
  histogram <- reactive({
    if (input$histo == 'Force du vent'){
      ggplot(zipsInBounds(), aes(x=as.factor(vent_force)))+
@@ -324,12 +324,12 @@ server <- function(input, output, session) {
        labs(x= "Force du vent", y="Fréquence")+
        theme_minimal()
    } else if (input$histo == 'Force de la mer'){
-     ggplot(zipsInBounds(), aes(x=as.factor(mer_force)))+ 
+     ggplot(zipsInBounds(), aes(x=as.factor(mer_force)))+
         geom_bar(fill="#56B4E9") +
         labs(x= "Force de la mer", y="Fréquence")+
         theme_minimal()
    } else if (input$histo == 'Direction du vent') {
-     ggplot(zipsInBounds(), aes(x=vent_direction))+ 
+     ggplot(zipsInBounds(), aes(x=vent_direction))+
        geom_histogram(fill="#FF0000") +
        labs(x= "Direction du vent", y="Fréquence")+
        theme_minimal()
@@ -341,8 +341,8 @@ server <- function(input, output, session) {
      return("a")
    histogram()
   })
- 
- 
+
+
  cam <- reactive({
    if (input$pie == 'Répartition du bilan humain'){
      secmar_bilan <- zipsInBounds()  %>% select(nombre_personnes_disparues, nombre_personnes_assistees, nombre_personnes_impliquees_dans_fausse_alerte, nombre_personnes_tirees_daffaire_seule, nombre_personnes_retrouvees, nombre_personnes_secourues, nombre_personnes_tous_deces)  %>% replace(is.na(.), 0)
@@ -378,16 +378,16 @@ server <- function(input, output, session) {
    } else if (input$pie == "Répartition phase de la journée"){
      grouped_phase <- zipsInBounds() %>% dplyr::group_by(phase_journee) %>% summarize(count = n())
      plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>% add_pie(hole = 0.4)
-   } 
- }) 
-  
+   }
+ })
+
   output$camembert <- renderPlotly({
     if (nrow(zipsInBounds()) == 0)
       return("a")
     cam()
 
   })
-  
+
   output$downloadData <- downloadHandler(
     filename = "map_data.csv",
     content = function(file) {
