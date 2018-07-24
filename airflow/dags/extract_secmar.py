@@ -229,6 +229,18 @@ queries = {
             from operations_stats
         ) operations_stats on true
     ''',
+    'operations_operations_points': '''
+        select
+            nb_operations_points = nb_operations
+        from (
+            select count(1) nb_operations
+            from operations
+        ) operations
+        join (
+            select count(1) nb_operations_points
+            from operations_points
+        ) operations_points on true
+    ''',
     'concerne_snosan': '''
         select count(1) = 0
         from (
