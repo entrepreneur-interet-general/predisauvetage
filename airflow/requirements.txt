@@ -3,3 +3,4 @@ apache-airflow[crypto]
 psycopg2==2.7.4
 requests==2.19.1
 jours-feries-france
+awscli==1.15.66
