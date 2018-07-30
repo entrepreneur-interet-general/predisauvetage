@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 # extract_secmar_oracle
-Extract SECMAR data from the Oracle database and dump it to CSV
+Extract SECMAR data from the Oracle database and dump it to CSV.
+
+This DAG can only be executed from within the intranet of the MTES.
 """
 from datetime import datetime
 
