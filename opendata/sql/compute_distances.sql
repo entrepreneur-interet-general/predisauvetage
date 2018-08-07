@@ -34,9 +34,9 @@ from (
     from (
       select
         o.operation_id,
-        ST_Distance(fb.geography, o.point) dst
+        ST_Distance(go.geography, o.point) dst
       from operations_points o
-      join france_boundaries fb on true
+      join geography_objects go on go.name = 'frontieres-terrestres-france'
       where o.point is not null
         and o.distance_cote_metres is null
     ) _
