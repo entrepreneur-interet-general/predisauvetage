@@ -72,10 +72,6 @@ def set_operations_stats_extra_attributes_fn(**kwargs):
     )
 
 
-def compute_operations_distances_fn(**kwargs):
-    return execute_sql_file('compute_distances')
-
-
 def insert_operations_stats_fn(**kwargs):
     return execute_sql_file('insert_operations_stats')
 
@@ -151,17 +147,31 @@ insert_operations_stats = PythonOperator(
     provide_context=True,
     dag=dag
 )
-insert_operations_stats.set_upstream(delete_invalid_operations)
 insert_operations_stats.set_downstream(start_checks)
 
-compute_operations_distances = PythonOperator(
-    task_id='compute_operations_distances',
-    python_callable=compute_operations_distances_fn,
+prepare_operations_points = PythonOperator(
+    task_id='prepare_operations_points',
+    python_callable=lambda **kwargs: execute_sql_file('prepare_operations_points'),
     provide_context=True,
     dag=dag
 )
-compute_operations_distances.set_upstream(delete_invalid_operations)
-compute_operations_distances.set_downstream(insert_operations_stats)
+prepare_operations_points.set_upstream(delete_invalid_operations)
+
+distances = [
+    'compute_shore_distance',
+    'compute_vessel_traffic_service',
+    'compute_traffic_separation_scheme'
+]
+
+for name in distances:
+    t = PythonOperator(
+        task_id=name,
+        python_callable=lambda **kwargs: execute_sql_file(name),
+        provide_context=True,
+        dag=dag
+    )
+    t.set_upstream(prepare_operations_points)
+    t.set_downstream(insert_operations_stats)
 
 # Handle extra attributes for operations_stats
 sql = """
@@ -264,7 +274,19 @@ queries = {
             sum(os.nombre_personnes_tous_deces_ou_disparues) between 300 and 320
         from operations_stats os
         where annee = 2017
-    '''
+    ''',
+    'dst_2017': '''
+        select
+            count(1) between 45 and 500
+        from operations_stats
+        where est_dans_dst and annee = 2017
+    ''',
+    'stm_2017': '''
+        select
+            count(1) between 650 and 700
+        from operations_stats
+        where est_dans_stm and annee = 2017
+    ''',
 }
 
 for query_name, query in queries.items():

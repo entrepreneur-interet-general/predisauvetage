@@ -409,6 +409,24 @@ components:
           format: float
           description: La distance entre la plus proche côte ou frontière terrestre en territoire français en milles nautiques. Cette distance peut être égale à 0 si l'opération se déroule très près des côtes ou à l'intérieur des terres en cas de fausse alerte. La distance peut être très élevée lors d'un déclenchement d'une balise par erreur ou en cas de coordination d'une opération impliquant un flotteur français en eaux internationales.
           nullable: true
+        est_dans_stm:
+          type: boolean
+          description: Indique si l'opération se déroule dans la zone d'un service de trafic maritime où une veille est renforcée.
+          example: false
+        nom_stm:
+          type: string
+          description: Si l'opération se déroule dans une zone d'un service de trafic maritime, le nom de cette zone.
+          example: stm-corsen
+          nullable: true
+        est_dans_dst:
+          type: boolean
+          description: Indique si l'opération se déroule dans une zone d'un dispositif de séparation du trafic.
+          example: false
+        nom_dst:
+          type: string
+          description: Si l'opération se déroule dans une zone d'un dispositif de séparation du trafic, le nom de cette zone.
+          example: dst-dover
+          nullable: true
         nombre_personnes_assistees:
           type: integer
           format: int32
