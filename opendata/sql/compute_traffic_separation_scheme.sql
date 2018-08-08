@@ -18,6 +18,6 @@ update operations_points set est_dans_dst = false, nom_dst = null
 where operation_id in (
   select p.operation_id
   from operations_points p
-  join operations_stats s on s.operation_id = p.operation_id and s.date < '2016-12-01'
+  join operations o on o.operation_id = p.operation_id and o.date_heure_reception_alerte < '2016-12-01'
   where p.est_dans_dst and p.nom_dst = 'dst-corse'
 );
