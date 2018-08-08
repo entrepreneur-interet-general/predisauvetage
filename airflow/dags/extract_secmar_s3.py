@@ -23,7 +23,7 @@ dag = DAG(
     'extract_secmar_s3',
     default_args=default_args,
     max_active_runs=1,
-    concurrency=2,
+    concurrency=5,
     catchup=False,
     schedule_interval=None
 )
