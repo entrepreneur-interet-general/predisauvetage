@@ -25,38 +25,6 @@ jobs:
           paths:
             - "venv"
 
-  laravel:
-    docker:
-      - image: circleci/php:7.1-node-browsers
-    working_directory: ~/repo/snosan
-    steps:
-      - checkout:
-          path: ~/repo
-      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-      - run: sudo docker-php-ext-install zip
-      - run: sudo composer self-update
-      - restore_cache:
-          keys:
-            - composer-v1-{{ checksum "composer.lock" }}
-            - composer-v1-
-      - run: composer install -n --prefer-dist
-      - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
-          paths:
-            - vendor
-      - restore_cache:
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            - node-v1-
-      - run: yarn install
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - run: touch storage/testing.sqlite
-      - run: php artisan migrate --env=testing
-      - run: ./vendor/bin/phpunit
-
   opendata_build:
     docker:
       - image: antoineaugusti/secmar-opendata-build:0.0.3
@@ -195,7 +163,6 @@ workflows:
   all_jobs:
     jobs:
       - python
-      - laravel
       - opendata_test
       - opendata_build:
           requires:
