@@ -169,7 +169,7 @@ jobs:
       - run:
           name: Push opendata documentation to GitHub
           command: |
-            git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
+            git clone -q https://${GITHUB_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
             cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
             cd /tmp/secmar-documentation
             if [ -n "$(git status --porcelain)" ]; then
@@ -181,7 +181,7 @@ jobs:
       - run:
           name: Push SNOSAN documentation to GitHub
           command: |
-            git clone -q https://${SECMAR_DOCUMENTATION_TOKEN}@github.com/entrepreneur-interet-general/snosan-documentation.git /tmp/snosan-documentation
+            git clone -q https://${GITHUB_TOKEN}@github.com/snosan-tools/snosan-documentation.git /tmp/snosan-documentation
             cp /tmp/opendata_build/schema.html /tmp/snosan-documentation/index.html
             cd /tmp/snosan-documentation
             if [ -n "$(git status --porcelain)" ]; then
