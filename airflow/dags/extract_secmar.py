@@ -287,6 +287,12 @@ queries = {
         from operations_stats
         where est_dans_stm and annee = 2017
     ''',
+    'tss_corse_2016': '''
+        select
+            count(1) = 0
+        from operations_stats
+        where date < '2016-12-01' and est_dans_dst and nom_dst = 'dst-corse'
+    '''
 }
 
 for query_name, query in queries.items():
