@@ -8,5 +8,3 @@ app/node_modules
 app/platforms
 app/plugins
 app/resources/signing
-
-map/data.csv
