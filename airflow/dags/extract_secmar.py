@@ -275,7 +275,7 @@ queries = {
         from operations_stats os
         where annee = 2017
     ''',
-    'dst_2017': '''
+    'tss_2017': '''
         select
             count(1) between 45 and 500
         from operations_stats
