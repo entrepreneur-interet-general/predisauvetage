@@ -113,6 +113,7 @@ for table in SECMAR_TABLES + ['operations_stats']:
         python_callable=secmar_transform,
         provide_context=True,
         dag=dag,
+        pool='transform',
         op_kwargs={
             'in_path': out_path(table),
             'out_path': opendata_path(table),

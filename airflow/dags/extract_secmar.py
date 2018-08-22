@@ -114,6 +114,7 @@ for table in SECMAR_TABLES + ['operations_valides']:
         python_callable=secmar_transform,
         provide_context=True,
         dag=dag,
+        pool='transform',
         op_kwargs={
             'in_path': in_path(table),
             'out_path': out_path(table),
@@ -213,6 +214,7 @@ download_operations_local_time.set_upstream(delete_invalid_operations)
 
 transform_operations_stats = PythonOperator(
     task_id='transform_operations_stats',
+    pool='transform',
     python_callable=secmar_transform,
     provide_context=True,
     dag=dag,
