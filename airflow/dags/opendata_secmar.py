@@ -127,7 +127,7 @@ push_datasets_github = BashOperator(
     task_id='push_datasets_github',
     bash_command=' && '.join([
         'cd ' + helpers.opendata_git_path(),
-        'git stash',
+        'git stash --include-untracked',
         'git pull --rebase',
         'git stash pop',
         'rm -f moyens.csv',
