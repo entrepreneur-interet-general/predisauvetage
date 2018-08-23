@@ -17,6 +17,8 @@ class DefaultTransformer(BaseTransformer):
         if len(cols_to_drop) > 0:
             df.drop(cols_to_drop, axis=1, inplace=True)
 
+        df.sort_values(by=['operation_id'], inplace=True)
+
         self.to_csv(df, output)
 
     def columns_to_drop(self):

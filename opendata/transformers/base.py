@@ -22,10 +22,15 @@ class BaseTransformer(object):
         )
 
     def to_csv(self, df, output):
-        # Keep floats with up to 12 decimal if they need it, otherwise display as int
-        # https://stackoverflow.com/questions/25789354/exporting-ints-with-missing-values-to-csv-in-pandas
+        # Cast dates columns
         for date_col in [c for c in self.DATE_COLUMNS if c in df.columns]:
             df[date_col] = df[date_col].astype('datetime64[ns]')
+
+        # Sort by operation_id
+        df.sort_values(by=['operation_id'], inplace=True)
+
+        # Keep floats with up to 12 decimal if they need it, otherwise display as int
+        # https://stackoverflow.com/questions/25789354/exporting-ints-with-missing-values-to-csv-in-pandas
         df.to_csv(
             output,
             index=False,
