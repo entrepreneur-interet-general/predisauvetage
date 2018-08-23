@@ -31,7 +31,7 @@ dag.doc_md = __doc__
 
 tables = SECMAR_TABLES + ['operations_stats']
 
-template = 'pg_dump -c --no-owner {tables} {schema} > {output}'
+template = 'sudo -u postgres pg_dump -c --no-owner {tables} {schema} > {output}'
 dump_command = template.format(
     schema=PostgresHook.get_connection('postgresql_local').schema,
     output=OUTPUT_PATH,
@@ -41,8 +41,7 @@ dump_command = template.format(
 dump_local_database = BashOperator(
     task_id='dump_local_database',
     bash_command=dump_command,
-    dag=dag,
-    run_as_user='postgres'
+    dag=dag
 )
 
 template = 'psql -U {user} -h {host} {schema} < {input}'
