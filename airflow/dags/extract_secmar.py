@@ -329,11 +329,12 @@ for table in ['operations_stats_extras', 'operations_valides']:
     t.set_upstream(end_checks)
 
 # Trigger DAG to generate final open data files
-dag_name = 'opendata_secmar'
-trigger_dag = TriggerDagRunOperator(
-    task_id='trigger_' + dag_name + '_dag',
-    trigger_dag_id=dag_name,
-    python_callable=lambda context, dag_run: dag_run,
-    dag=dag
-)
-trigger_dag.set_upstream(end_checks)
+# Trigger DAG to replace SECMAR database in remote database
+for dag_name in ['opendata_secmar', 'replace_secmar_database']:
+    trigger_dag = TriggerDagRunOperator(
+        task_id='trigger_' + dag_name + '_dag',
+        trigger_dag_id=dag_name,
+        python_callable=lambda context, dag_run: dag_run,
+        dag=dag
+    )
+    trigger_dag.set_upstream(end_checks)
