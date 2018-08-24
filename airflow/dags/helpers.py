@@ -82,7 +82,9 @@ def default_args(conf):
     default = {
         'owner': 'antoine-augusti',
         'depends_on_past': False,
-        'email': [],
+        'email': ['antoine.augusti@developpement-durable.gouv.fr'],
+        'email_on_failure': True,
+        'email_on_retry': False,
         'retries': 2,
         'retry_delay': timedelta(minutes=1),
     }
