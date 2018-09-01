@@ -32,7 +32,7 @@ def out_path(table):
 
 
 def opendata_path(table):
-    return helpers.opendata_git_path() + '/' + table + '.csv'
+    return helpers.opendata_folder_path() + '/' + table + '.csv'
 
 
 def secmar_transform(in_path, out_path, transformer, **kwargs):

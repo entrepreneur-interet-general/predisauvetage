@@ -10,7 +10,7 @@ It prepares files for open data after they've been transformed.
 Some `operations` are duplicated and are cleaned directly in SQL. We therefore need to
 filter out these operations first before creating final CSV files.
 
-When datasets are available, we push them to the dedicated GitHub repository.
+When datasets are available, we push them to a remote server so that they can be served by a webserver + CDN.
 """
 from datetime import datetime
 from datetime import timedelta
@@ -123,23 +123,20 @@ for table in SECMAR_TABLES + ['operations_stats']:
     t.set_upstream(start)
     t.set_downstream(end_transform)
 
+scp_command = 'scp *.csv root@{host}:/var/www/secmar-data/'.format(
+    host=Variable.get('REMOTE_SERVER_CSV_HOST')
+)
 
-push_datasets_github = BashOperator(
-    task_id='push_datasets_github',
+publish_csv_files = BashOperator(
+    task_id='publish_csv_files',
     bash_command=' && '.join([
-        'cd ' + helpers.opendata_git_path(),
-        'git stash --include-untracked',
-        'git pull --rebase',
-        'git stash pop',
+        'cd ' + helpers.opendata_folder_path(),
         'rm -f moyens.csv',
-        'git commit -am "Jeux de données au {today}"'.format(
-            today=datetime.utcnow().strftime('%Y-%m-%d')
-        ),
-        'git push'
+        scp_command
     ]),
     dag=dag,
 )
-push_datasets_github.set_upstream(end_transform)
+publish_csv_files.set_upstream(end_transform)
 
 update_last_date_data_gouv = PythonOperator(
     task_id='update_last_date_data_gouv',
@@ -150,4 +147,4 @@ update_last_date_data_gouv = PythonOperator(
         'api_key': Variable.get('DATA_GOUV_FR_API_KEY')
     }
 )
-update_last_date_data_gouv.set_upstream(push_datasets_github)
+update_last_date_data_gouv.set_upstream(publish_csv_files)
