@@ -68,7 +68,21 @@ def update_last_date_data_gouv_fn(api_key, **kwargs):
             "temporal_coverage": {
                 "start": "1985-01-01T00:00:00Z",
                 "end": last_week_str
-            }
+            },
+            "tags": [
+                'direction-affaires-maritimes',
+                'dam',
+                'mer',
+                'sauvetage',
+                'secours',
+                'snsm',
+                'gendarmerie',
+                'douanes',
+                'sdis',
+                'accidentologie',
+                'cross',
+                'mtes'
+            ]
         },
         headers={
             'X-API-KEY': api_key
