@@ -52,7 +52,8 @@ jobs:
             oa-to-md opendata_doc.yml opendata_schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
-            cat doc/preambule.md doc/cross.md doc/donnees.md doc/schema.md opendata_schema.md > all.md
+            wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
+            cat doc/preambule.md doc/CHANGELOG.md doc/cross.md doc/donnees.md doc/schema.md opendata_schema.md > all.md
             grip all.md --export opendata_schema.html
             sed -i 's/.*html lang.*/<html lang="fr">/' opendata_schema.html
             sed -i 's~.*<title>.*~<title>Documentation du jeu de données SECMAR</title>~' opendata_schema.html
@@ -65,7 +66,8 @@ jobs:
             oa-to-md doc.yml schema.md fr
             python -m SimpleHTTPServer 8000 &> /dev/null &
             pid=$!
-            cat doc/schema.md schema.md > all.md
+            wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
+            cat doc/CHANGELOG.md doc/schema.md schema.md > all.md
             grip all.md --export schema.html
             sed -i 's/.*html lang.*/<html lang="fr">/' schema.html
             sed -i 's~.*<title>.*~<title>Documentation du jeu de données</title>~' schema.html
