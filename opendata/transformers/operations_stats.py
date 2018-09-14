@@ -27,20 +27,20 @@ class OperationsStatsTransformer(BaseTransformer):
                 sunrise, sunset = SunriseSunset(heure_utc, latitude, longitude).calculate()
             except ValueError:
                 return np.nan
-            # 30mn avant coucher du soleil -> 30mn après lever du soleil
-            if (sunset - timedelta(minutes=30)) <= heure_utc <= (sunrise + timedelta(minutes=30)):
+            # coucher du soleil -> lever du soleil
+            if sunset <= heure_utc <= sunrise:
                 return 'nuit'
-            # 11:00 -> 14:59
-            elif 11 <= heure_locale.hour <= 14:
+            # 12:00 -> 13:59
+            elif 12 <= heure_locale.hour <= 13:
                 return 'déjeuner'
             # lever du soleil -> 10:59
-            elif heure_locale.hour <= 10:
+            elif heure_locale.hour <= 11:
                 return 'matinée'
-            # 15:00 -> coucher du soleil
-            elif heure_locale.hour >= 15:
+            # 14:00 -> coucher du soleil
+            elif heure_locale.hour >= 14:
                 return 'après-midi'
             else:
-                raise ValueError('Date is invalid' + heure_locale)
+                raise ValueError('Date is invalid ' + str(heure_locale))
 
         def est_jour_ferie(row):
             date = row['date_heure_reception_alerte_locale'].date()
