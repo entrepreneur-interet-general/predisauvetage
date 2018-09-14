@@ -66,8 +66,8 @@ class OperationsTransformer(BaseTransformer):
             'La Réunion': 'Indian/Reunion',
             'Martinique': 'America/Martinique',
             'Mayotte': 'Indian/Mayotte',
-            'Nouvelle-Calédonie': 'Pacific/Tahiti',
-            'Polynésie': 'Pacific/Noumea',
+            'Nouvelle-Calédonie': 'Pacific/Noumea',
+            'Polynésie': 'Pacific/Tahiti',
             'Soulac': 'Europe/Paris',
             'Étel': 'Europe/Paris',
         })
