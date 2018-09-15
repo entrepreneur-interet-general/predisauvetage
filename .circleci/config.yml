@@ -42,60 +42,54 @@ jobs:
             speccy lint doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
             speccy lint opendata_doc.yml -s info-contact -s operation-tags -s operation-operationId -s openapi-tags
       - run:
-          name: Prepare Grip
+          name: Git clone VuePress template
           command: |
-            mkdir ~/.grip
-            mv grip/settings.py ~/.grip/settings.py
+            git clone git@github.com:snosan-tools/secmar-documentation.git /tmp/secmar-documentation
+      - restore_cache:
+          name: Restore Yarn package cache
+          keys:
+            - yarn-packages-{{ checksum "/tmp/secmar-documentation/yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: cd /tmp/secmar-documentation && yarn install
+      - save_cache:
+          name: Save Yarn package cache
+          key: yarn-packages-{{ checksum "/tmp/secmar-documentation/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run:
           name: Build Markdown documentation for opendata
           command: |
+            cp -r /tmp/secmar-documentation /tmp/secmar-documentation-opendata
             oa-to-md opendata_doc.yml opendata_schema.md fr
-            python -m SimpleHTTPServer 8000 &> /dev/null &
-            pid=$!
             wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
-            cat doc/preambule.md doc/CHANGELOG.md doc/cross.md doc/donnees.md doc/schema.md opendata_schema.md > all.md
-            grip all.md --export opendata_schema.html
-            sed -i 's/.*html lang.*/<html lang="fr">/' opendata_schema.html
-            sed -i 's~.*<title>.*~<title>Documentation du jeu de données SECMAR</title>~' opendata_schema.html
-            sed -i 's~.*grip/static/octicons/octicons.css.*~~' opendata_schema.html
-            kill "${pid}"
-            xvfb-run wkhtmltopdf opendata_schema.html opendata_schema.pdf
+            cat doc/schema.md opendata_schema.md > /tmp/file && mv /tmp/file doc/opendata_schema.md
+            cp doc/{preambule.md,CHANGELOG.md,cross.md,donnees.md} /tmp/secmar-documentation-opendata/
+            cp doc/opendata_schema.md /tmp/secmar-documentation-opendata/schema.md
+            cd /tmp/secmar-documentation-opendata/
+            MODE='opendata' yarn run build
       - run:
           name: Build Markdown documentation for SNOSAN
           command: |
             oa-to-md doc.yml schema.md fr
-            python -m SimpleHTTPServer 8000 &> /dev/null &
-            pid=$!
             wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
-            cat doc/CHANGELOG.md doc/schema.md schema.md > all.md
-            grip all.md --export schema.html
-            sed -i 's/.*html lang.*/<html lang="fr">/' schema.html
-            sed -i 's~.*<title>.*~<title>Documentation du jeu de données</title>~' schema.html
-            kill "${pid}"
-            xvfb-run wkhtmltopdf schema.html schema.pdf
+            cat doc/schema.md schema.md > /tmp/file && mv /tmp/file doc/snosan_schema.md
+            cp doc/CHANGELOG.md /tmp/secmar-documentation/
+            cp doc/snosan_schema.md /tmp/secmar-documentation/schema.md
+            cd /tmp/secmar-documentation/
+            yarn run build
+      - run:
+          name: Zip files
+          command: |
+            cd /tmp/secmar-documentation/.vuepress/dist
+            zip -r /tmp/secmar-documentation.zip .
+            cd /tmp/secmar-documentation-opendata/.vuepress/dist
+            zip -r /tmp/secmar-documentation-opendata.zip .
       - persist_to_workspace:
-          root: .
+          root: /tmp
           paths:
-            - opendata_schema.html
-            - schema.html
-      - store_artifacts:
-          path: schema.md
-          destination: schema.md
-      - store_artifacts:
-          path: schema.pdf
-          destination: schema.pdf
-      - store_artifacts:
-          path: schema.html
-          destination: schema.html
-      - store_artifacts:
-          path: opendata_schema.md
-          destination: opendata_schema.md
-      - store_artifacts:
-          path: opendata_schema.pdf
-          destination: opendata_schema.pdf
-      - store_artifacts:
-          path: opendata_schema.html
-          destination: opendata_schema.html
+            - secmar-documentation.zip
+            - secmar-documentation-opendata.zip
 
   opendata_test:
     docker:
@@ -130,7 +124,7 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - attach_workspace:
-          at: /tmp/opendata_build
+          at: /tmp/out
       - run:
           name: Setup Git
           command: |
@@ -140,8 +134,9 @@ jobs:
           name: Push opendata documentation to GitHub
           command: |
             git clone -q https://${GITHUB_TOKEN}@github.com/MTES-MCT/secmar-documentation.git /tmp/secmar-documentation
-            cp /tmp/opendata_build/opendata_schema.html /tmp/secmar-documentation/index.html
+            unzip -o /tmp/out/secmar-documentation-opendata.zip -d /tmp/secmar-documentation/
             cd /tmp/secmar-documentation
+            git add .
             if [ -n "$(git status --porcelain)" ]; then
               git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
               git push -q origin master
@@ -152,8 +147,9 @@ jobs:
           name: Push SNOSAN documentation to GitHub
           command: |
             git clone -q https://${GITHUB_TOKEN}@github.com/snosan-tools/snosan-documentation.git /tmp/snosan-documentation
-            cp /tmp/opendata_build/schema.html /tmp/snosan-documentation/index.html
+            unzip -o /tmp/out/secmar-documentation.zip -d /tmp/snosan-documentation/
             cd /tmp/snosan-documentation
+            git add .
             if [ -n "$(git status --porcelain)" ]; then
               git commit -am "Update after https://github.com/entrepreneur-interet-general/predisauvetage/commit/$CIRCLE_SHA1"
               git push -q origin master
