@@ -50,5 +50,40 @@ header#layout-header {
 }
 
 #footer {
-  margin-bottom: 1em;
+  margin-top: 2em;
+  background: @blue;
+  color: white;
+  border-top: 3px solid @orange;
+}
+#footer .container {
+  padding: .5em 0;
+}
+#footer img {
+  display: block;
+  width: 100px;
+  margin-top: 1em;
+  padding: .3em;
+  background: white;
+}
+#footer a {
+  color: lighten(@blue, 50%);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s linear;
+}
+#footer a:hover {
+  border-color: lighten(@blue, 50%);
+  text-decoration : none;
+}
+#footer ul {
+  list-style: none;
+  padding-inline-start: 0;
+}
+#footer .col-md-6 {
+  margin-top: 1em;
+}
+@media screen and (max-device-width: 768px){
+  #footer li {
+    display: inline-block;
+    padding-right: 1em;
+  }
 }
