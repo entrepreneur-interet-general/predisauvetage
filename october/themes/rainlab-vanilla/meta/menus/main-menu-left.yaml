@@ -1,6 +1,19 @@
 name: 'Main menu - left'
 items:
     -
+        title: 'Qui sommes-nous'
+        nesting: ''
+        type: cms-page
+        url: ''
+        code: ''
+        reference: home
+        cmsPage: ''
+        replace: ''
+        viewBag:
+            isHidden: '0'
+            cssClass: ''
+            isExternal: '0'
+    -
         title: 'All pages'
         nesting: ''
         type: all-static-pages
@@ -10,10 +23,23 @@ items:
         cmsPage: ''
         replace: '1'
     -
+        title: Cartographie
+        type: url
+        url: 'https://carte.snosan.fr'
+        code: ''
+        viewBag:
+            isHidden: '0'
+            cssClass: ''
+            isExternal: '1'
+    -
         title: Articles
+        nesting: ''
         type: cms-page
+        url: ''
         code: blog
         reference: blog
+        cmsPage: ''
+        replace: ''
         viewBag:
             isHidden: '0'
             cssClass: ''

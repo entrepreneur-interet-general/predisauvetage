@@ -1,5 +1,9 @@
 static-pages:
-    about: {  }
-    contact-us: {  }
     mentions-legales: {  }
-    quizz: {  }
+    laccidentologie-en-direct: {  }
+    liens-utiles: {  }
+    nos-conseils:
+        nos-conseils-conseils-de-nos-partenaires: {  }
+        quizz: {  }
+        regles-de-navigation: {  }
+    contact-us: {  }
