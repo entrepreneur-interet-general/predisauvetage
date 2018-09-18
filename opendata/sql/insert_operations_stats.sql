@@ -21,6 +21,7 @@ select
   op.nom_stm nom_stm,
   op.est_dans_dst est_dans_dst,
   op.nom_dst nom_dst,
+  coalesce(rh.nombre_personnes_blessees, 0) nombre_personnes_blessees,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
   coalesce(rh.nombre_personnes_decedees_accidentellement, 0) nombre_personnes_decedees_accidentellement,
@@ -33,6 +34,7 @@ select
   coalesce(rh.nombre_personnes_tous_deces, 0) nombre_personnes_tous_deces,
   coalesce(rh.nombre_personnes_tous_deces_ou_disparues, 0) nombre_personnes_tous_deces_ou_disparues,
   coalesce(rh.nombre_personnes_impliquees, 0) nombre_personnes_impliquees,
+  coalesce(rh.nombre_personnes_blessees_sans_clandestins, 0) nombre_personnes_blessees_sans_clandestins,
   coalesce(rh.nombre_personnes_assistees_sans_clandestins, 0) nombre_personnes_assistees_sans_clandestins,
   coalesce(rh.nombre_personnes_decedees_sans_clandestins, 0) nombre_personnes_decedees_sans_clandestins,
   coalesce(rh.nombre_personnes_decedees_accidentellement_sans_clandestins, 0) nombre_personnes_decedees_accidentellement_sans_clandestins,
@@ -83,6 +85,7 @@ left join (
   from (
     select
       rh.operation_id,
+      sum(dont_nombre_blesse) nombre_personnes_blessees,
       sum(case when resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees,
       sum(case when resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees,
       sum(case when resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement,
@@ -92,6 +95,7 @@ left join (
       sum(case when resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees,
       sum(case when resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues,
       sum(case when resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule,
+      sum(case when categorie_personne <> 'Clandestin' then dont_nombre_blesse else 0 end) nombre_personnes_blessees_sans_clandestins,
       sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees_sans_clandestins,
       sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees_sans_clandestins,
       sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement_sans_clandestins,

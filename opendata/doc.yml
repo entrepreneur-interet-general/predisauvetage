@@ -425,6 +425,12 @@ components:
           description: Si l'opération se déroule dans une zone d'un dispositif de séparation du trafic, le nom de cette zone.
           example: dst-dover
           nullable: true
+        nombre_personnes_blessees:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes blessées lors de l'opération.
+          example: 42
+          minimum: 0
         nombre_personnes_assistees:
           type: integer
           format: int32
@@ -495,6 +501,12 @@ components:
           type: integer
           format: int32
           description: Le nombre total de personnes impliquées lors de l'opération.
+          example: 42
+          minimum: 0
+        nombre_personnes_blessees_sans_clandestins:
+          type: integer
+          format: int32
+          description: Le nombre total de personnes blessées lors de l'opération, sans prendre en compte les clandestins.
           example: 42
           minimum: 0
         nombre_personnes_assistees_sans_clandestins:
