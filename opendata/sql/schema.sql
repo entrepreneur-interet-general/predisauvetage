@@ -17,6 +17,7 @@ CREATE TABLE public.operations (
     "latitude" numeric(7, 4),
     "longitude" numeric(7, 4),
     "vent_direction" smallint,
+    "vent_direction_categorie" varchar(10),
     "vent_force" smallint,
     "mer_force" smallint,
     "date_heure_reception_alerte" timestamp with time zone not null,

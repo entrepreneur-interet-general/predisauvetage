@@ -96,6 +96,12 @@ components:
           maximum: 360
           description: Direction du vent, en degrés
           example: 42
+        vent_direction_categorie:
+          type: string
+          nullable: true
+          description: Nom de la direction du vent. La direction nord-est est par exemple comprise entre 22,5 degrés et 67,5 degrés.
+          example: nord
+          enum: [nord, nord-est, est, sud-est, sud, sud-ouest, ouest, nord-ouest]
         vent_force:
           type: number
           format: int32

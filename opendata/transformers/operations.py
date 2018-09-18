@@ -19,6 +19,11 @@ class OperationsTransformer(BaseTransformer):
         df['fuseau_horaire'] = self.fuseau_horaire(df.cross)
         df.insert(1, 'type_operation', self.type_operation(df.pourquoi_alerte))
         df['pourquoi_alerte'] = self.pourquoi_alerte(df.pourquoi_alerte)
+        df.insert(
+            loc=df.columns.get_loc('vent_direction') + 1,
+            column='vent_direction_categorie',
+            value=self.vent_direction_categorie(df.vent_direction)
+        )
         df['evenement'].replace(
             to_replace='Plongée en bouteille',
             value='Plongée avec bouteille',
@@ -33,6 +38,15 @@ class OperationsTransformer(BaseTransformer):
         df.loc[df.latitude.isna(), 'longitude'] = np.nan
 
         self.to_csv(df, output)
+
+    def vent_direction_categorie(self, series):
+        bins = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, np.inf]
+        labels = [
+            'nord', 'nord-est', 'est', 'sud-est', 'sud',
+            'sud-ouest', 'ouest', 'nord-ouest', 'nord2'
+        ]
+        return pd.cut(series, bins=bins, labels=labels) \
+            .replace('nord2', 'nord')
 
     def numero_sitrep(self, row):
         if pd.isna(row['numero_sitrep']):
