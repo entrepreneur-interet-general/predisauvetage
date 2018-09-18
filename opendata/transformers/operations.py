@@ -14,6 +14,7 @@ class OperationsTransformer(BaseTransformer):
     def transform(self, output):
         df = self.read_csv()
 
+        df['numero_sitrep'] = df.apply(lambda r: self.numero_sitrep(r), axis=1)
         df['cross_sitrep'] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df['fuseau_horaire'] = self.fuseau_horaire(df.cross)
         df.insert(1, 'type_operation', self.type_operation(df.pourquoi_alerte))
@@ -33,9 +34,20 @@ class OperationsTransformer(BaseTransformer):
 
         self.to_csv(df, output)
 
-    def cross_sitrep(self, row):
+    def numero_sitrep(self, row):
         if pd.isna(row['numero_sitrep']):
-            return np.nan
+            # If operation_id: 2120050002
+            # 21: CROSS code
+            # 2005: year
+            # 0002: sitrep
+            operation_id = str(int(row['operation_id']))
+            if len(operation_id) != 10:
+                msg = 'Unexpected length for operation_id ' + operation_id
+                raise ValueError(msg)
+            return int(operation_id[6:10])
+        return row['numero_sitrep']
+
+    def cross_sitrep(self, row):
         return '{cross} {year}/{sitrep_nb}'.format(
             cross=row['cross'],
             year=row['date_heure_reception_alerte'].year,

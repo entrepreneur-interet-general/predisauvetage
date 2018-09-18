@@ -21,8 +21,8 @@ CREATE TABLE public.operations (
     "mer_force" smallint,
     "date_heure_reception_alerte" timestamp with time zone not null,
     "date_heure_fin_operation" timestamp with time zone not null,
-    "numero_sitrep" smallint,
-    "cross_sitrep" varchar(50),
+    "numero_sitrep" smallint not null,
+    "cross_sitrep" varchar(50) not null,
     "fuseau_horaire" varchar(25) not null
 );
 

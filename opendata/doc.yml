@@ -127,11 +127,9 @@ components:
           format: int32
           example: 17
           minimum: 1
-          nullable: true
           description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h UTC et la numérotation est incrémentale par la suite. La numérotation des SITREP est indépendante pour chaque CROSS.
         cross_sitrep:
           type: string
-          nullable: true
           description: "Identifiant unique de l'opération. Il est composé du CROSS coordinateur de l'opération, de l'année et du numéro de SITREP"
           example: "Corsen 2017/42"
         fuseau_horaire:
