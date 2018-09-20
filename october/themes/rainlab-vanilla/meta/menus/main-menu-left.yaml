@@ -32,7 +32,7 @@ items:
             cssClass: ''
             isExternal: '1'
     -
-        title: Articles
+        title: Actualités
         nesting: ''
         type: cms-page
         url: ''
