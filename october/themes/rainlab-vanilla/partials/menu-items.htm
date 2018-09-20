@@ -8,7 +8,7 @@
             <a
                 {% if item.items %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}
                 href="{{ item.url }}"
-                {% if item.isExternal %}
+                {% if item.viewBag.isExternal %}
                 target="_blank"
                 {% endif %}
             >
