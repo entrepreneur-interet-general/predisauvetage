@@ -23,7 +23,7 @@ default = 0
         <meta property="og:title" content="{{ this.page.title }}" />
         <meta property="og:description" content="{{ this.page.meta_description }}" />
         <meta property="og:site_name" content="SNOSAN" />
-        <meta property="og:url" content="{{ this.param.url }}" />
+        <meta property="og:url" content="{{ this.controller.currentPageUrl() }}" />
 
         <link rel="icon" type="image/png" href="{{ 'assets/images/favicon.png'|theme }}" />
         {% styles %}
