@@ -35,7 +35,7 @@ query <- dbSendQuery(con, 'select * from operations_stats;')
 operations_stat <- fetch(query, n=-1)
 dbClearResult(query)
 
-dbDisconnect (con)
+dbDisconnect(con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
@@ -153,6 +153,20 @@ ui <- dashboardPage(
                                                 ),
                                                 selected = unique(secmar$distance_cote_milles_nautiques_cat),
                                                 multiple = TRUE)
+     ),
+      menuItem("Zone de responsabilité", tabName = "zone", icon = icon("globe"),
+                       "",
+                 pickerInput(inputId="zones", label=h4("Quelle est la zone de responsabilité de l'intervention ?"),
+                                   choices=unique(secmar$zone_responsabilite),
+                                   options = list(
+                                     `selected-text-format` = "count > 5",
+                                     `count-selected-text` = "Toutes les zones",
+                                     `actions-box` = TRUE,
+                                     `deselect-all-text` = "Tout désélectionner",
+                                     `select-all-text` = "Tout sélectionner"
+                                   ),
+                                   selected = unique(secmar$zone_responsabilite),
+                                   multiple = TRUE)
               
      ),
       menuItem("Code source", icon = icon("file-code-o"),
@@ -239,10 +253,15 @@ server <- function(input, output, session) {
     evenementInput() %>% filter(distance_cote_milles_nautiques_cat %in% input$cotes)
     
   })
+  
+  zonesInput <- reactive({
+    cotesInput() %>% filter(zone_responsabilite %in% input$zones)
+    
+  })
 
 
   dateInput <- reactive({
-    cotesInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
+    zonesInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
   })
 
   saisonInput <- reactive({
