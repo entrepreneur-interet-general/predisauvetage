@@ -373,9 +373,16 @@ components:
           type: string
           description: Le mois de l'opération en français. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: Septembre
+        semaine:
+          type: integer
+          format: int32
+          description: La semaine de l'opération, au format ISO8601. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
+          example: 22
+          minimum: 1
+          maximum: 53
         numero_semaine:
           type: string
-          description: La semaine de l'opération, au format ISO8601. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
+          description: La semaine et l'année de l'opération, au format ISO8601. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: 2018-22
         jour_semaine:
           type: string
