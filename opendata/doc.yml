@@ -190,6 +190,7 @@ components:
           type: string
           description: Catégorie du moyen mis en oeuvre
           example: Avion-Hélicoptère
+          enum: [Avion-Hélicoptère, Moyen terrestre, Navire, Navire de sauvetage agréé, Plongeur]
         domaine_action:
           type: string
           description: Domaine d'action du moyen mis en oeuvre
@@ -237,6 +238,7 @@ components:
           type: string
           description: État du flotteur à la fin de l'intervention
           example: "Remorqué"
+          enum: [Assisté, Côte rejointe par ses propres moyens, Difficulté surmontée, reprise de route, Non assisté, cas de fausse alerte, Non renseigné, Perdu / Coulé, Remorqué, Retrouvé après recherche, Échoué]
         type_flotteur:
           type: string
           description: Indique le type précis du flotteur
@@ -373,6 +375,7 @@ components:
           type: string
           description: Le mois de l'opération en français. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: Septembre
+          enum: [Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
         semaine:
           type: integer
           format: int32
@@ -388,6 +391,7 @@ components:
           type: string
           description: Le jour de la semaine de l'opération en français. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: Lundi
+          enum: [Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche]
         est_weekend:
           type: boolean
           description: Indique si l'opération se déroule pendant un week-end. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur. L'opération se déroule durant le week-end si elle débute un samedi ou un dimanche.
