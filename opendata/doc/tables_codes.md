@@ -1,4 +1,5 @@
 # Tables de codes
+Les tableaux suivants décrivent les valeurs possibles prises par les colonnes contenant du texte et qui ont un nombre de valeurs possibles important.
 
 ## CROSS
 Ceci décrit les valeurs possibles dans `operations.cross`
