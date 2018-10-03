@@ -27,7 +27,7 @@ jobs:
 
   opendata_build:
     docker:
-      - image: antoineaugusti/secmar-opendata-build:0.0.3
+      - image: antoineaugusti/secmar-opendata-build:0.0.4
     working_directory: ~/repo/opendata
     steps:
       - checkout:
