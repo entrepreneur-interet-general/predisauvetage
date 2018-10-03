@@ -103,7 +103,7 @@ Ceci décrit les valeurs possibles dans `resultats_humain.resultat_humain`
 ## Autorités des moyens
 Ceci décrit les valeurs possibles dans `moyens.autorite_moyen`
 
-| Autorité qui a engagé le moyen |
+| Autorité dont le moyen a été engagé |
 | ------------- |
 | Administration étrangère |
 | Affaires maritimes |
@@ -167,3 +167,4 @@ Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`
 | Sous-marin |
 | Surf |
 | Véhicule nautique à moteur |
+
