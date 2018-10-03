@@ -6,6 +6,9 @@
 
 body {
   padding-top: 50px;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
 header#layout-header {
@@ -18,6 +21,10 @@ header#layout-header {
     border-top: 4px solid @orange;
     margin-bottom: 0;
   }
+}
+
+#layout-content {
+  flex: 1;
 }
 
 .card {
