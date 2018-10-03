@@ -9,7 +9,7 @@ select
   extract(day from o.date_heure_reception_alerte at time zone o.fuseau_horaire) jour,
   '' mois_texte,
   to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IW')::int semaine,
-  to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IYYY-IW') numero_semaine,
+  to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IYYY-IW') annee_semaine,
   extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire)::text jour_semaine,
   extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire) in (6, 7) est_weekend,
   false est_jour_ferie,

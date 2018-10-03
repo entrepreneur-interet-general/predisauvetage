@@ -110,7 +110,7 @@ CREATE TABLE public.operations_stats (
     "jour" smallint not null,
     "mois_texte" varchar(10) not null,
     "semaine" smallint not null,
-    "numero_semaine" varchar(7) not null,
+    "annee_semaine" varchar(7) not null,
     "jour_semaine" varchar(8) not null,
     "est_weekend" boolean not null,
     "est_jour_ferie" boolean not null,

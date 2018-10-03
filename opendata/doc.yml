@@ -380,7 +380,7 @@ components:
           example: 22
           minimum: 1
           maximum: 53
-        numero_semaine:
+        annee_semaine:
           type: string
           description: La semaine et l'année de l'opération, au format ISO8601. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: 2018-22
