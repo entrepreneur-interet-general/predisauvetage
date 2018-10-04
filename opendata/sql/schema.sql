@@ -1,8 +1,8 @@
-DROP TYPE IF EXISTS mois_francais;
+DROP TYPE IF EXISTS mois_francais CASCADE;
 CREATE TYPE mois_francais AS enum('Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre');
-DROP TYPE IF EXISTS jours_semaine_francais;
+DROP TYPE IF EXISTS jours_semaine_francais CASCADE;
 CREATE TYPE jours_semaine_francais AS enum('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
-DROP TYPE IF EXISTS phase_journee;
+DROP TYPE IF EXISTS phase_journee CASCADE;
 CREATE TYPE phase_journee AS enum('matinée', 'déjeuner', 'après-midi', 'nuit');
 
 DROP TABLE IF EXISTS public.operations CASCADE;
