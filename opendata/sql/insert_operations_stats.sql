@@ -184,7 +184,7 @@ where operation_id in (
   where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine')
 );
 
-update operations_stats set mois_texte = t.mois_texte
+update operations_stats set mois_texte = t.mois_texte::mois_francais
 from (
   select 1 mois, 'Janvier' mois_texte union
   select 2 mois, 'Février' mois_texte union

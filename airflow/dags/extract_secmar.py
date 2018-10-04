@@ -60,7 +60,7 @@ def set_operations_stats_extra_attributes_fn(**kwargs):
     return PostgresHook('postgresql_local').run(
         """
         update operations_stats set
-            phase_journee = t.phase_journee,
+            phase_journee = t.phase_journee::phase_journee,
             est_jour_ferie = t.est_jour_ferie
         from (
             select *
