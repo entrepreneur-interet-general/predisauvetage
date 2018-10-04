@@ -7,10 +7,10 @@ select
   extract(year from o.date_heure_reception_alerte at time zone o.fuseau_horaire) annee,
   extract(month from o.date_heure_reception_alerte at time zone o.fuseau_horaire) mois,
   extract(day from o.date_heure_reception_alerte at time zone o.fuseau_horaire) jour,
-  '' mois_texte,
+  'Janvier' mois_texte,
   to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IW')::int semaine,
   to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IYYY-IW') annee_semaine,
-  extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire)::text jour_semaine,
+  jour_semaine.jour_semaine jour_semaine,
   extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire) in (6, 7) est_weekend,
   false est_jour_ferie,
   null phase_journee,
@@ -153,6 +153,21 @@ left join (
   from flotteurs f
   group by f.operation_id
 ) f on f.operation_id = o.operation_id
+join (
+  select
+    o.operation_id,
+    t.jour_semaine
+  from operations o
+  join (
+    select 1 jour, 'Lundi' jour_semaine union
+    select 2 jour, 'Mardi' jour_semaine union
+    select 3 jour, 'Mercredi' jour_semaine union
+    select 4 jour, 'Jeudi' jour_semaine union
+    select 5 jour, 'Vendredi' jour_semaine union
+    select 6 jour, 'Samedi' jour_semaine union
+    select 7 jour, 'Dimanche' jour_semaine
+  ) t on t.jour = extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire)
+) jour_semaine on jour_semaine.operation_id = o.operation_id
 join operations_points op on op.operation_id = o.operation_id
 ;
 
@@ -185,18 +200,6 @@ from (
   select 12 mois, 'Décembre' mois_texte
 ) t
 where t.mois = operations_stats.mois;
-
-update operations_stats set jour_semaine = t.jour_semaine
-from (
-  select '1' jour, 'Lundi' jour_semaine union
-  select '2' jour, 'Mardi' jour_semaine union
-  select '3' jour, 'Mercredi' jour_semaine union
-  select '4' jour, 'Jeudi' jour_semaine union
-  select '5' jour, 'Vendredi' jour_semaine union
-  select '6' jour, 'Samedi' jour_semaine union
-  select '7' jour, 'Dimanche' jour_semaine
-) t
-where t.jour = operations_stats.jour_semaine;
 
 update operations_stats set sans_flotteur_implique = true
 where operation_id in (
