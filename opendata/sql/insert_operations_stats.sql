@@ -10,7 +10,7 @@ select
   'Janvier' mois_texte,
   to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IW')::int semaine,
   to_char(o.date_heure_reception_alerte at time zone o.fuseau_horaire, 'IYYY-IW') annee_semaine,
-  jour_semaine.jour_semaine jour_semaine,
+  jour_semaine.jour_semaine::jours_semaine_francais jour_semaine,
   extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire) in (6, 7) est_weekend,
   false est_jour_ferie,
   null phase_journee,
