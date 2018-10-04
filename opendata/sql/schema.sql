@@ -1,3 +1,10 @@
+DROP TYPE IF EXISTS mois_francais;
+CREATE TYPE mois_francais AS enum('Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre');
+DROP TYPE IF EXISTS jours_semaine_francais;
+CREATE TYPE jours_semaine_francais AS enum('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
+DROP TYPE IF EXISTS phase_journee;
+CREATE TYPE phase_journee AS enum('matinée', 'déjeuner', 'après-midi', 'nuit');
+
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
     "operation_id" bigint primary key,
@@ -108,13 +115,13 @@ CREATE TABLE public.operations_stats (
     "annee" smallint not null,
     "mois" smallint not null,
     "jour" smallint not null,
-    "mois_texte" varchar(10) not null,
+    "mois_texte" mois_francais not null,
     "semaine" smallint not null,
     "annee_semaine" varchar(7) not null,
-    "jour_semaine" varchar(8) not null,
+    "jour_semaine" jours_semaine_francais not null,
     "est_weekend" boolean not null,
     "est_jour_ferie" boolean not null,
-    "phase_journee" varchar(20),
+    "phase_journee" phase_journee,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
     "distance_cote_metres" int,
