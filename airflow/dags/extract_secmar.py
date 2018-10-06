@@ -50,7 +50,7 @@ def delete_invalid_operations_fn(**kwargs):
             select operation_id
             from operations_valides
         )
-        and numero_sitrep is not null;
+        and length(operation_id::text) < 10;
         drop table operations_valides;
         """
     )
