@@ -121,7 +121,7 @@ CREATE TABLE public.operations_stats (
     "jour_semaine" jours_semaine_francais not null,
     "est_weekend" boolean not null,
     "est_jour_ferie" boolean not null,
-    "est_vacances_scolaires" boolean not null,
+    "est_vacances_scolaires" boolean,
     "phase_journee" phase_journee,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
