@@ -295,6 +295,12 @@ queries = {
             count(1) = 0
         from operations_stats
         where date < '2016-12-01' and est_dans_dst and nom_dst = 'dst-corse'
+    ''',
+    'operations_count_2000_2008': '''
+        select
+            count(1) between 80000 and 80100
+        from operations_stats
+        where annee between 2000 and 2008
     '''
 }
 
