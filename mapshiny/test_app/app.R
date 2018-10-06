@@ -174,7 +174,7 @@ ui <- dashboardPage(
   menuItem("Code source", icon = icon("file-code-o"),
            href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
   menuItem("Documentation", icon = icon("book"),
-           href = "https://github.com/entrepreneur-interet-general/predisauvetage")
+           href = "https://documentation.snosan.fr")
   ),
 
   ## Body content
