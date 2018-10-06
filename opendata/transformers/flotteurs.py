@@ -13,8 +13,12 @@ class FlotteursTransformer(BaseTransformer):
 
     def transform(self, output):
         df = self.read_csv()
+
         df['numero_immatriculation'] = self.build_numero_immatriculation(df)
         df['assurance'] = self.assurance(df.assurance)
+        plaisance_voile_legere = df.type_flotteur == 'Plaisance voile légère', 'categorie_flotteur'
+        df.loc[plaisance_voile_legere] = 'Loisir nautique'
+
         self.to_csv(df, output)
 
     def assurance(self, series):
