@@ -140,7 +140,7 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
-     menuItem("Distance des côtes", tabName = "cote", icon = icon("globe"),
+     menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
               pickerInput(inputId="cotes", label=h4("A quelle distance des côtes se déroule les interventions ?"),
                                                 choices=unique(secmar$distance_cote_milles_nautiques_cat),
@@ -152,29 +152,31 @@ ui <- dashboardPage(
                                                   `select-all-text` = "Tout sélectionner"
                                                 ),
                                                 selected = unique(secmar$distance_cote_milles_nautiques_cat),
-                                                multiple = TRUE)
+                                                multiple = TRUE),
+              pickerInput(inputId="zones", label=h4("Quelle est la zone de responsabilité de l'intervention ?"),
+                          choices=unique(secmar$zone_responsabilite),
+                          options = list(
+                            `selected-text-format` = "count > 5",
+                            `count-selected-text` = "Toutes les zones",
+                            `actions-box` = TRUE,
+                            `deselect-all-text` = "Tout désélectionner",
+                            `select-all-text` = "Tout sélectionner"
+                          ),
+                          selected = unique(secmar$zone_responsabilite),
+                          multiple = TRUE)   
      ),
-      menuItem("Zone de responsabilité", tabName = "zone", icon = icon("globe"),
-                       "",
-                 pickerInput(inputId="zones", label=h4("Quelle est la zone de responsabilité de l'intervention ?"),
-                                   choices=unique(secmar$zone_responsabilite),
-                                   options = list(
-                                     `selected-text-format` = "count > 5",
-                                     `count-selected-text` = "Toutes les zones",
-                                     `actions-box` = TRUE,
-                                     `deselect-all-text` = "Tout désélectionner",
-                                     `select-all-text` = "Tout sélectionner"
-                                   ),
-                                   selected = unique(secmar$zone_responsabilite),
-                                   multiple = TRUE)
-              
-     ),
-      menuItem("Code source", icon = icon("file-code-o"),
-               href = "https://github.com/entrepreneur-interet-general/predisauvetage")
-    ),
+             
    downloadButton("downloadData", "Télécharger les données dans la zone (Excel)", style='padding:5px; font-size:80%'),
+   br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", style='padding:5px; font-size:80%')
   ),
+  br(),
+  menuItem("Code source", icon = icon("file-code-o"),
+           href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
+  menuItem("Documentation", icon = icon("book"),
+           href = "https://github.com/entrepreneur-interet-general/predisauvetage")
+  ),
+
   ## Body content
   dashboardBody(
     #tabItems(
