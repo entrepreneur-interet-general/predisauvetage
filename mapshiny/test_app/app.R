@@ -20,22 +20,23 @@ library(leaflet.extras)
 library(htmlwidgets)
 library(shinyjs)
 library(shinyBS)
-
-pg = dbDriver("PostgreSQL")
-
-
-con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
-
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect(con)
+library(writexl)
+# 
+# pg = dbDriver("PostgreSQL")
+# 
+# 
+# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect(con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
@@ -51,6 +52,8 @@ secmar <- secmar %>%
   mutate(distance_cote_milles_nautiques_cat = as.character(cut(distance_cote_milles_nautiques,
                                                                breaks = c(-Inf, 2, 6, 60, Inf),
                                                                labels = c("0-2 milles", "2-6 milles", "6-60 milles", "+60 milles"))))
+
+secmar <- secmar %>% mutate(vent_direction_categorie = factor(vent_direction_categorie, levels = c("nord-ouest", "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest")))
 
 
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
@@ -130,9 +133,6 @@ ui <- dashboardPage(
                            ),
                            selected = flotteur_choices,
                            multiple = TRUE)
-               # checkboxInput('bar', 'all', value = TRUE),
-               # checkboxGroupInput('flotteur', label="",
-               #             choices =  flotteur_choices)
                ),
       menuItem("Gravité", tabName = "gravite", icon = icon("heartbeat"),
                "Intervention impliquant au moins", br(), "1 décédé ou disparu",
@@ -172,7 +172,8 @@ ui <- dashboardPage(
       menuItem("Code source", icon = icon("file-code-o"),
                href = "https://github.com/entrepreneur-interet-general/predisauvetage")
     ),
-   downloadButton("downloadData", "Télécharger les données dans la zone")
+   downloadButton("downloadData", "Télécharger les données dans la zone (Excel)", style='padding:5px; font-size:80%'),
+   downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", style='padding:5px; font-size:80%')
   ),
   ## Body content
   dashboardBody(
@@ -184,7 +185,7 @@ ui <- dashboardPage(
                 leafletOutput("mymap", height = "100%", width = "100%"),
                 column(5, verbatimTextOutput("textbounds")),
                 absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                              draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
+                              draggable = TRUE, top = 20, left = "auto", right = 20, bottom = "auto",
                               width = 350, height = "auto",
                      div(style="padding: 10px;",          
                      br(),
@@ -196,7 +197,8 @@ ui <- dashboardPage(
                                                 'Répartition du bilan humain',
                                                 'Répartition phase de la journée',
                                                 'Répartition des flotteurs',
-                                                'Répartition des moyens engagés',
+                                                'Répartition nombre de moyens engagés',
+                                                'Répartition heures de moyens engagés',
                                                 'Evolution temporelle'),
                                     selected = 'Répartition du bilan humain'),
                      plotlyOutput(outputId= "camembert", height = "250px"),
@@ -261,7 +263,7 @@ server <- function(input, output, session) {
 
 
   dateInput <- reactive({
-    zonesInput() %>% filter(date_heure_reception_alerte >= input$dateRange[1] & date_heure_reception_alerte <= input$dateRange[2] )
+    zonesInput() %>% filter(date >= input$dateRange[1] & date <= input$dateRange[2] )
   })
 
   saisonInput <- reactive({
@@ -302,12 +304,12 @@ server <- function(input, output, session) {
   })
 
 
-  icons <- awesomeIcons(
-    icon = 'ios-close',
-    iconColor = 'black',
-    library = 'ion',
-    markerColor = secmar$color
-  )
+  # icons <- awesomeIcons(
+  #   icon = 'ios-close',
+  #   iconColor = 'black',
+  #   library = 'ion',
+  #   markerColor = secmar$color
+  # )
 
   output$mymap <- renderLeaflet({
 
@@ -323,7 +325,7 @@ server <- function(input, output, session) {
                               "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                               "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
-                 icon=icons, clusterOptions = markerClusterOptions()) %>%
+                  clusterOptions = markerClusterOptions()) %>%
       addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
             # function(el,x) {
             #    var map = this
@@ -340,7 +342,7 @@ server <- function(input, output, session) {
                                   "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
                                   "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                   "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
-                     icon=icons, clusterOptions = markerClusterOptions())
+                    clusterOptions = markerClusterOptions())
   })
 
   zipsInBounds <- reactive({
@@ -380,8 +382,8 @@ server <- function(input, output, session) {
         labs(x= "Force de la mer", y="Fréquence")+
         theme_minimal()
    } else if (input$histo == 'Direction du vent') {
-     ggplot(zipsInBounds(), aes(x=vent_direction))+
-       geom_histogram(fill="#FF0000") +
+     ggplot(zipsInBounds(), aes(x=vent_direction_categorie))+
+       geom_bar(fill="#FF0000") +
        labs(x= "Direction du vent", y="Fréquence")+
        theme_minimal()
    }
@@ -411,14 +413,29 @@ server <- function(input, output, session) {
      names(secmar_flotteur) <- c("Commerce", "Pêche", "Plaisance", "Loisirs nautiques", "Autre")
      sumdata_flotteur <- data.frame(value=apply(secmar_flotteur,2,sum))
      sumdata_flotteur$key=rownames(sumdata_flotteur)
-     plot_ly(sumdata_flotteur, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+     plot_ly(sumdata_flotteur, labels=~key, values=~value) %>% add_pie(hole = 0.4) %>% layout(showlegend = TRUE, legend = list(font = list(size=5),
+                                                                                                                               orientation = 'v'),
+                                                                                              margin = list(b = 0))
      
-   } else if (input$pie == "Répartition des moyens engagés") {
+   } else if (input$pie == "Répartition nombre de moyens engagés") {
      secmar_moyens <- zipsInBounds() %>% select(nombre_moyens_nautiques_engages, nombre_moyens_terrestres_engages, nombre_moyens_aeriens_engages)  %>% replace(is.na(.), 0)
      names(secmar_moyens) <- c('Moyens nautiques', "Moyens terrestres", 'Moyens aériens')
      sumdata_moyens <- data.frame(value=apply(secmar_moyens,2,sum))
      sumdata_moyens$key=rownames(sumdata_moyens)
-     plot_ly(sumdata_moyens, labels=~key, values=~value) %>% add_pie(hole = 0.4)
+     plot_ly(sumdata_moyens, labels=~key, values=~value) %>% add_pie(hole = 0.4) %>% layout(showlegend = TRUE, legend = list(font = list(size=5),
+                                                                                                                             orientation = 'v'),
+                                                                                            margin = list(b = 0))
+     
+     
+   } else if (input$pie == "Répartition heures de moyens engagés") {
+     secmar_moyens_heures <- zipsInBounds() %>% select(duree_engagement_moyens_nautiques_minutes, duree_engagement_moyens_terrestres_minutes, duree_engagement_moyens_aeriens_minutes)  %>% replace(is.na(.), 0)
+     names(secmar_moyens_heures) <- c('Heures moyens nautiques', "Heures moyens terrestres", 'Heures moyens aériens')
+     sumdata_moyens <- data.frame(value=apply(secmar_moyens_heures,2,sum))
+     sumdata_moyens$key=rownames(sumdata_moyens)
+     plot_ly(sumdata_moyens, labels=~key, values=~value) %>% add_pie(hole = 0.4) %>% layout(showlegend = TRUE, legend = list(font = list(size=5),
+                                                                                                                             orientation = 'v'),
+                                                                                            margin = list(b = 0))
+     
      
    } else if (input$pie == 'Répartition du top 5 événements'){
      grouped_event <- zipsInBounds() %>% dplyr::group_by(evenement) %>% summarize(count = n()) %>% top_n(5) %>% arrange(desc(count))
@@ -431,7 +448,9 @@ server <- function(input, output, session) {
      
    } else if (input$pie == "Répartition phase de la journée"){
      grouped_phase <- zipsInBounds() %>% dplyr::group_by(phase_journee) %>% summarize(count = n())
-     plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>% add_pie(hole = 0.4)
+     plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>% add_pie(hole = 0.4) %>% layout(showlegend = TRUE, legend = list(font = list(size=5),
+                                                                                                                                         orientation = 'v'),
+                                                                                                        margin = list(b = 0))
      
    } else if (input$pie == 'Evolution temporelle') {
      grouped_date = zipsInBounds() %>% count(date)
@@ -440,13 +459,22 @@ server <- function(input, output, session) {
  })
 
   output$camembert <- renderPlotly({
-    if (nrow(zipsInBounds()) == 0)
-      return("a")
+    validate(
+      need(zipsInBounds(), "Sorry, there is no data for you requested combination. 
+                      Please change your input selections"
+      )
+    )
     cam()
 
   })
 
   output$downloadData <- downloadHandler(
+    filename = "map_data.xlsx",
+    content = function(file) {
+      write_xlsx(zipsInBounds(), file)
+    })
+  
+  output$downloadDataCSV <- downloadHandler(
     filename = "map_data.csv",
     content = function(file) {
       write.csv(zipsInBounds(), file, row.names = FALSE)
