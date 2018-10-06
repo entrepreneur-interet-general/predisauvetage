@@ -13,6 +13,7 @@ in:
     allow_extra_columns: false
     allow_optional_columns: false
     stop_on_invalid_record: true
+    null_string: ""
     columns:
     - {name: operation_id, type: long}
     - {name: phase_journee, type: string}
@@ -25,3 +26,4 @@ in:
     operation_id: {type: 'bigint references operations primary key'}
     phase_journee: {type: varchar(10)}
     est_jour_ferie: {type: boolean}
+    est_vacances_scolaires: {type: boolean}
