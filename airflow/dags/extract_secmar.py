@@ -61,7 +61,8 @@ def set_operations_stats_extra_attributes_fn(**kwargs):
         """
         update operations_stats set
             phase_journee = t.phase_journee::phase_journee,
-            est_jour_ferie = t.est_jour_ferie
+            est_jour_ferie = t.est_jour_ferie,
+            est_vacances_scolaires = t.est_vacances_scolaires
         from (
             select *
             from operations_stats_extras

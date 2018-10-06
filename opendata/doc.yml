@@ -400,6 +400,11 @@ components:
           type: boolean
           description: Indique si l'opération se déroule pendant un jour férié. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur.
           example: true
+        est_vacances_scolaires:
+          type: boolean
+          description: Indique si l'opération se déroule pendant des vacances scolaires en zone A, B ou C. La date de référence est la date de réception de l'alerte au fuseau horaire du CROSS coordinateur. Quand le calendrier des vacances scolaires n'est pas connu, la donnée n'est pas renseignée.
+          example: true
+          nullable: true
         phase_journee:
           type: string
           enum: [matinée, déjeuner, après-midi, nuit]

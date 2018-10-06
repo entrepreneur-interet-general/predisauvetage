@@ -13,6 +13,7 @@ select
   jour_semaine.jour_semaine::jours_semaine_francais jour_semaine,
   extract(isodow from o.date_heure_reception_alerte at time zone o.fuseau_horaire) in (6, 7) est_weekend,
   false est_jour_ferie,
+  false est_vacances_scolaires,
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,

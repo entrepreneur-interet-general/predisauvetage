@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from jours_feries_france.compute import JoursFeries
-
-from datetime import timedelta
+from vacances_scolaires_france import SchoolHolidayDates
+from vacances_scolaires_france import UnsupportedYearException
 
 from transformers.sunrise_sunset import SunriseSunset
 from transformers.base import BaseTransformer
@@ -17,6 +17,7 @@ class OperationsStatsTransformer(BaseTransformer):
     def __init__(self, filepath):
         super(OperationsStatsTransformer, self).__init__(filepath)
         self.bank_holidays = {}
+        self.school_holiday = SchoolHolidayDates()
 
     def transform(self, output):
         def phase_journee(row):
@@ -51,9 +52,18 @@ class OperationsStatsTransformer(BaseTransformer):
 
             return date in self.bank_holidays[date.year]
 
+        def est_vacances_scolaires(row):
+            try:
+                date = row['date_heure_reception_alerte_locale'].date()
+                return self.school_holiday.is_holiday(date)
+            except UnsupportedYearException:
+                return np.nan
+
         df = self.read_csv()
+
         df['phase_journee'] = df.apply(lambda row: phase_journee(row), axis=1)
         df['est_jour_ferie'] = df.apply(lambda row: est_jour_ferie(row), axis=1)
+        df['est_vacances_scolaires'] = df.apply(lambda row: est_vacances_scolaires(row), axis=1)
 
         df.drop(
             ['latitude', 'longitude'] + self.DATE_COLUMNS,
