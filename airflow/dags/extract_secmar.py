@@ -99,15 +99,6 @@ end_import = DummyOperator(task_id='end_import', dag=dag)
 start_checks = DummyOperator(task_id='start_checks', dag=dag)
 end_checks = DummyOperator(task_id='end_checks', dag=dag)
 
-# Temporary fix for a messed up date at CROSS Gris-Nez
-# Only works for the UNIX version of sed
-fix_gris_nez_operation = BashOperator(
-    task_id='fix_gris_nez_operation',
-    bash_command="sed -i 's/5010-02-10/2010-05-10/g' " + in_path('operations'),
-    dag=dag,
-)
-fix_gris_nez_operation.set_upstream(start)
-
 # Convert input CSV files
 for table in SECMAR_TABLES + ['operations_valides']:
     t = PythonOperator(
@@ -124,9 +115,6 @@ for table in SECMAR_TABLES + ['operations_valides']:
     )
     t.set_upstream(start)
     t.set_downstream(end_transform)
-
-    if table == 'operations':
-        t.set_upstream(fix_gris_nez_operation)
 
 create_tables = PythonOperator(
     task_id='create_tables',
