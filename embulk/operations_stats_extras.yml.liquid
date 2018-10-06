@@ -17,6 +17,7 @@ in:
     - {name: operation_id, type: long}
     - {name: phase_journee, type: string}
     - {name: est_jour_ferie, type: boolean}
+    - {name: est_vacances_scolaires, type: boolean}
 {% include 'datasources/out_postgresql' %}
   table: operations_stats_extras
   mode: truncate_insert
