@@ -21,22 +21,22 @@ library(htmlwidgets)
 library(shinyjs)
 library(shinyBS)
 library(writexl)
-# 
-# pg = dbDriver("PostgreSQL")
-# 
-# 
-# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
-#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
-# 
-# query <- dbSendQuery(con, 'select * from operations;')
-# operations <- fetch(query, n=-1)
-# dbClearResult(query)
-# 
-# query <- dbSendQuery(con, 'select * from operations_stats;')
-# operations_stat <- fetch(query, n=-1)
-# dbClearResult(query)
-# 
-# dbDisconnect(con)
+
+pg = dbDriver("PostgreSQL")
+
+
+con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+
+query <- dbSendQuery(con, 'select * from operations;')
+operations <- fetch(query, n=-1)
+dbClearResult(query)
+
+query <- dbSendQuery(con, 'select * from operations_stats;')
+operations_stat <- fetch(query, n=-1)
+dbClearResult(query)
+
+dbDisconnect(con)
 
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
