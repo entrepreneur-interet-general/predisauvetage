@@ -29,7 +29,7 @@ dag = DAG(
 )
 dag.doc_md = __doc__
 
-tables = SECMAR_TABLES + ['operations_stats']
+tables = SECMAR_TABLES + ['operations_stats', 'moyens_snsm']
 
 template = 'sudo -u postgres pg_dump -c --no-owner {tables} {schema} > {output}'
 dump_command = template.format(

@@ -77,6 +77,10 @@ def insert_operations_stats_fn(**kwargs):
     return execute_sql_file('insert_operations_stats')
 
 
+def insert_moyens_snsm_fn(**kwargs):
+    return execute_sql_file('moyens_snsm')
+
+
 def execute_sql_file(filename):
     path = helpers.opendata_sql_path(filename)
     with open(path, 'r', encoding='utf-8') as f:
@@ -158,6 +162,15 @@ prepare_operations_points = PythonOperator(
     dag=dag
 )
 prepare_operations_points.set_upstream(delete_invalid_operations)
+
+insert_moyens_snsm = PythonOperator(
+    task_id='insert_moyens_snsm',
+    python_callable=insert_moyens_snsm_fn,
+    provide_context=True,
+    dag=dag
+)
+insert_moyens_snsm.set_upstream(delete_invalid_operations)
+insert_moyens_snsm.set_downstream(start_checks)
 
 distances = [
     'compute_shore_distance',
