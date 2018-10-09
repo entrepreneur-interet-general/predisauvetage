@@ -120,7 +120,7 @@ ui <- dashboardPage(
                                    choices = unique(secmar$saison), selected = unique(secmar$saison)),
               bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
                         placement = "right", options = list(container = "body")),
-              sliderInput("heure", label = "Heure de l'alerte", min = 0, 
+              sliderInput("heure", label = "Heure de l'alerte (UTC)", min = 0, 
                           max = 24, value = c(0,24))),
       menuItem("Type d'opérations", tabName = "op", icon = icon("ambulance"),
                pickerInput(inputId="operation", label=h5("Quel type d'intervention ?"),
