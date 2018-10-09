@@ -55,6 +55,9 @@ secmar <- secmar %>%
 
 secmar <- secmar %>% mutate(vent_direction_categorie = factor(vent_direction_categorie, levels = c("nord-ouest", "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest")))
 
+secmar <- secmar %>% mutate(date_heure = as.numeric(format(date_heure_reception_alerte, "%H")) +
+                              as.numeric(format(date_heure_reception_alerte, "%M"))/60)
+secmar <- secmar %>% mutate(type_operation = replace_na(type_operation, "Non renseigné"))
 
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
 flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
@@ -109,19 +112,35 @@ ui <- dashboardPage(
                               label = "Date d'intervention",
                               start = '2017-01-01', end = '2017-12-31',
                               separator = " - ", startview = "year", format = "dd/mm/yyyy"
-            ), checkboxGroupButtons("saison", label="Saison",justified = TRUE,
-                                       status = "primary",
-                                       checkIcon = list(yes = icon("ok", lib = "glyphicon"), no = icon("remove", lib = "glyphicon")),
-                                       choices = unique(secmar$saison), selected = unique(secmar$saison)),
-      bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
-                placement = "right", options = list(container = "body")),
+            ), 
+     menuItem("Heure et saison", tabName = "season", icon = icon("hourglass"),
+              checkboxGroupButtons("saison", label="Saison",justified = TRUE,
+                                   status = "primary",
+                                   checkIcon = list(yes = icon("ok", lib = "glyphicon"), no = icon("remove", lib = "glyphicon")),
+                                   choices = unique(secmar$saison), selected = unique(secmar$saison)),
+              bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
+                        placement = "right", options = list(container = "body")),
+              sliderInput("heure", label = "Heure de l'alerte", min = 0, 
+                          max = 24, value = c(0,24))),
+      menuItem("Type d'opérations", tabName = "op", icon = icon("ambulance"),
+               pickerInput(inputId="operation", label=h5("Quel type d'intervention ?"),
+                           choices=unique(secmar$type_operation),
+                           options = list(
+                             `selected-text-format` = "count > 5",
+                             `count-selected-text` = "{0} types sélectionnés",
+                             `actions-box` = TRUE,
+                             `deselect-all-text` = "Tout désélectionner",
+                             `select-all-text` = "Tout sélectionner"
+                           ),
+                           selected = unique(secmar$type_operation),
+                           multiple = TRUE)),
       menuItem("Evenement", tabName = "event", icon = icon("anchor"),
                checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
-               selectizeInput(inputId="evenement", label=h4("Quel motif d'intervention ?"),
+               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
                            choices=unique(secmar$evenement),
                            multiple = TRUE)),
       menuItem("Flotteur", tabName = "boat", icon = icon("ship"),
-               h4("Quel type de flotteur a été impliqué ?"),
+               h5("Quel type de flotteur a été impliqué ?"),
                pickerInput(inputId="flotteur",
                            choices=flotteur_choices,
                            options = list(
@@ -142,7 +161,7 @@ ui <- dashboardPage(
                ),
      menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
-              pickerInput(inputId="cotes", label=h4("A quelle distance des côtes se déroule les interventions ?"),
+              pickerInput(inputId="cotes", label=h5("A quelle distance des côtes se déroule les interventions ?"),
                                                 choices=unique(secmar$distance_cote_milles_nautiques_cat),
                                                 options = list(
                                                   `selected-text-format` = "count > 5",
@@ -153,7 +172,7 @@ ui <- dashboardPage(
                                                 ),
                                                 selected = unique(secmar$distance_cote_milles_nautiques_cat),
                                                 multiple = TRUE),
-              pickerInput(inputId="zones", label=h4("Quelle est la zone de responsabilité de l'intervention ?"),
+              pickerInput(inputId="zones", label=h5("Quelle est la zone de responsabilité de l'intervention ?"),
                           choices=unique(secmar$zone_responsabilite),
                           options = list(
                             `selected-text-format` = "count > 5",
@@ -238,6 +257,10 @@ server <- function(input, output, session) {
   #  }
 
   })
+  
+  operationInput <- reactive({
+    crossInput() %>% filter(type_operation %in% input$operation)
+  })
 
 
   observe({
@@ -248,9 +271,11 @@ server <- function(input, output, session) {
   })
 
   evenementInput <- reactive({
-      crossInput() %>% filter(evenement %in% input$evenement)
+      operationInput() %>% filter(evenement %in% input$evenement)
 
   })
+  
+  
 
   
   cotesInput <- reactive({
@@ -271,13 +296,17 @@ server <- function(input, output, session) {
   saisonInput <- reactive({
     dateInput() %>% filter(saison %in% input$saison)
   })
+  
+  heureInput <- reactive({
+    saisonInput() %>% filter(date_heure >= input$heure[1] & date_heure <= input$heure[2])
+  })
 
 
   decesInput <- reactive({
     if (input$deces == FALSE) {
-      saisonInput()
+      heureInput()
     } else {
-      saisonInput() %>% filter(nombre_personnes_tous_deces_ou_disparues > 0)
+      heureInput() %>% filter(nombre_personnes_tous_deces_ou_disparues > 0)
     }
 
   })
@@ -337,14 +366,25 @@ server <- function(input, output, session) {
 
   observe({
     m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
-    m %>% addMarkers(~longitude, ~latitude,
-                     popup=~paste("CROSS : ", cross,
-                                  "</br> Evénement : " , evenement,
-                                  "</br> Sitrep : ", cross_sitrep,
-                                  "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
-                                  "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
-                                  "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
-                    clusterOptions = markerClusterOptions())
+    if (nrow(flotteurInput())>100){
+      m %>% addMarkers(~longitude, ~latitude,
+                       popup=~paste("CROSS : ", cross,
+                                    "</br> Evénement : " , evenement,
+                                    "</br> Sitrep : ", cross_sitrep,
+                                    "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                                    "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
+                                    "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
+                       clusterOptions = markerClusterOptions())
+    } else {
+      m %>% addMarkers(~longitude, ~latitude,
+                       popup=~paste("CROSS : ", cross,
+                                    "</br> Evénement : " , evenement,
+                                    "</br> Sitrep : ", cross_sitrep,
+                                    "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                                    "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
+                                    "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques))
+    }
+
   })
 
   zipsInBounds <- reactive({
