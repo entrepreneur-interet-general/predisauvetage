@@ -366,7 +366,7 @@ server <- function(input, output, session) {
 
   observe({
     m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
-    if (nrow(flotteurInput())>100){
+    #if (nrow(flotteurInput())>100){
       m %>% addMarkers(~longitude, ~latitude,
                        popup=~paste("CROSS : ", cross,
                                     "</br> Evénement : " , evenement,
@@ -375,15 +375,15 @@ server <- function(input, output, session) {
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                        clusterOptions = markerClusterOptions())
-    } else {
-      m %>% addMarkers(~longitude, ~latitude,
-                       popup=~paste("CROSS : ", cross,
-                                    "</br> Evénement : " , evenement,
-                                    "</br> Sitrep : ", cross_sitrep,
-                                    "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
-                                    "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
-                                    "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques))
-    }
+   # } else {
+    #   m %>% addMarkers(~longitude, ~latitude,
+    #                    popup=~paste("CROSS : ", cross,
+    #                                 "</br> Evénement : " , evenement,
+    #                                 "</br> Sitrep : ", cross_sitrep,
+    #                                 "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+    #                                 "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
+    #                                 "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques))
+    # }
 
   })
 
