@@ -462,19 +462,19 @@ components:
         nombre_personnes_decedees:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées lors de l'opération.
+          description: Le nombre total de personnes décédées lors de l'opération. Cette colonne n'est plus utilisée depuis décembre 2009 où la notion de décès a été séparée entre cause accidentelle (`nombre_personnes_decedees_accidentellement`) et cause naturelle (`nombre_personnes_decedees_naturellement`).
           example: 42
           minimum: 0
         nombre_personnes_decedees_accidentellement:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées accidentellement lors de l'opération.
+          description: Le nombre total de personnes décédées accidentellement lors de l'opération. Cette colonne n'est renseignée que depuis les années 2009, auparavant tous les décès étaient comptés dans la colonne `nombre_personnes_decedees`.
           example: 42
           minimum: 0
         nombre_personnes_decedees_naturellement:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées naturellement lors de l'opération.
+          description: Le nombre total de personnes décédées naturellement lors de l'opération. Cette colonne n'est renseignée que depuis les années 2009, auparavant tous les décès étaient comptés dans la colonne `nombre_personnes_decedees`.
           example: 42
           minimum: 0
         nombre_personnes_disparues:
