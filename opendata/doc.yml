@@ -621,6 +621,24 @@ components:
           description: Le nombre total de moyens aériens engagés lors de l'opération.
           example: 3
           minimum: 0
+        duree_engagement_moyens_nautiques_heures:
+          type: integer
+          format: float
+          description: La durée totale d'engagement en heures de moyens nautiques lors de l'opération.
+          example: 2.42
+          minimum: 0
+        duree_engagement_moyens_terrestres_heures:
+          type: integer
+          format: float
+          description: La durée totale d'engagement en heures de moyens terrestres lors de l'opération.
+          example: 2.42
+          minimum: 0
+        duree_engagement_moyens_aeriens_heures:
+          type: integer
+          format: float
+          description: La durée totale d'engagement en heures de moyens aériens lors de l'opération.
+          example: 2.42
+          minimum: 0
         duree_engagement_moyens_nautiques_minutes:
           type: integer
           format: int32
