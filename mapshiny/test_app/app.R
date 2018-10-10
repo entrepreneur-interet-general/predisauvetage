@@ -97,22 +97,30 @@ ui <- dashboardPage(
         )
       )
      , 
-      pickerInput(inputId="cross", label=h4("Quel CROSS a coordoné l'intervention ?"),
-                           choices=unique(secmar$cross),
-                           options = list(
-                             `selected-text-format` = "count > 5",
-                             `count-selected-text` = "{0} CROSS sélectionnés",
-                             `actions-box` = TRUE,
-                             `deselect-all-text` = "Tout désélectionner",
-                             `select-all-text` = "Tout sélectionner"
-                           ),
-                           selected = unique(secmar$cross),
-                           multiple = TRUE),
+      switchInput("heatmap", value = FALSE, size = 'mini',
+                  onLabel = 'Heatmap', offLabel = 'Cluster', label = 'Changer de visualisation'),
         dateRangeInput('dateRange',
                               label = "Date d'intervention",
                               start = '2017-01-01', end = '2017-12-31',
                               separator = " - ", startview = "year", format = "dd/mm/yyyy"
             ), 
+     menuItem("Évenement", tabName = "event", icon = icon("anchor"),
+              checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
+              selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
+                             choices=unique(secmar$evenement),
+                             multiple = TRUE)),
+     menuItem("CROSS", tabName = "cross", icon = icon("male"),
+              pickerInput(inputId="cross", label=h5("Quel CROSS a coordoné l'intervention ?"),
+                          choices=unique(secmar$cross),
+                          options = list(
+                            `selected-text-format` = "count > 5",
+                            `count-selected-text` = "{0} CROSS sélectionnés",
+                            `actions-box` = TRUE,
+                            `deselect-all-text` = "Tout désélectionner",
+                            `select-all-text` = "Tout sélectionner"
+                          ),
+                          selected = unique(secmar$cross),
+                          multiple = TRUE)),
      menuItem("Heure et saison", tabName = "season", icon = icon("hourglass"),
               checkboxGroupButtons("saison", label="Saison",justified = TRUE,
                                    status = "primary",
@@ -133,11 +141,6 @@ ui <- dashboardPage(
                              `select-all-text` = "Tout sélectionner"
                            ),
                            selected = unique(secmar$type_operation),
-                           multiple = TRUE)),
-      menuItem("Evenement", tabName = "event", icon = icon("anchor"),
-               checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
-               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
-                           choices=unique(secmar$evenement),
                            multiple = TRUE)),
       menuItem("Flotteur", tabName = "boat", icon = icon("ship"),
                h5("Quel type de flotteur a été impliqué ?"),
@@ -184,16 +187,15 @@ ui <- dashboardPage(
                           selected = unique(secmar$zone_responsabilite),
                           multiple = TRUE)   
      ),
-             
+     menuItem("Code source", icon = icon("file-code-o"),
+              href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
+     menuItem("Documentation", icon = icon("book"),
+              href = "https://mtes-mct.github.io/secmar-documentation") ,     
    downloadButton("downloadData", "Télécharger les données dans la zone (Excel)", style='padding:5px; font-size:80%'),
    br(),
+   br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", style='padding:5px; font-size:80%')
-  ),
-  br(),
-  menuItem("Code source", icon = icon("file-code-o"),
-           href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
-  menuItem("Documentation", icon = icon("book"),
-           href = "https://mtes-mct.github.io/secmar-documentation")
+  )
   ),
 
   ## Body content
@@ -242,9 +244,9 @@ server <- function(input, output, session) {
 
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
-      secmar
+      secmar %>% drop_na(longitude, latitude)
     } else {
-      secmar %>% filter(concerne_snosan == TRUE)
+      secmar %>% drop_na(longitude, latitude) %>% filter(concerne_snosan == TRUE)
     }
 
   })
@@ -344,7 +346,7 @@ server <- function(input, output, session) {
 
   output$mymap <- renderLeaflet({
 
-    leaflet(secmar_2017) %>%
+    leaflet(secmar_2017) %>% 
       addTiles(group = "Open street map") %>%
       addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>%
       addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>%
@@ -365,7 +367,9 @@ server <- function(input, output, session) {
   })
 
   observe({
-    m <- leafletProxy("mymap", data = flotteurInput()) %>% clearMarkerClusters()
+   
+    if (input$heatmap == FALSE) {
+      m <- leafletProxy("mymap", data = flotteurInput()) %>% clearHeatmap() %>% clearMarkerClusters()
     #if (nrow(flotteurInput())>100){
       m %>% addMarkers(~longitude, ~latitude,
                        popup=~paste("CROSS : ", cross,
@@ -375,6 +379,11 @@ server <- function(input, output, session) {
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                        clusterOptions = markerClusterOptions())
+      
+    } else if (input$heatmap == TRUE) {
+      m <- leafletProxy("mymap", data = flotteurInput()) %>% clearHeatmap() %>% clearMarkerClusters()
+      m %>% addHeatmap(group="heat", lng=~longitude, lat=~latitude, blur=20, radius = 11)
+    }
    # } else {
     #   m %>% addMarkers(~longitude, ~latitude,
     #                    popup=~paste("CROSS : ", cross,
@@ -470,7 +479,7 @@ server <- function(input, output, session) {
      
      
    } else if (input$pie == "Répartition heures de moyens engagés") {
-     secmar_moyens_heures <- zipsInBounds() %>% select(duree_engagement_moyens_nautiques_minutes, duree_engagement_moyens_terrestres_minutes, duree_engagement_moyens_aeriens_minutes)  %>% replace(is.na(.), 0)
+     secmar_moyens_heures <- zipsInBounds() %>% select(duree_engagement_moyens_nautiques_heures, duree_engagement_moyens_terrestres_heures, duree_engagement_moyens_aeriens_heures)  %>% replace(is.na(.), 0)
      names(secmar_moyens_heures) <- c('Heures moyens nautiques', "Heures moyens terrestres", 'Heures moyens aériens')
      sumdata_moyens <- data.frame(value=apply(secmar_moyens_heures,2,sum))
      sumdata_moyens$key=rownames(sumdata_moyens)
