@@ -622,19 +622,19 @@ components:
           example: 3
           minimum: 0
         duree_engagement_moyens_nautiques_heures:
-          type: integer
+          type: number
           format: float
           description: La durée totale d'engagement en heures de moyens nautiques lors de l'opération.
           example: 2.42
           minimum: 0
         duree_engagement_moyens_terrestres_heures:
-          type: integer
+          type: number
           format: float
           description: La durée totale d'engagement en heures de moyens terrestres lors de l'opération.
           example: 2.42
           minimum: 0
         duree_engagement_moyens_aeriens_heures:
-          type: integer
+          type: number
           format: float
           description: La durée totale d'engagement en heures de moyens aériens lors de l'opération.
           example: 2.42
