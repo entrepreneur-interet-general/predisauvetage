@@ -64,7 +64,8 @@ secmar <- secmar %>%
                                                                breaks = c(-Inf, 2, 6, 60, Inf),
                                                                labels = c("0-2 milles", "2-6 milles", "6-60 milles", "+60 milles"))))
 
-secmar <- secmar %>% mutate(vent_direction_categorie = factor(vent_direction_categorie, levels = c("nord-ouest", "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest")))
+secmar <- secmar %>% mutate(vent_direction_categorie = factor(vent_direction_categorie, levels = c("nord-ouest", "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest"),
+                                                                                        labels = c("NO", "N", "NE", "E", "SE", "S", "SO", "O")))
 
 secmar <- secmar %>% mutate(date_heure = as.numeric(format(date_heure_reception_alerte, "%H")) +
                               as.numeric(format(date_heure_reception_alerte, "%M"))/60)
