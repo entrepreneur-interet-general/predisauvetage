@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>SRR Gris-Nez</name>
+    <Placemark>
+      <name>SRR Gris-Nez</name>
+      <LineString>
+        <coordinates>
+          0.1600,49.6800,0
+          0.0000,50.4100,0
+          0.9600,50.5500,0
+          1.2700,50.8100,0
+          1.3600,50.9500,0
+          1.5500,51.0400,0
+          1.7300,51.1000,0
+          1.8900,51.2000,0
+          1.9500,51.2400,0
+          2.0400,51.3400,0
+          2.1200,51.5000,0
+          2.1900,51.5300,0
+          2.2500,51.5300,0
+          2.3900,51.2700,0
+          2.5400,51.0900,0
+          3.6800,50.4000,0
+          0.7400,49.5200,0
+          0.1600,49.6800,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

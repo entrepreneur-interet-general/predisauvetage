@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>SRR La Réunion</name>
+    <Placemark>
+      <name>SRR La Réunion</name>
+      <LineString>
+        <coordinates>
+          45.0000,-50.0000,0
+          45.0000,-30.0000,0
+          52.0000,-19.0000,0
+          60.0000,-24.5000,0
+          60.0000,-35.0000,0
+          75.0000,-35.0000,0
+          75.0000,-50.0000,0
+          45.0000,-50.0000,0
+          52.0000,-30.0000,0
+          55.0000,-19.0000,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>SRR La Garde</name>
+    <Placemark>
+      <name>SRR La Garde</name>
+      <LineString>
+        <coordinates>
+          4.6700,42.0000,0
+          3.1700,42.4400,0
+          2.7300,42.5800,0
+          2.7000,43.2000,0
+          3.0300,44.6200,0
+          6.8500,44.5400,0
+          7.5400,43.7800,0
+          7.7000,43.5000,0
+          9.5000,43.5000,0
+          9.7500,43.1700,0
+          9.7500,41.3300,0
+          7.7300,41.3300,0
+          7.7300,39.0000,0
+          4.6700,39.0000,0
+          4.6700,42.0000,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>
