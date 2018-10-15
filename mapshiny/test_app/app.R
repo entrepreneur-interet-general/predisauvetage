@@ -38,6 +38,17 @@ dbClearResult(query)
 
 dbDisconnect(con)
 
+srr_etel <- read_file('kml_srr/etel.kml')
+departements <- read_file('kml_srr/DEPARTEMENTS.kml')
+srr_corsen <- read_file('kml_srr/corsen.kml')
+srr_grisnez <- read_file('kml_srr/gris-nez.kml')
+srr_antillesguyane <- read_file('kml_srr/antilles-guyane.kml')
+srr_lagarde <- read_file('kml_srr/la-garde.kml')
+srr_jobourg <- read_file('kml_srr/jobourg.kml')
+srr_lareunion <- read_file('kml_srr/la-reunion.kml')
+srr_noumea <- read_file('kml_srr/noumea.kml')
+srr_tahiti <- read_file('kml_srr/tahiti.kml')
+
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
 secmar <- secmar %>% mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
                      mutate(sans_flotteur = ifelse(nombre_flotteurs_commerce_impliques > 0 |
@@ -347,7 +358,7 @@ server <- function(input, output, session) {
   output$mymap <- renderLeaflet({
 
     leaflet(secmar_2017) %>% 
-      addTiles(group = "Open street map") %>%
+      addTiles() %>%  addProviderTiles(providers$OpenSeaMap, group = "OpenSeaMap") %>%  
       addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>%
       addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>%
       setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
@@ -359,7 +370,7 @@ server <- function(input, output, session) {
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                               "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                   clusterOptions = markerClusterOptions()) %>%
-      addLayersControl(baseGroups = c("Open Street map", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
+      addLayersControl(baseGroups = c("OpenSeaMap", "SHOM", "IGN")) #%>% htmlwidgets::onRender("
             # function(el,x) {
             #    var map = this
             #    var markers = L.markerClusterGroup({ maxClusterRadius: function(zoom) {return (zoom > 10) ? 40 : 80}}).addTo(map);
@@ -378,7 +389,20 @@ server <- function(input, output, session) {
                                     "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
-                       clusterOptions = markerClusterOptions())
+                       clusterOptions = markerClusterOptions()) %>% 
+        addKML(srr_etel,  color = 'grey',fill=FALSE, weight = 1.5, label = "Etel", labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px", opacity = 4, color = "black",
+          direction = "auto")) %>% 
+        addKML(departements,  color = '#00997a', fill=FALSE, weight = 1) %>% 
+        addKML(srr_corsen,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_grisnez,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_antillesguyane,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_lagarde,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_jobourg,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_lareunion,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_noumea,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
+        addKML(srr_tahiti,  color = 'grey',fill=FALSE, weight = 1.5) 
+      
       
     } else if (input$heatmap == TRUE) {
       m <- leafletProxy("mymap", data = flotteurInput()) %>% clearHeatmap() %>% clearMarkerClusters()
