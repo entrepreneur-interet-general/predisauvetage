@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>SRR Étel</name>
+    <Placemark>
+      <name>SRR Étel</name>
+      <LineString>
+        <coordinates>
+          -1.7900,43.3700,0
+          -4.0000,44.3300,0
+          -8.0000,45.0000,0
+          -8.0000,47.8000,0
+          -4.3800,47.8000,0
+          -1.5800,48.6200,0
+          -0.2500,47.1700,0
+          -0.7500,42.9700,0
+          -1.7900,43.3700,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

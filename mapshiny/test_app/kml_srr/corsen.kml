@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>SRR Corsen</name>
+    <Placemark>
+      <name>SRR Corsen</name>
+      <LineString>
+        <coordinates>
+          -8.0000,47.8000,0
+          -8.0000,48.8300,0
+          -4.1100,49.5000,0
+          -2.3300,48.8800,0
+          -1.8200,48.8200,0
+          -1.5800,48.6200,0
+          -4.3800,47.8000,0
+          -8.0000,47.8000,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>
