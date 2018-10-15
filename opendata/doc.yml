@@ -413,7 +413,7 @@ components:
           nullable: true
         concerne_snosan:
           type: boolean
-          description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques).
+          description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques). Actuellement, une opération est dans le cadre d'étude du SNOSAN dès lors qu'elle implique au moins un flotteur de plaisance ou de loisirs nautiques. Ainsi, si aucun flotteur de ces types n'est impliqué, elle ne rentre pas dans le cadre d'étude du SNOSAN.
           example: true
         concerne_plongee:
           type: boolean
