@@ -359,7 +359,7 @@ server <- function(input, output, session) {
 
     leaflet(secmar_2017) %>% 
       addTiles() %>%  addProviderTiles(providers$OpenSeaMap, group = "OpenSeaMap") %>% 
-      addProviderTiles(providers$OpenStreetMap.BlackAndWhite, group = "Noir et blanc") %>% 
+      addProviderTiles(providers$Esri.WorldGrayCanvas, group = "Noir et blanc") %>% 
       addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>%
       addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>%
       setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
