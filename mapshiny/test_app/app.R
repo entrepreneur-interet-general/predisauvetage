@@ -39,7 +39,6 @@ dbClearResult(query)
 dbDisconnect(con)
 
 srr_etel <- read_file('kml_srr/etel.kml')
-departements <- read_file('kml_srr/DEPARTEMENTS.kml')
 srr_corsen <- read_file('kml_srr/corsen.kml')
 srr_grisnez <- read_file('kml_srr/gris-nez.kml')
 srr_antillesguyane <- read_file('kml_srr/antilles-guyane.kml')
@@ -394,7 +393,6 @@ server <- function(input, output, session) {
         addKML(srr_etel,  color = 'grey',fill=FALSE, weight = 1.5, label = "Etel", labelOptions = labelOptions(
           style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px", opacity = 4, color = "black",
           direction = "auto")) %>% 
-        addKML(departements,  color = '#00997a', fill=FALSE, weight = 1) %>% 
         addKML(srr_corsen,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
         addKML(srr_grisnez,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
         addKML(srr_antillesguyane,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
