@@ -359,7 +359,7 @@ server <- function(input, output, session) {
 
     leaflet(secmar_2017) %>% 
       addTiles() %>%  addProviderTiles(providers$OpenSeaMap, group = "OpenSeaMap") %>% 
-      addProviderTiles(providers$OpenStreetMap.BlackAndWhite, group = "Noir et blanc") %>% 
+      addProviderTiles(providers$CartoDB.Positron, group = "Noir et blanc") %>% 
       addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', attribution = '&copy; https://www.geoportail.gouv.fr', group = "IGN") %>%
       addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',  attribution =  '<a href="http://www.shom.fr/">SHOM</a>', group = "SHOM") %>%
       setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
@@ -391,17 +391,17 @@ server <- function(input, output, session) {
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                        clusterOptions = markerClusterOptions()) %>% 
-        addKML(srr_etel,  color = 'grey',fill=FALSE, weight = 1.5, label = "Etel", labelOptions = labelOptions(
+        addKML(srr_etel,  color = 'red',fill=FALSE, weight = 0.5, label = "Etel", labelOptions = labelOptions(
           style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px", opacity = 4, color = "black",
           direction = "auto")) %>% 
-        addKML(srr_corsen,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_grisnez,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_antillesguyane,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_lagarde,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_jobourg,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_lareunion,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_noumea,  color = 'grey',fill=FALSE, weight = 1.5) %>% 
-        addKML(srr_tahiti,  color = 'grey',fill=FALSE, weight = 1.5) 
+        addKML(srr_corsen,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_grisnez,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_antillesguyane,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_lagarde,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_jobourg,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_lareunion,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_noumea,  color = 'red',fill=FALSE, weight = 0.5) %>% 
+        addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5) 
       
       
     } else if (input$heatmap == TRUE) {
