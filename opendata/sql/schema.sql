@@ -131,6 +131,8 @@ CREATE TABLE public.operations_stats (
     "nom_stm" varchar(50),
     "est_dans_dst" boolean not null,
     "nom_dst" varchar(50),
+    "maree_port" varchar(50),
+    "maree_coefficient" smallint,
     "nombre_personnes_blessees" smallint not null,
     "nombre_personnes_assistees" smallint not null,
     "nombre_personnes_decedees" smallint not null,

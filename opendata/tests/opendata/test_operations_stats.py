@@ -8,13 +8,15 @@ class TestOperationsStatsTransformer(BaseTest):
         self.assertEquals(
             OperationsStatsTransformer('/tmp/fake').columns_to_drop(),
             [
-              "concerne_snosan",
-              "nombre_moyens_nautiques_engages",
-              "nombre_moyens_terrestres_engages",
-              "nombre_moyens_aeriens_engages",
-              "duree_engagement_moyens_nautiques_minutes",
-              "duree_engagement_moyens_terrestres_minutes",
-              "duree_engagement_moyens_aeriens_minutes"
+                "concerne_snosan",
+                "nombre_moyens_nautiques_engages",
+                "nombre_moyens_terrestres_engages",
+                "nombre_moyens_aeriens_engages",
+                "duree_engagement_moyens_nautiques_minutes",
+                "duree_engagement_moyens_terrestres_minutes",
+                "duree_engagement_moyens_aeriens_minutes",
+                "maree_port",
+                "maree_coefficient"
             ]
         )
 
