@@ -447,6 +447,25 @@ components:
           description: Si l'opération se déroule dans une zone d'un dispositif de séparation du trafic, le nom de cette zone.
           example: dst-dover
           nullable: true
+        maree_port:
+          type: string
+          description: Le nom du port utilisé comme référence pour connaitre le coefficient moyen de marée de la journée de l'opération. Les marées sont renseignées pour les opérations coordonnées par les CROSS en Atlantique et Manche, lorsque l'opération est géolocalisée et que celle-ci se trouve à moins de 20 kilomètres de la plus proche côte.
+          example: Dieppe
+          nullable: true
+        maree_coefficient:
+          type: integer
+          format: int32
+          description: Le coefficient moyen de marée de la journée de l'opération. Les marées sont renseignées pour les opérations coordonnées par les CROSS en Atlantique et Manche, lorsque l'opération est géolocalisée et que celle-ci se trouve à moins de 20 kilomètres de la plus proche côte.
+          nullable: true
+          example: 70
+          minimum: 20
+          maximum: 120
+        maree_categorie:
+          type: string
+          description: Le nom de la catégorie de la marée pour l'opération.
+          example: '96-120'
+          enum: ['20-45', '46-70', '71-95', '96-120']
+          nullable: true
         nombre_personnes_blessees:
           type: integer
           format: int32

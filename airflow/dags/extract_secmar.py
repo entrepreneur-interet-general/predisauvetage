@@ -80,6 +80,9 @@ def insert_operations_stats_fn(**kwargs):
 def insert_moyens_snsm_fn(**kwargs):
     return execute_sql_file('moyens_snsm')
 
+def set_tide_data_fn(**kwargs):
+    return execute_sql_file('compute_tide')
+
 
 def execute_sql_file(filename):
     path = helpers.opendata_sql_path(filename)
@@ -240,6 +243,15 @@ set_operations_stats_extra_attributes = PythonOperator(
 set_operations_stats_extra_attributes.set_upstream(embulk_operations_stats_extras)
 set_operations_stats_extra_attributes.set_upstream(insert_operations_stats)
 set_operations_stats_extra_attributes.set_downstream(start_checks)
+
+set_tide_data = PythonOperator(
+    task_id='set_tide_data',
+    python_callable=set_tide_data_fn,
+    provide_context=True,
+    dag=dag
+)
+set_tide_data.set_upstream(set_operations_stats_extra_attributes)
+set_tide_data.set_downstream(start_checks)
 
 # Check consistency of data
 queries = {
