@@ -1,11 +1,19 @@
 update operations_stats set
   maree_port = t.maree_port,
-  maree_coefficient = t.maree_coefficient
+  maree_coefficient = t.maree_coefficient,
+  maree_categorie = t.maree_categorie
 from (
   select
     operation_id,
     t.port as maree_port,
-    coefficient as maree_coefficient
+    coefficient as maree_coefficient,
+    case
+      when coefficient between 20 and 45 then '20-45'
+      when coefficient between 46 and 70 then '46-70'
+      when coefficient between 71 and 95 then '71-95'
+      when coefficient between 95 and 120 then '96-120'
+      else null
+    end maree_categorie
   from (
     select distinct
       operation_id,

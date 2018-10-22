@@ -460,6 +460,12 @@ components:
           example: 70
           minimum: 20
           maximum: 120
+        maree_categorie:
+          type: string
+          description: Le nom de la catégorie de la marée pour l'opération.
+          example: '96-120'
+          enum: ['20-45', '46-70', '71-95', '96-120']
+          nullable: true
         nombre_personnes_blessees:
           type: integer
           format: int32
