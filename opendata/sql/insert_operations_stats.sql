@@ -25,6 +25,7 @@ select
   op.nom_dst nom_dst,
   null maree_port,
   null maree_coefficient,
+  null maree_categorie,
   coalesce(rh.nombre_personnes_blessees, 0) nombre_personnes_blessees,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
