@@ -7,6 +7,7 @@ import pandas as pd
 class BaseTransformer(object):
     ISO_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
     DATE_COLUMNS = []
+    CSV_DTYPE = None
 
     def __init__(self, filepath):
         super(BaseTransformer, self).__init__()
@@ -18,7 +19,8 @@ class BaseTransformer(object):
             delimiter=',',
             converters=self.date_converters(),
             true_values=['Y'],
-            false_values=['N']
+            false_values=['N'],
+            dtype=self.CSV_DTYPE
         )
 
     def to_csv(self, df, output):

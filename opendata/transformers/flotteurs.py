@@ -7,6 +7,19 @@ from transformers.base import BaseTransformer
 
 
 class FlotteursTransformer(BaseTransformer):
+    CSV_DTYPE = {
+        'numero_immatriculation': str,
+        'marque': str,
+        'nom_serie': str,
+        'puissance_moteurs': np.float64,
+        'coque': str,
+        'materiau': str,
+        'propulsion': str,
+        'type_moteur': str,
+        'type_navire': str,
+        'utilisation': str,
+    }
+
     def __init__(self, filepath):
         super(FlotteursTransformer, self).__init__(filepath)
         self.hash_cache = {np.nan: np.nan}
