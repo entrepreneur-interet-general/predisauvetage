@@ -326,6 +326,14 @@ queries = {
             count(1) between 80000 and 80100
         from operations_stats
         where annee between 2000 and 2008
+    ''',
+    'unset_tide_data': '''
+    select count(1) = 0
+    from operations_stats stats
+    join operations o on o.operation_id = stats.operation_id
+    where stats.distance_cote_metres < 20000
+      and o."cross" not in ('Antilles-Guyane', 'Corse', 'Guadeloupe', 'Guyane', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie')
+      and stats.maree_coefficient is null
     '''
 }
 
