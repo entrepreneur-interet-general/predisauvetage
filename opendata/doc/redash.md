@@ -2,6 +2,8 @@
 
 Cette page contient des instructions spécifiques à l'interface web de Redash en tant qu'utilisateur.
 
+[[toc]]
+
 ## Requêtes
 ### Créer une requête
 Instructions en cours de rédaction.
