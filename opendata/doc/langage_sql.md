@@ -3,7 +3,7 @@
 Cette page comporte quelques lignes de rappel sur le langage SQL. Le diaporama complet est [disponible en ligne](https://docs.google.com/presentation/d/1hn6SA78FhIaXljEb7Pof9WVl0woEjurLm4VCAlHT1mM/).
 
 ## Requête de sélection
-Une requête de sélection va faire apparaitre les éléments suivants :
+Une requête de sélection peut faire apparaitre les éléments suivants :
 
 - `SELECT` : les colonnes que l'on veut faire apparaitre dans le résultat ;
 - `FROM` : la table source des données ;
