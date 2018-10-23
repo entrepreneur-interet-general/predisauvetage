@@ -529,13 +529,13 @@ components:
         nombre_personnes_tous_deces:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération.
+          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération. Cette colonne fait la somme des colonnes `nombre_personnes_decedees`, `nombre_personnes_decedees_naturellement` et `nombre_personnes_decedees_accidentellement` pour assurer une valeur entre 1985 et maintenant, suite à la séparation de la colonne `nombre_personnes_decedees` en 2009.
           example: 42
           minimum: 0
         nombre_personnes_tous_deces_ou_disparues:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération.
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
           example: 42
           minimum: 0
         nombre_personnes_impliquees:
@@ -607,13 +607,13 @@ components:
         nombre_personnes_tous_deces_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération, sans prendre en compte les clandestins. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
           example: 42
           minimum: 0
         nombre_personnes_tous_deces_ou_disparues_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération, sans prendre en compte les clandestins. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
           example: 42
           minimum: 0
         nombre_personnes_impliquees_sans_clandestins:
