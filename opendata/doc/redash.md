@@ -2,22 +2,27 @@
 
 Cette page contient des instructions spécifiques à l'interface web de Redash en tant qu'utilisateur
 
-## Créer une requête
+## Requêtes
+### Créer une requête
 Instructions en cours de rédaction.
 
-## Rafraichir automatiquement une requête
+### Rafraichir automatiquement une requête
 Instructions en cours de rédaction.
 
-## Créer une visualisation graphique
+
+## Visualisations
+### Créer une visualisation graphique
 Instructions en cours de rédaction.
 
-## Créer un tableau croisé dynamique
+### Créer un tableau croisé dynamique
 Instructions en cours de rédaction.
 
-## Créer un tableau de bord
+
+## Tableaux de bord
+### Créer un tableau de bord
 Instructions en cours de rédaction.
 
-## Ajouter des visualisations à un tableau de bord
+### Ajouter des visualisations à un tableau de bord
 Après avoir créé des visualisations et un tableau de bord, vous pouvez les ajouter à un tableau de bord en suivant la démarche suivante :
 
 - Vous rendre sur le tableau de bord en question
@@ -31,8 +36,8 @@ Il est ensuite possible de réorganiser et d'adapter la taille de chaque visuali
 
 Dès que vous obtenez un résultat satisfaisant, vous pouvez enregistrer le travail à l'aide du bouton bleu `Apply Changes`, en haut à droite.
 
-## Collaborer sur un tableau de bord
+### Collaborer sur un tableau de bord
 Instructions en cours de rédaction.
 
-## Partager un tableau de bord
+### Partager un tableau de bord
 Instructions en cours de rédaction.
