@@ -74,7 +74,7 @@ jobs:
             oa-to-md doc.yml schema.md fr
             wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
             cat doc/schema.md schema.md > /tmp/file && mv /tmp/file doc/snosan_schema.md
-            cp doc/{CHANGELOG.md,tables_codes.md} /tmp/secmar-documentation/
+            cp doc/{CHANGELOG.md,tables_codes.md,langage_sql.md} /tmp/secmar-documentation/
             cp doc/snosan_schema.md /tmp/secmar-documentation/schema.md
             cd /tmp/secmar-documentation/
             yarn run build
