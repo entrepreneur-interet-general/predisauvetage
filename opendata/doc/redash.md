@@ -43,7 +43,7 @@ Après avoir créé des visualisations et un tableau de bord, vous pouvez les aj
 - Vous rendre sur le tableau de bord en question
 - Cliquer sur le bouton, en haut à droite, `...`
 - Choisir le menu `Edit`
-- Une barre blanche apparait en bas de l'écran, cliquer le bouton le `Add Widget`
+- Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
 - Taper le nom de la requête qui contient les visualisations souhaitées
 - Choisir la visualisation désirée dans le menu déroulant
 
@@ -52,7 +52,64 @@ Il est ensuite possible de réorganiser et d'adapter la taille de chaque visuali
 Dès que vous obtenez un résultat satisfaisant, vous pouvez enregistrer le travail à l'aide du bouton bleu `Apply Changes`, en haut à droite.
 
 ### Ajouter du texte à un tableau de bord
-Instructions en cours de rédaction.
+Il est possible d'ajouter du texte et du contenu média à un tableau de bord. Les cas d'utilisation classiques sont par exemple :
+- l'ajout de texte explicatif ;
+- la séparation d'un tableau de bord en plusieurs parties logiques ;
+- l'inclusion d'images ;
+- le référencement de liens externes.
+
+Pour ajouter du texte à un tableau de bord, voici la démarche à suivre :
+- Vous rendre sur le tableau de bord en question
+- Cliquer sur le bouton, en haut à droite, `...`
+- Choisir le menu `Edit`
+- Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
+- Sélectionner l'onglet `` TODO
+- Renseigner votre texte
+- Cliquer sur `Save` TODO
+
+Il est ensuite possible de réorganiser et d'adapter la taille du bloc de texte à l'aide de la souris.
+
+#### Avoir des titres
+Pour avoir des titres de différents niveaux, vous pouvez utiliser la syntaxe suivante :
+
+```markdown
+# Titre de 1er niveau (le plus gros)
+Un paragraphe.
+## Titre de 2ème niveau
+Du texte.
+### Titre de 3ème niveau (le moins gros)
+Toujours plus de texte.
+```
+
+#### Mettre du texte en gras
+Vous pouvez mettre du texte en gras à l'aide de la syntaxe suivante :
+
+```markdown
+**Ceci est en gras**. Mais là non.
+```
+
+#### Mettre du texte en italique
+Vous pouvez mettre du texte en italique à l'aide de la syntaxe suivante :
+
+```markdown
+*Ceci est en gras*. Mais là non.
+```
+
+#### Faire un lien vers une page web
+Vous pouvez faire un lien vers une page web à l'aide de la syntaxe suivante :
+
+```markdown
+Voici [un lien vers une page](https://example.com/page).
+```
+
+#### Inclure une image
+Vous pouvez inclure une image déjà hébergée sur Internet à l'aide de la syntaxe suivante :
+
+```markdown
+![Description de l'image](https://example.com/lien/vers/image.jpg).
+```
+
+Si votre image n'est pas encore sur Internet, vous pouvez utiliser un service proposant de mettre en ligne votre image et copier-coller l'adresse de votre image. TODO
 
 ### Collaborer sur un tableau de bord
 Par défaut, après avoir créé un tableau de bord, seule la personne qui l'a créé peut modifier l'agencement et les visualisations du tableau de bord. Vous pouvez faire en sorte que plusieurs personnes aient ces droits en suivant la démarche suivante :
@@ -64,4 +121,20 @@ Par défaut, après avoir créé un tableau de bord, seule la personne qui l'a c
 - Fermer la fenêtre à l'aide de la croix en haut à droite
 
 ### Partager un tableau de bord
-Instructions en cours de rédaction.
+Par défaut, tout tableau de bord créé est visible par les autres utilisateurs de Redash ayant un compte et étant connectés. Toutefois, il est parfois souhaitable de partager un tableau de bord à quelqu'un n'ayant pas de compte Redash et dont il n'est pas souhaitable que la personne possède un compte (puisse voir ou éditer des requêtes, naviguer à sa guise etc).
+
+Ainsi, Redash propose la possibilité de créer un lien unique, que vous pouvez partager et qui donne accès uniquement à un tableau de bord précis. Ce lien permet ainsi de consulter ce tableau de bord spécifique, sans avoir besoin de compte et ne donne pas d'autres privilèges sur Redash.
+
+La démarche à suivre est la suivante :
+- Vous rendre sur le tableau de bord en question
+- Cliquer sur l'icône de partage TODO
+- Sélectionner la case `` TODO
+- Copier-coller le lien 
+- Le partager avec les personnes souhaitées
+
+### Mettre fin au partage d'un tableau de bord
+Si vous avez partagé un tableau de bord à l'aide d'un lien unique et que vous souhaitez qu'il ne soit plus possible d'y accéder via ce lien unique, vous pouvez désactiver ce partage en suivant la démarche suivante :
+
+- Vous rendre sur le tableau de bord en question
+- Cliquer sur l'icône de partage TODO
+- Décocher la case `` TODO
