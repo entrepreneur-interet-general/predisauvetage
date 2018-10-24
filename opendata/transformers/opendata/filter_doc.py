@@ -4,6 +4,7 @@ import yamlordereddictloader
 from codecs import open
 
 from transformers.opendata.config import ColumnDropper
+from transformers.opendata.config import ModelDropper
 
 
 class FilterYamlDocumentation(object):
@@ -15,6 +16,10 @@ class FilterYamlDocumentation(object):
         content = self.yaml_content(in_file)
 
         for model_name, values in content['components']['schemas'].items():
+            if self.model_dropper().for_model(model_name):
+                del content['components']['schemas'][model_name]
+                continue
+
             cols_to_drop = self.column_dropper().for_model(model_name)
             for col in cols_to_drop:
                 del content['components']['schemas'][model_name]['properties'][col]
@@ -34,3 +39,6 @@ class FilterYamlDocumentation(object):
 
     def column_dropper(self):
         return ColumnDropper(self.configuration_filepath)
+
+    def model_dropper(self):
+        return ModelDropper(self.configuration_filepath)
