@@ -25,7 +25,7 @@ library(writexl)
 
 pg = dbDriver("PostgreSQL")
 
-#Connection to the database
+# Connection to the database
 con = dbConnect(pg,
                 user = Sys.getenv("DATABASE_USERNAME") ,
                 password = Sys.getenv("DATABASE_PASSWORD"),
@@ -232,18 +232,18 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
-      menuItem("Département", tabname="departement", icon = icon("male"),
-           pickerInput(inputId="departement", label=h5("Dans quel département ?"),
-                       choices=unique(secmar$departement),
-                       options = list(
-                         `selected-text-format` = "count > 5",
-                         `count-selected-text` = "{0} départements sélectionnés",
-                         `actions-box` = TRUE,
-                         `deselect-all-text` = "Tout désélectionner",
-                         `select-all-text` = "Tout sélectionner"
-                       ),
-                       selected = unique(secmar$departement),
-                       multiple = TRUE)),
+      # menuItem("Département", tabname="departement", icon = icon("male"),
+      #      pickerInput(inputId="departement", label=h5("Dans quel département ?"),
+      #                  choices=unique(secmar$departement),
+      #                  options = list(
+      #                    `selected-text-format` = "count > 5",
+      #                    `count-selected-text` = "{0} départements sélectionnés",
+      #                    `actions-box` = TRUE,
+      #                    `deselect-all-text` = "Tout désélectionner",
+      #                    `select-all-text` = "Tout sélectionner"
+      #                  ),
+      #                  selected = unique(secmar$departement),
+      #                  multiple = TRUE)),
      menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
               pickerInput(inputId="cotes", label=h5("A quelle distance des côtes se déroule les interventions ?"),
@@ -278,8 +278,9 @@ ui <- dashboardPage(
    br(),
    br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", 
-                  style='padding:5px; font-size:80%'),
-   actionButton("doc", "Secmar doc")
+                  style='padding:5px; font-size:80%')
+  # ,
+  #  actionButton("doc", "Secmar doc")
   
    )),
 
@@ -327,14 +328,14 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
-  observeEvent(input$doc, {
-    showModal(modalDialog(
-      title = "Somewhat important message",
-      "This is a somewhat important message.",
-      easyClose = TRUE,
-      footer = NULL
-    ))
-  })
+  # observeEvent(input$doc, {
+  #   showModal(modalDialog(
+  #     title = "Somewhat important message",
+  #     "This is a somewhat important message.",
+  #     easyClose = TRUE,
+  #     footer = NULL
+  #   ))
+  # })
   
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
@@ -349,12 +350,12 @@ server <- function(input, output, session) {
       snosanInput() %>% filter(cross %in% input$cross)
   })
   
-  departementInput <- reactive({
-    crossInput() %>% filter(departement %in% input$departement)
-  })
+  # departementInput <- reactive({
+  #   crossInput() %>% filter(departement %in% input$departement)
+  # })
   
   operationInput <- reactive({
-    departementInput() %>% filter(type_operation %in% input$operation)
+    crossInput() %>% filter(type_operation %in% input$operation)
   })
 
   observe({
