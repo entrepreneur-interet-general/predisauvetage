@@ -17,9 +17,10 @@ class TestSchemaMatches(BaseTest):
         'Moyen': 'moyens.csv',
         'Flotteur': 'flotteurs.csv',
         'OperationStats': 'operations_stats.csv',
+        'MoyenSNSM': 'moyens_snsm.csv'
     }
 
-    AGGREGATES = ['OperationStats']
+    AGGREGATES = ['OperationStats', 'MoyenSNSM']
 
     def test_schema_matches(self):
         open_data_schema = self.open_data_schemas()

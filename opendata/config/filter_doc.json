@@ -1,5 +1,5 @@
 {
-  "models": ["moyens_snsm"],
+  "models": ["moyens", "moyens_snsm"],
   "columns": {
     "flotteurs":[
       "marque",

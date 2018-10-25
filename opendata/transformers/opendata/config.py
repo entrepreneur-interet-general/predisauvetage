@@ -25,9 +25,6 @@ class BaseDropper(object):
 
 
 class ColumnDropper(BaseDropper):
-    def __init__(self, configuration_filepath):
-        super(ColumnDropper, self).__init__(configuration_filepath)
-
     def parse_configuration(self):
         with open(self.configuration_filepath) as f:
             data = json.load(f)
@@ -35,9 +32,6 @@ class ColumnDropper(BaseDropper):
 
 
 class ModelDropper(BaseDropper):
-    def __init__(self, configuration_filepath):
-        super(ModelDropper, self).__init__(configuration_filepath)
-
     def parse_configuration(self):
         with open(self.configuration_filepath) as f:
             data = json.load(f)
@@ -45,3 +39,11 @@ class ModelDropper(BaseDropper):
 
     def for_table(self, table):
         return table in self.conf
+
+
+class ModelRenamer(BaseDropper):
+    def model_to_table(self, table):
+        return self.MODELS_TO_TABLES[table]
+
+    def parse_configuration(self):
+        pass

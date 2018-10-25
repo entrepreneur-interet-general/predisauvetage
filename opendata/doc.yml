@@ -788,3 +788,58 @@ components:
           type: boolean
           description: Indique si aucun flotteur n'est impliqué dans cette opération.
           example: true
+    MoyenSNSM:
+      properties:
+        operation_id:
+          type: integer
+          format: int64
+          description: Le numéro unique de l'opération.
+          example: 1119920371
+        nombre_semi_rigides_engages:
+          type: integer
+          format: int32
+          description: Le nombre de semi-rigides SNSM engagés dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_vedettes_1ere_classe_engages:
+          type: integer
+          format: int32
+          description: Le nombre de vedettes SNSM de 1ère classe engagées dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_vedettes_2e_ou_3e_classe_engages:
+          type: integer
+          format: int32
+          description: Le nombre de vedettes SNSM de 2e ou 3e classes engagées dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_vedettes_4e_classe_engages:
+          type: integer
+          format: int32
+          description: Le nombre de vedettes SNSM de 4e classe engagées dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_canots_tout_temps_engages:
+          type: integer
+          format: int32
+          description: Le nombre de canots tout temps SNSM engagés dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_patrouilles_engages:
+          type: integer
+          format: int32
+          description: Le nombre de patrouilles terrestres SNSM engagées dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_moyens_nautiques_engages:
+          type: integer
+          format: int32
+          description: Le nombre total de moyens nautiques SNSM engagés dans l'opération.
+          example: 2
+          minimum: 0
+        nombre_moyens_terrestres_engages:
+          type: integer
+          format: int32
+          description: Le nombre de patrouilles terrestres SNSM engagées dans l'opération. (équivalent à `nombre_patrouilles_engages`)
+          example: 2
+          minimum: 0
