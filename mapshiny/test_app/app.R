@@ -278,8 +278,9 @@ ui <- dashboardPage(
    br(),
    br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", 
-                  style='padding:5px; font-size:80%'),
-   actionButton("doc", "Secmar doc")
+                  style='padding:5px; font-size:80%')
+  # ,
+  #  actionButton("doc", "Secmar doc")
   
    )),
 
@@ -327,14 +328,14 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
-  observeEvent(input$doc, {
-    showModal(modalDialog(
-      title = "Somewhat important message",
-      "This is a somewhat important message.",
-      easyClose = TRUE,
-      footer = NULL
-    ))
-  })
+  # observeEvent(input$doc, {
+  #   showModal(modalDialog(
+  #     title = "Somewhat important message",
+  #     "This is a somewhat important message.",
+  #     easyClose = TRUE,
+  #     footer = NULL
+  #   ))
+  # })
   
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
