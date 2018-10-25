@@ -11,7 +11,7 @@ paths:
           description: OK
 components:
   schemas:
-    Operation:
+    operations:
       properties:
         default:
           type: string
@@ -21,7 +21,7 @@ components:
           type: string
           description: Description.
           nullable: true
-    Moyen:
+    moyens:
       properties:
         lorem:
           type: integer

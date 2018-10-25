@@ -41,3 +41,10 @@ components:
           type: string
           description: Description.
           nullable: true
+    ResultatHumain:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Description.
+          example: 1119920371
