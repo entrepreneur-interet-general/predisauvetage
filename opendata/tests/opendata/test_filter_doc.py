@@ -7,7 +7,7 @@ from opendata.base import BaseTest
 
 class TestFilterYamlDocumentation(BaseTest):
     def subject(self):
-        return FilterYamlDocumentation(self.filepath('tests/files/drop_columns.json'))
+        return FilterYamlDocumentation(self.filepath('tests/files/filter_doc.json'))
 
     def test_filter_yaml(self):
         expected_file = self.filepath('tests/files/expected_doc.yml')

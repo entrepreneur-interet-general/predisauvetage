@@ -1,0 +1,11 @@
+{
+  "models": ["resultats_humain"],
+  "columns": {
+    "operations":[
+      "lorem"
+    ],
+    "moyens":[
+      "ipsum"
+    ]
+  }
+}
