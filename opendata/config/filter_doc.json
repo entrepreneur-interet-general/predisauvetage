@@ -1,0 +1,44 @@
+{
+  "models": ["moyens", "moyens_snsm"],
+  "columns": {
+    "flotteurs":[
+      "marque",
+      "nom_serie",
+      "assurance",
+      "longueur",
+      "largeur",
+      "jauge",
+      "nombre_personnes_recommande",
+      "puissance_maximum_autorisee",
+      "surface_voilure",
+      "puissance_moteurs",
+      "coque",
+      "materiau",
+      "propulsion",
+      "type_moteur",
+      "type_navire",
+      "utilisation"
+    ],
+    "moyens":[
+      "date_heure_debut",
+      "date_heure_fin"
+    ],
+    "operations":[
+
+    ],
+    "operations_stats":[
+      "concerne_snosan",
+      "nombre_moyens_nautiques_engages",
+      "nombre_moyens_terrestres_engages",
+      "nombre_moyens_aeriens_engages",
+      "duree_engagement_moyens_nautiques_minutes",
+      "duree_engagement_moyens_terrestres_minutes",
+      "duree_engagement_moyens_aeriens_minutes",
+      "maree_port",
+      "maree_coefficient"
+    ],
+    "resultats_humain":[
+
+    ]
+  }
+}
