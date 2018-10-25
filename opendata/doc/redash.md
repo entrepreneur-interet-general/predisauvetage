@@ -11,6 +11,9 @@ Instructions en cours de rédaction.
 ### Rafraichir automatiquement une requête
 Instructions en cours de rédaction.
 
+### Proposer des filtres dans ses requêtes
+Instructions en cours de rédaction.
+
 
 ## Visualisations
 ### Créer une visualisation graphique
@@ -63,9 +66,9 @@ Pour ajouter du texte à un tableau de bord, voici la démarche à suivre :
 - Cliquer sur le bouton, en haut à droite, `...`
 - Choisir le menu `Edit`
 - Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
-- Sélectionner l'onglet `` TODO
+- Sélectionner l'onglet `Text Box`
 - Renseigner votre texte
-- Cliquer sur `Save` TODO
+- Cliquer sur `Add to dashboard`
 
 Il est ensuite possible de réorganiser et d'adapter la taille du bloc de texte à l'aide de la souris.
 
@@ -109,7 +112,7 @@ Vous pouvez inclure une image déjà hébergée sur Internet à l'aide de la syn
 ![Description de l'image](https://example.com/lien/vers/image.jpg).
 ```
 
-Si votre image n'est pas encore sur Internet, vous pouvez utiliser un service proposant de mettre en ligne votre image et copier-coller l'adresse de votre image. TODO
+Si votre image n'est pas encore sur Internet, vous pouvez utiliser un service proposant de mettre en ligne votre image et copier-coller l'adresse de votre image. Vous pouvez par exemple utiliser [imgur.com](https://imgur.com/upload).
 
 ### Collaborer sur un tableau de bord
 Par défaut, après avoir créé un tableau de bord, seule la personne qui l'a créé peut modifier l'agencement et les visualisations du tableau de bord. Vous pouvez faire en sorte que plusieurs personnes aient ces droits en suivant la démarche suivante :
@@ -127,14 +130,15 @@ Ainsi, Redash propose la possibilité de créer un lien unique, que vous pouvez 
 
 La démarche à suivre est la suivante :
 - Vous rendre sur le tableau de bord en question
-- Cliquer sur l'icône de partage TODO
-- Sélectionner la case `` TODO
+- Sélectionner la case `Allow public access (using a secret URL).`
 - Copier-coller le lien 
+- Fermer la fenêtre
 - Le partager avec les personnes souhaitées
 
 ### Mettre fin au partage d'un tableau de bord
 Si vous avez partagé un tableau de bord à l'aide d'un lien unique et que vous souhaitez qu'il ne soit plus possible d'y accéder via ce lien unique, vous pouvez désactiver ce partage en suivant la démarche suivante :
 
 - Vous rendre sur le tableau de bord en question
-- Cliquer sur l'icône de partage TODO
-- Décocher la case `` TODO
+- Cliquer sur l'icône de partage, avant dernière icône en haut à droite de la page
+- Décocher la case `Allow public access (using a secret URL).`
+- Fermer la fenêtre

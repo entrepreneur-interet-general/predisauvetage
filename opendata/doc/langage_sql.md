@@ -1,6 +1,6 @@
 # Langage SQL
 
-Cette page comporte quelques lignes de rappel sur le langage SQL. Le diaporama complet est [disponible en ligne](https://docs.google.com/presentation/d/1hn6SA78FhIaXljEb7Pof9WVl0woEjurLm4VCAlHT1mM/).
+Cette page comporte des rappels sur le langage SQL. Le diaporama complet est [disponible en ligne](https://docs.google.com/presentation/d/1hn6SA78FhIaXljEb7Pof9WVl0woEjurLm4VCAlHT1mM/). Il est possible que certaines notions n'aient pas été abordées lors de la formation.
 
 ## Requête de sélection
 Une requête de sélection peut faire apparaitre les éléments suivants :
@@ -34,7 +34,7 @@ ORDER BY 1 ASC, 2 DESC -- Tri par l'ordre ascendant la colonne 1 (année) puis d
 Il est recommandé de suivre la présentation ci-dessus en terme de respect de la casse, espacements et retours à la ligne pour faciliter la lisibilité des requêtes et conserver une cohérence.
 
 ## Fonctions supplémentaires en SQL
-Ici sont présentées quelques fonctionnalités supplémentaires du langage SQL qui peuvent être utiles lors de requêtes spécifiques. La liste des fonctionnalités peut être trouvée sur un moteur de recherche, pour une base de données PostgreSQL.
+Ici sont présentées quelques fonctionnalités supplémentaires du langage SQL qui peuvent être utiles lors de requêtes spécifiques. La liste complète des fonctionnalités peut être trouvée sur un moteur de recherche, pour une base de données PostgreSQL.
 
 ### Années glissantes
 Il est possible dans une requête de récupérer la date courante lors de l'exécution de la requête à l'aide de `current_date`.
@@ -63,10 +63,9 @@ GROUP BY 1, 2, 3
 Il est possible de passer du texte tout en majuscules ou tout en minuscules avec les commandes `UPPER` et `LOWER` respectivement.
 
 ```sql
-SELECT
+SELECT DISTINCT
     "cross",
     LOWER("cross") AS "cross_minuscules",
     UPPER("cross") AS "cross_majuscules"
 FROM "operations"
-LIMIT 100 -- Permet de ne retourner que les 100 premières lignes
 ```
