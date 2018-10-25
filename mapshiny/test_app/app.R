@@ -47,12 +47,12 @@ dbDisconnect(con)
 
 
 #Read kml files for the SRR
-srr_etel <- read_file('kml_srr/etel.kml')
-srr_corsen <- read_file('kml_srr/corsen.kml')
-srr_grisnez <- read_file('kml_srr/gris-nez.kml')
+srr_etel <- read_file('kml_srr/SRR_ETEL.kml')
+srr_corsen <- read_file('kml_srr/SRR_CORSEN.kml')
+srr_grisnez <- read_file('kml_srr/SRR_Gris-Nez.kml')
 srr_antillesguyane <- read_file('kml_srr/antilles-guyane.kml')
-srr_lagarde <- read_file('kml_srr/la-garde.kml')
-srr_jobourg <- read_file('kml_srr/jobourg.kml')
+srr_lagarde <- read_file('kml_srr/SRR_La_Garde.kml')
+srr_jobourg <- read_file('kml_srr/SRR_Jobourg.kml')
 srr_lareunion <- read_file('kml_srr/la-reunion.kml')
 srr_noumea <- read_file('kml_srr/noumea.kml')
 srr_tahiti <- read_file('kml_srr/tahiti.kml')
@@ -102,9 +102,27 @@ secmar <- secmar %>%
 secmar <- secmar %>% 
           mutate(date_heure = as.numeric(format(date_heure_reception_alerte, "%H")) +
                               as.numeric(format(date_heure_reception_alerte, "%M"))/60)
-#Replace na by Non renseigné in type_operation
+#Replace na by Non renseigné in type_operation and departement
 secmar <- secmar %>%
-          mutate(type_operation = replace_na(type_operation, "Non renseigné"))
+          mutate(type_operation = replace_na(type_operation, "Non renseigné")) %>% 
+          mutate(departement = replace_na(departement, 'Non renseigné'))
+# Create a column with a list of flotteurs involved
+secmar <- secmar %>%
+  mutate(flotteurs_peche = ifelse(nombre_flotteurs_peche_impliques > 0, 'pêche', ''),
+         flotteurs_commerce = ifelse(nombre_flotteurs_commerce_impliques > 0, 'commerce', ''),
+         flotteurs_plaisance = ifelse(nombre_flotteurs_plaisance_impliques > 0, 'plaisance', ''),
+         flotteurs_loisirs_nautiques = ifelse(nombre_flotteurs_loisirs_nautiques_impliques > 0, 'loisirs nautiques', ''),
+         flotteurs_autre = ifelse(nombre_flotteurs_autre_impliques > 0, 'autre', ''),
+         flotteurs_aeronef = ifelse(nombre_aeronefs_impliques > 0, 'aeronef', ''),
+         flotteurs_sans_flotteur = ifelse(sans_flotteur_implique > 0, 'sans flotteur', '')) %>% 
+  mutate(liste_flotteurs = paste(flotteurs_peche, 
+                                 flotteurs_commerce,
+                                 flotteurs_plaisance, 
+                                 flotteurs_loisirs_nautiques,
+                                 flotteurs_autre,
+                                 flotteurs_aeronef,
+                                 flotteurs_sans_flotteur))
+          
 
 #Create dico to map flotteurs values
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
@@ -116,8 +134,9 @@ flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
                             'Aeronéf' = 'nombre_aeronefs_impliques',
                             'Sans flotteur' = 'sans_flotteur')
 
-#Data set for 2017
-secmar_2017 <- secmar %>% filter(annee == 2017)
+#Data set for current year
+secmar_year <- secmar %>%
+              filter(annee == as.integer(format(Sys.Date(), "%Y")))
 
 #secmar <- read_feather("../../sauvamer/accident2017.feather")
 
@@ -145,14 +164,14 @@ ui <- dashboardPage(
                     placement = "right",  options = list(container = "body")
                     )
         )
-      )
-     , 
+      ), 
   ##Switch input to change visualization
       switchInput("heatmap", value = FALSE, size = 'mini',
                   onLabel = 'Heatmap', offLabel = 'Cluster', label = 'Changer de visualisation'),
         dateRangeInput('dateRange',
                               label = "Date d'intervention",
-                              start = '2017-01-01', end = '2017-12-31',
+                              start = as.Date(paste(c(as.character(Sys.Date(), "%Y"),'01-01'),collapse='-'), format="%Y-%m-%d"), 
+                              end = Sys.Date(),
                               separator = " - ", startview = "year", format = "dd/mm/yyyy"
             ), 
      menuItem("Évenement", tabName = "event", icon = icon("anchor"),
@@ -213,6 +232,18 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
+      menuItem("Département", tabname="departement", icon = icon("male"),
+           pickerInput(inputId="departement", label=h5("Dans quel département ?"),
+                       choices=unique(secmar$departement),
+                       options = list(
+                         `selected-text-format` = "count > 5",
+                         `count-selected-text` = "{0} départements sélectionnés",
+                         `actions-box` = TRUE,
+                         `deselect-all-text` = "Tout désélectionner",
+                         `select-all-text` = "Tout sélectionner"
+                       ),
+                       selected = unique(secmar$departement),
+                       multiple = TRUE)),
      menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
               pickerInput(inputId="cotes", label=h5("A quelle distance des côtes se déroule les interventions ?"),
@@ -242,12 +273,15 @@ ui <- dashboardPage(
               href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
      menuItem("Documentation", icon = icon("book"),
               href = "https://mtes-mct.github.io/secmar-documentation") ,     
-   downloadButton("downloadData", "Télécharger les données dans la zone (Excel)", style='padding:5px; font-size:80%'),
+   downloadButton("downloadData", "Télécharger les données dans la zone (Excel)",
+                  style='padding:5px; font-size:80%'),
    br(),
    br(),
-   downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", style='padding:5px; font-size:80%')
-  )
-  ),
+   downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", 
+                  style='padding:5px; font-size:80%'),
+   actionButton("doc", "Secmar doc")
+  
+   )),
 
   #Body content
   dashboardBody(
@@ -292,7 +326,16 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-
+  
+  observeEvent(input$doc, {
+    showModal(modalDialog(
+      title = "Somewhat important message",
+      "This is a somewhat important message.",
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+  
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
       #Need to remove missing values for longitude and latitude because heatmap doesn't handle missing values
@@ -306,8 +349,12 @@ server <- function(input, output, session) {
       snosanInput() %>% filter(cross %in% input$cross)
   })
   
+  departementInput <- reactive({
+    crossInput() %>% filter(departement %in% input$departement)
+  })
+  
   operationInput <- reactive({
-    crossInput() %>% filter(type_operation %in% input$operation)
+    departementInput() %>% filter(type_operation %in% input$operation)
   })
 
   observe({
@@ -375,7 +422,7 @@ server <- function(input, output, session) {
 
   output$mymap <- renderLeaflet({
 # Base map
-    leaflet(secmar_2017) %>% 
+    leaflet(secmar_year) %>% 
       addTiles() %>% 
       addProviderTiles(providers$OpenSeaMap, 
                        group = "OpenSeaMap") %>% 
@@ -393,6 +440,7 @@ server <- function(input, output, session) {
                               "</br> Evénement : " , evenement,
                               "</br> Sitrep : ", cross_sitrep,
                               "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                              "</br> Type de flotteurs impliqués : ", liste_flotteurs,
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                               "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                   clusterOptions = markerClusterOptions()) %>%
@@ -423,6 +471,7 @@ server <- function(input, output, session) {
                                     "</br> Evénement : " , evenement,
                                     "</br> Sitrep : ", cross_sitrep,
                                     "</br> Date et heure de l'alerte (UTC) : ", date_heure_reception_alerte,
+                                    "</br> Type de flotteurs impliqués : ", liste_flotteurs,
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                        clusterOptions = markerClusterOptions()) 
@@ -450,7 +499,7 @@ server <- function(input, output, session) {
  })
 
  output$operation <- renderText({
-     paste(nrow(zipsInBounds()), " interventions aux CROSS sur la période selectionnée et sur la zone affichée")
+     paste(nrow(zipsInBounds()), " interventions géolocalisées au CROSS sur la période selectionnée et sur la zone affichée")
  })
 
 #Create 3 different barplots with ggplot style
