@@ -106,6 +106,7 @@ secmar <- secmar %>%
 secmar <- secmar %>%
           mutate(type_operation = replace_na(type_operation, "Non renseigné")) %>% 
           mutate(departement = replace_na(departement, 'Non renseigné'))
+
 # Create a column with a list of flotteurs involved
 secmar <- secmar %>%
   mutate(flotteurs_peche = ifelse(nombre_flotteurs_peche_impliques > 0, 'pêche', ''),
@@ -179,7 +180,7 @@ ui <- dashboardPage(
               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
                              choices=unique(secmar$evenement),
                              multiple = TRUE)),
-     menuItem("CROSS", tabName = "cross", icon = icon("male"),
+     menuItem("CROSS et département", tabName = "cross", icon = icon("male"),
               pickerInput(inputId="cross", label=h5("Quel CROSS a coordoné l'intervention ?"),
                           choices=unique(secmar$cross),
                           options = list(
@@ -190,7 +191,11 @@ ui <- dashboardPage(
                             `select-all-text` = "Tout sélectionner"
                           ),
                           selected = unique(secmar$cross),
-                          multiple = TRUE)),
+                          multiple = TRUE),
+              checkboxInput('dep', 'Tout sélectionner/désélectionner', value = TRUE),
+              selectizeInput(inputId="departement", label=h5("Quels sont les departement?"),
+                             choices=sort(unique(secmar$departement)),
+                             multiple = TRUE)),
      menuItem("Heure et saison", tabName = "season", icon = icon("hourglass"),
               checkboxGroupButtons("saison", label="Saison",justified = TRUE,
                                    status = "primary",
@@ -232,18 +237,6 @@ ui <- dashboardPage(
                "Intervention impliquant au moins", br(), "1 moyen aérien",
                switchInput("aerien", value = FALSE, size = 'mini')
                ),
-      # menuItem("Département", tabname="departement", icon = icon("male"),
-      #      pickerInput(inputId="departement", label=h5("Dans quel département ?"),
-      #                  choices=unique(secmar$departement),
-      #                  options = list(
-      #                    `selected-text-format` = "count > 5",
-      #                    `count-selected-text` = "{0} départements sélectionnés",
-      #                    `actions-box` = TRUE,
-      #                    `deselect-all-text` = "Tout désélectionner",
-      #                    `select-all-text` = "Tout sélectionner"
-      #                  ),
-      #                  selected = unique(secmar$departement),
-      #                  multiple = TRUE)),
      menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
               pickerInput(inputId="cotes", label=h5("A quelle distance des côtes se déroule les interventions ?"),
@@ -350,12 +343,19 @@ server <- function(input, output, session) {
       snosanInput() %>% filter(cross %in% input$cross)
   })
   
-  # departementInput <- reactive({
-  #   crossInput() %>% filter(departement %in% input$departement)
-  # })
-  
   operationInput <- reactive({
     crossInput() %>% filter(type_operation %in% input$operation)
+  })
+  
+  observe({
+    updateSelectizeInput(
+      session, 'departement', choices = sort(unique(secmar$departement)),
+      selected = if (input$dep) sort(unique(secmar$departement))
+    )
+  })
+  
+  departementInput <- reactive({
+    operationInput() %>% filter(departement %in% input$departement)
   })
 
   observe({
@@ -366,7 +366,7 @@ server <- function(input, output, session) {
   })
 
   evenementInput <- reactive({
-      operationInput() %>% filter(evenement %in% input$evenement)
+      departementInput() %>% filter(evenement %in% input$evenement)
   })
   
   cotesInput <- reactive({
