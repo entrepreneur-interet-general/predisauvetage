@@ -23,27 +23,27 @@ library(shinyjs)
 library(shinyBS)
 library(writexl)
 
-# pg = dbDriver("PostgreSQL")
-# 
-# #Connection to the database
-# con = dbConnect(pg,
-#                 user = Sys.getenv("DATABASE_USERNAME") ,
-#                 password = Sys.getenv("DATABASE_PASSWORD"),
-#                 host=Sys.getenv("DATABASE_HOST"),
-#                 port=Sys.getenv("DATABASE_PORT"),
-#                 dbname= Sys.getenv("DATABASE_NAME"))
-# 
-# #select all data in the operations table
-# query <- dbSendQuery(con, 'select * from operations;')
-# operations <- fetch(query, n=-1)
-# dbClearResult(query)
-# 
-# #select all data in the operations_stats table
-# query <- dbSendQuery(con, 'select * from operations_stats;')
-# operations_stat <- fetch(query, n=-1)
-# dbClearResult(query)
-# 
-# dbDisconnect(con)
+pg = dbDriver("PostgreSQL")
+
+#Connection to the database
+con = dbConnect(pg,
+                user = Sys.getenv("DATABASE_USERNAME") ,
+                password = Sys.getenv("DATABASE_PASSWORD"),
+                host=Sys.getenv("DATABASE_HOST"),
+                port=Sys.getenv("DATABASE_PORT"),
+                dbname= Sys.getenv("DATABASE_NAME"))
+
+#select all data in the operations table
+query <- dbSendQuery(con, 'select * from operations;')
+operations <- fetch(query, n=-1)
+dbClearResult(query)
+
+#select all data in the operations_stats table
+query <- dbSendQuery(con, 'select * from operations_stats;')
+operations_stat <- fetch(query, n=-1)
+dbClearResult(query)
+
+dbDisconnect(con)
 
 
 #Read kml files for the SRR
