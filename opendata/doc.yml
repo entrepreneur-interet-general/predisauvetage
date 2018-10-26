@@ -11,7 +11,7 @@ paths:
           description: OK
 components:
   schemas:
-    Operation:
+    operations:
       properties:
         operation_id:
           type: integer
@@ -142,7 +142,7 @@ components:
           type: string
           description: "Fuseau horaire du CROSS coordonnant l'opération. Le fuseau horaire correspond à la timezone database de l'IANA"
           example: Europe/Paris
-    ResultatHumain:
+    resultats_humain:
       properties:
         operation_id:
           type: integer
@@ -170,7 +170,7 @@ components:
           minimum: 0
           description: Indique le nombre de personnes blessées dans le bilan
           example: 1
-    Moyen:
+    moyens:
       properties:
         operation_id:
           type: integer
@@ -216,7 +216,7 @@ components:
           description: Durée d'engagement du moyen en minutes
           example: 30
           minimum: 0
-    Flotteur:
+    flotteurs:
      properties:
         operation_id:
           type: integer
@@ -340,7 +340,7 @@ components:
           description: Quel usage est fait du flotteur
           nullable: true
           example: USAGE PERSONNEL
-    OperationStats:
+    operations_stats:
      properties:
         operation_id:
           type: integer
@@ -788,7 +788,7 @@ components:
           type: boolean
           description: Indique si aucun flotteur n'est impliqué dans cette opération.
           example: true
-    MoyenSNSM:
+    moyens_snsm:
       properties:
         operation_id:
           type: integer

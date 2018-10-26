@@ -22,7 +22,7 @@ class TestSqlSchema(TestSchemaMatches):
             tables.append(table.name)
 
             self.assertEquals(
-                open_data[table.name + '.csv'],
+                open_data[table.name],
                 list(table.columns.keys())
             )
 

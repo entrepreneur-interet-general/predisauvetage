@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import re
 
 
 class BaseDropper(object):
@@ -18,6 +19,9 @@ class BaseDropper(object):
         self.conf = self.parse_configuration()
 
     def for_table(self, table):
+        if not re.match(r'^[a-z_]+$', table):
+            template = 'Table `{table}` does not match regex ^[a-z_]+$'
+            raise ValueError(template.format(table=table))
         return self.conf[table]
 
     def for_model(self, model):
@@ -31,7 +35,7 @@ class ColumnDropper(BaseDropper):
         return data['columns']
 
 
-class ModelDropper(BaseDropper):
+class TableDropper(BaseDropper):
     def parse_configuration(self):
         with open(self.configuration_filepath) as f:
             data = json.load(f)
@@ -39,11 +43,3 @@ class ModelDropper(BaseDropper):
 
     def for_table(self, table):
         return table in self.conf
-
-
-class ModelRenamer(BaseDropper):
-    def model_to_table(self, table):
-        return self.MODELS_TO_TABLES[table]
-
-    def parse_configuration(self):
-        pass
