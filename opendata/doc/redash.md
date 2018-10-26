@@ -79,7 +79,7 @@ La démarche à suivre est la suivante :
 - Renommer votre requête, adapter la requête SQL et les visualisations
 
 ::: warning Rafraîchissement de la requête copiée
-Attention, par défaut, si la requête source avait un rafraîchissement défini, votre nouvelle requête ne sera pas rafraîchie par défaut. Pensez à la rafraîchir automatiquement si nécessaire.
+Attention, par défaut, si la requête source avait un rafraîchissement défini, votre nouvelle requête ne sera pas rafraîchie par défaut. Pensez à [la rafraîchir automatiquement](#rafraichir-automatiquement-une-requete) si nécessaire.
 :::
 
 ## Visualisations
