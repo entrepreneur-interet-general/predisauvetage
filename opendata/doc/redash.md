@@ -16,9 +16,7 @@ Pour créer une nouvelle requête, voici la démarche à suivre :
 - Donnez une description détaillée de votre requête en cliquant sur `No description`
 
 ::: tip Nommer vos requêtes
-Pour retrouver facilement un ensemble de requêtes, nous vous recommandons de suivre une convention de nommage.
-
-Vous pouvez par exemple nommer vos requêtes de la façon suivante :
+Pour retrouver facilement un ensemble de requêtes, nous vous recommandons de suivre une convention de nommage. Vous pouvez par exemple nommer vos requêtes de la façon suivante :
 - [Etel] [Annuel] : Top 20 des événements
 - [CROSS JBG] - Moyens engagés pour isolés par la marée/envasés
 - [Infographie DAM] Part d'opérations entre juin et septembre
@@ -30,9 +28,7 @@ Vous pouvez enregistrer votre requête à l'aide du raccourci `CTRL + S` et exé
 
 ### Rafraîchir automatiquement une requête
 ::: warning Rafraîchissement par défaut
-Par défaut, les requêtes que vous créez **ne sont pas rafraîchies automatiquement**.
-
-Ceci signifie que si vous faites par exemple une requête année par année, votre requête ne prendra pas en compte les nouvelles données tant qu'elle n'aura pas été exécutée à nouveau.
+Par défaut, les requêtes que vous créez **ne sont pas rafraîchies automatiquement**. Ceci signifie que si vous faites par exemple une requête année par année, votre requête ne prendra pas en compte les nouvelles données tant qu'elle n'aura pas été exécutée à nouveau.
 :::
 
 Si votre requête répond à un besoin ponctuel, vous pouvez conserver une absence de rafraîchissement et vous contenter de l'exécuter vous-même en cas de besoin. En revanche, si vous souhaitez incorporer celle-ci sur un tableau de bord, il est souhaitable qu'elle soit rafraîchie régulièrement.
@@ -43,11 +39,36 @@ Voici la démarche à suivre :
 - Choisir entre un rafraîchissement à la journée ou à la semaine
 
 ### Proposer des filtres dans ses requêtes
-Instructions en cours de rédaction.
+Au lieu d'imposer une contrainte dans une clause `WHERE` d'une requête, vous pouvez laisser la possibilité à l'utilisateur de choisir un ou plusieurs paramètres de votre requête - par exemple le CROSS et l'année. Si plusieurs de vos requêtes possèdent des filtres du même nom, ces filtres peuvent ensuite être utilisés globalement au sein d'un tableau de bord : en changeant la valeur d'un filtre d'une année, toutes les visualisations avec un filtre sur l'année changeront d'année en même temps.
+
+La définition d'un filtre se fait par le **renommage de la colonne en suivant une convention de nommage**. Voici un exemple de requête définissant des filtres :
+
+```sql
+SELECT
+  "stats"."annee",
+  "op"."cross" as "cross::filter", -- ::filter propose un filtre permettant un choix unique
+  "op"."type_operation" as "type_operation::multi-filter", -- ::multi-filter propose un filtre offrant plusieurs choix
+  count("op"."operation_id") as "nb_operations"
+FROM "operations" as "op"
+JOIN "operations_stats" as "stats" on "stats"."operation_id" = "op"."operation_id"
+WHERE "stats"."annee" >= 2010
+GROUP BY 1, 2, 3
+ORDER BY 2 ASC -- Le tri ascendant par CROSS permettant d'avoir les CROSS dans l'ordre alphabétique
+```
+
+Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROSS et une ou plusieurs valeurs possibles pour le type d'opération (SAR / MAS / DIV / SUR).
+
+![Résultat de la requête avec des filtres](https://i.imgur.com/izuytNo.png)
 
 ### Naviguer parmi les requêtes existantes
-Instructions en cours de rédaction.
+#### Voir toutes les requêtes
+Vous pouvez retrouver la liste complète des requêtes déjà publiées en cliquant sur le bouton `Queries` dans la barre de menu tout en haut de chaque page. Il est possible de chercher une requête par mot-clé depuis l'onglet `Search`.
 
+#### Voir ses requêtes
+Vous pouvez retrouver la liste complète de vos requêtes publiées en cliquant sur le bouton `Queries` dans la barre de menu tout en haut de chaque page puis choisir l'onglet `My Queries`.
+
+#### Consulter la requête source d'une visualisation
+Pour retrouver la requête source d'une visualisation que vous voyez depuis un tableau de bord, vous pouvez passer votre souris sur la visualisation, cliquer sur les points bleus en haut à droite et choisir le menu `View Query`.
 
 ## Visualisations
 ### Créer une visualisation graphique
@@ -64,7 +85,7 @@ Pour créer un tableau de bord, il faut cliquer sur le bouton bleu `Create` dans
 On demande ensuite de nommer votre tableau de bord.
 
 ::: tip Regrouper des tableaux de bord
-Vous pouvez regrouper plusieurs tableaux de bord à l'aide d'un hashtag en début de nom. Ce hastag ne doit pas contenir d'espaces, seulement des caractères alphanumériques.
+Vous pouvez regrouper plusieurs tableaux de bord à l'aide d'un hashtag en début de nom. Ce hashtag ne doit pas contenir d'espaces, seulement des caractères alphanumériques.
 :::
 
 Des exemples possibles de noms de tableaux de bord. Notez le hashtag au début du nom du tableau de bord :
