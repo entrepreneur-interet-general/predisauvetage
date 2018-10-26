@@ -64,7 +64,7 @@ Pour créer un tableau de bord, il faut cliquer sur le bouton bleu `Create` dans
 On demande ensuite de nommer votre tableau de bord.
 
 ::: tip Regrouper des tableaux de bord
-Vous pouvez regrouper plusieurs tableaux de bord à l'aide d'un hashtag en début de nom. Ce hastag ne doit pas contenir d'espaces, seulement des caractères alphanumériques.
+Vous pouvez regrouper plusieurs tableaux de bord à l'aide d'un hashtag en début de nom. Ce hashtag ne doit pas contenir d'espaces, seulement des caractères alphanumériques.
 :::
 
 Des exemples possibles de noms de tableaux de bord. Notez le hashtag au début du nom du tableau de bord :
