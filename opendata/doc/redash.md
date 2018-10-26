@@ -6,12 +6,46 @@ Cette page contient des instructions spécifiques à l'interface web de Redash e
 
 ## Requêtes
 ### Créer une requête
-Instructions en cours de rédaction.
+Pour créer une nouvelle requête, voici la démarche à suivre :
+- Cliquer sur le bouton bleu `Create` dans la barre tout en haut
+- Sélectionner `Query`
+- Taper votre requête SQL dans la partie droite de l'écran
+- Exécuter votre requête à l'aide du bouton bleu `Execute`
+- Sauvegarder votre requête
+- Nommer votre requête, en haut à gauche, en cliquant sur `New Query`
+- Donnez une description détaillée de votre requête en cliquant sur `No description`
 
-### Rafraichir automatiquement une requête
-Instructions en cours de rédaction.
+::: tip Nommer vos requêtes
+Pour retrouver facilement un ensemble de requêtes, nous vous recommandons de suivre une convention de nommage.
+
+Vous pouvez par exemple nommer vos requêtes de la façon suivante :
+- [Etel] [Annuel] : Top 20 des événements
+- [CROSS JBG] - Moyens engagés pour isolés par la marée/envasés
+- [Infographie DAM] Part d'opérations entre juin et septembre
+:::
+
+::: tip Raccourcis clavier
+Vous pouvez enregistrer votre requête à l'aide du raccourci `CTRL + S` et exécuter votre requête avec le raccourci `CTRL + Entrée`.
+:::
+
+### Rafraîchir automatiquement une requête
+::: warning Rafraîchissement par défaut
+Par défaut, les requêtes que vous créez **ne sont pas rafraîchies automatiquement**.
+
+Ceci signifie que si vous faites par exemple une requête année par année, votre requête ne prendra pas en compte les nouvelles données tant qu'elle n'aura pas été exécutée à nouveau.
+:::
+
+Si votre requête répond à un besoin ponctuel, vous pouvez conserver une absence de rafraîchissement et vous contenter de l'exécuter vous-même en cas de besoin. En revanche, si vous souhaitez incorporer celle-ci sur un tableau de bord, il est souhaitable qu'elle soit rafraîchie régulièrement.
+
+Voici la démarche à suivre :
+- Vous rendre sur la page de la requête concernée
+- En bas à gauche de la page, changer la valeur de `Refresh schedule`
+- Choisir entre un rafraîchissement à la journée ou à la semaine
 
 ### Proposer des filtres dans ses requêtes
+Instructions en cours de rédaction.
+
+### Naviguer parmi les requêtes existantes
 Instructions en cours de rédaction.
 
 
