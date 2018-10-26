@@ -53,7 +53,7 @@ FROM "operations" as "op"
 JOIN "operations_stats" as "stats" on "stats"."operation_id" = "op"."operation_id"
 WHERE "stats"."annee" >= 2010
 GROUP BY 1, 2, 3
-ORDER BY 2 ASC -- Le tri ascendant par CROSS permettant d'avoir les CROSS dans l'ordre alphabétique
+ORDER BY 2 ASC -- Le tri ascendant par CROSS permet d'avoir les CROSS dans l'ordre alphabétique dans le filtre
 ```
 
 Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROSS et une ou plusieurs valeurs possibles pour le type d'opération (SAR / MAS / DIV / SUR).
@@ -70,8 +70,23 @@ Vous pouvez retrouver la liste complète de vos requêtes publiées en cliquant 
 #### Consulter la requête source d'une visualisation
 Pour retrouver la requête source d'une visualisation que vous voyez depuis un tableau de bord, vous pouvez passer votre souris sur la visualisation, cliquer sur les points bleus en haut à droite et choisir le menu `View Query`.
 
+### Reprendre une requête existante
+Il est parfois souhaitable de reprendre une requête existante pour l'adapter pour ses besoins ou comme base de travail. Redash facilite ce besoin en proposant de reprendre la requête SQL et les visualisations d'une requête existante. Voyez ceci comme un copier coller, plus efficace.
+
+La démarche à suivre est la suivante :
+- Vous rendre sur la requête sur laquelle vous souhaitez vous baser
+- En haut à droite de la page, cliquer sur `...` et choisir le menu `Fork`
+- Renommer votre requête, adapter la requête SQL et les visualisations
+
+::: warning Rafraîchissement de la requête copiée
+Attention, par défaut, si la requête source avait un rafraîchissement défini, votre nouvelle requête ne sera pas rafraîchie par défaut. Pensez à la rafraîchir automatiquement si nécessaire.
+:::
+
 ## Visualisations
 ### Créer une visualisation graphique
+Instructions en cours de rédaction.
+
+### Créer un compteur
 Instructions en cours de rédaction.
 
 ### Créer un tableau croisé dynamique
