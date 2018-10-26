@@ -11,25 +11,25 @@ class TestSchemaMatches(BaseTest):
     """
     Make sure that CSV files we are testing are in sync the OpenAPI schema
     """
-    MAPPING = {
-        'Operation': 'operations.csv',
-        'ResultatHumain': 'resultats_humain.csv',
-        'Moyen': 'moyens.csv',
-        'Flotteur': 'flotteurs.csv',
-        'OperationStats': 'operations_stats.csv',
-        'MoyenSNSM': 'moyens_snsm.csv'
-    }
+    MODELS = [
+        'operations',
+        'resultats_humain',
+        'moyens',
+        'flotteurs',
+        'operations_stats',
+        'moyens_snsm'
+    ]
 
-    AGGREGATES = ['OperationStats', 'MoyenSNSM']
+    AGGREGATES = ['operations_stats', 'moyens_snsm']
 
     def test_schema_matches(self):
         open_data_schema = self.open_data_schemas()
-        files = self.transformers_mapping().values()
+        tables = self.transformers_mapping()
 
-        for filename in files:
+        for table_name in tables:
             self.assertEquals(
-                open_data_schema[filename],
-                self.csv_schema('expected_' + filename)
+                open_data_schema[table_name],
+                self.csv_schema('expected_' + table_name + '.csv')
             )
 
     def test_we_test_each_object_in_open_data_schema(self):
@@ -37,11 +37,11 @@ class TestSchemaMatches(BaseTest):
 
         self.assertEquals(
             set(content.keys()) - set(self.AGGREGATES),
-            set(self.transformers_mapping().keys())
+            set(self.transformers_mapping())
         )
 
     def transformers_mapping(self):
-        return {k: v for (k, v) in self.MAPPING.items() if k not in self.AGGREGATES}
+        return [m for m in self.MODELS if m not in self.AGGREGATES]
 
     def csv_schema(self, filename):
         path = self.filepath('tests/files/' + filename)
@@ -51,7 +51,7 @@ class TestSchemaMatches(BaseTest):
         content = self.yaml_content()
         acc = {}
         for object_name, values in content.items():
-            acc[self.MAPPING[object_name]] = list(values['properties'].keys())
+            acc[object_name] = list(values['properties'].keys())
 
         return acc
 
