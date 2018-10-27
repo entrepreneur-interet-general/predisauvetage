@@ -339,6 +339,13 @@ queries = {
     where stats.distance_cote_metres < 20000
       and o."cross" not in ('Antilles-Guyane', 'Corse', 'Guadeloupe', 'Guyane', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie')
       and stats.maree_coefficient is null
+    ''',
+    'unset_shore_distance': '''
+    select count(1) = 0
+    from operations_stats stats
+    join operations op on op.operation_id = stats.operation_id
+    where op.latitude is not null
+      and (stats.distance_cote_milles_nautiques is null or stats.distance_cote_metres is null)
     '''
 }
 
