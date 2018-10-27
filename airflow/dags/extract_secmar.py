@@ -181,15 +181,15 @@ insert_moyens_snsm.set_upstream(delete_invalid_operations)
 insert_moyens_snsm.set_downstream(start_checks)
 
 distances = [
-    'compute_shore_distance',
-    'compute_vessel_traffic_service',
-    'compute_traffic_separation_scheme'
+    ('compute_shore_distance', lambda **kwargs: execute_sql_file('compute_shore_distance')),
+    ('compute_vessel_traffic_service', lambda **kwargs: execute_sql_file('compute_vessel_traffic_service')),
+    ('compute_traffic_separation_scheme', lambda **kwargs: execute_sql_file('compute_traffic_separation_scheme')),
 ]
 
-for name in distances:
+for name, python_fn in distances:
     t = PythonOperator(
         task_id=name,
-        python_callable=make_distance_fn(name),
+        python_callable=python_fn,
         provide_context=True,
         dag=dag
     )
