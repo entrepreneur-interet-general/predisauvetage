@@ -60,6 +60,26 @@ Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROS
 
 ![Résultat de la requête avec des filtres](https://i.imgur.com/izuytNo.png)
 
+### Raccourcis dans les requêtes
+Pour écrire des requêtes plus rapidement, il existe des raccourcis qui permettent de générer automatiquement des squelettes de requête comme base de départ. Il faut taper un mot clé puis le sélectionner dans l'autocomplétion.
+
+#### Pour un CROSS
+Pour générer une requête spécifique à un CROSS, vous pouvez utiliser un des mots clés suivant :
+- `antilles-guyane`
+- `corse`
+- `corsen`
+- `cross-med` (CROSS La Garde et Corse)
+- `etel`
+- `gris-nez`
+- `jobourg`
+- `la-garde`
+- `la-reunion`
+- `nouvelle-caledonie`
+- `polynesie`
+
+#### Pour le SNOSAN
+Utiliser le mot clé `snosan`.
+
 ### Naviguer parmi les requêtes existantes
 #### Voir toutes les requêtes
 Vous pouvez retrouver la liste complète des requêtes déjà publiées en cliquant sur le bouton `Queries` dans la barre de menu tout en haut de chaque page. Il est possible de chercher une requête par mot-clé depuis l'onglet `Search`.
