@@ -80,6 +80,7 @@ def insert_operations_stats_fn(**kwargs):
 def insert_moyens_snsm_fn(**kwargs):
     return execute_sql_file('moyens_snsm')
 
+
 def set_tide_data_fn(**kwargs):
     return execute_sql_file('compute_tide')
 
@@ -89,6 +90,10 @@ def execute_sql_file(filename):
     with open(path, 'r', encoding='utf-8') as f:
         content = f.read()
     return PostgresHook('postgresql_local').run(content)
+
+
+def make_distance_fn(distance):
+    return lambda **kwargs: execute_sql_file(distance)
 
 
 def embulk_import(dag, table):
@@ -184,7 +189,7 @@ distances = [
 for name in distances:
     t = PythonOperator(
         task_id=name,
-        python_callable=lambda **kwargs: execute_sql_file(name),
+        python_callable=make_distance_fn(name),
         provide_context=True,
         dag=dag
     )
