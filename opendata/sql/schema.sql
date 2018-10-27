@@ -4,6 +4,8 @@ DROP TYPE IF EXISTS jours_semaine_francais CASCADE;
 CREATE TYPE jours_semaine_francais AS enum('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
 DROP TYPE IF EXISTS phase_journee CASCADE;
 CREATE TYPE phase_journee AS enum('matinée', 'déjeuner', 'après-midi', 'nuit');
+DROP TYPE IF EXISTS noms_cross CASCADE;
+CREATE TYPE noms_cross AS enum('Adge', 'Antilles-Guyane', 'Corse', 'Corsen', 'Étel', 'Gris-Nez', 'Guadeloupe', 'Guyane', 'Jobourg', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie', 'Soulac');
 
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
@@ -13,7 +15,7 @@ CREATE TABLE public.operations (
     "moyen_alerte" varchar(100) not null,
     "qui_alerte" varchar(100) not null,
     "categorie_qui_alerte" varchar(100) not null,
-    "cross" varchar(50) not null,
+    "cross" noms_cross not null,
     "departement" varchar(100),
     "est_metropolitain" boolean,
     "evenement" varchar(100) not null,
