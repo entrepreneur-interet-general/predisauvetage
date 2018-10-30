@@ -23,27 +23,27 @@ library(shinyjs)
 library(shinyBS)
 library(writexl)
 
-pg = dbDriver("PostgreSQL")
-
-# Connection to the database
-con = dbConnect(pg,
-                user = Sys.getenv("DATABASE_USERNAME") ,
-                password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"),
-                port=Sys.getenv("DATABASE_PORT"),
-                dbname= Sys.getenv("DATABASE_NAME"))
-
-#select all data in the operations table
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-#select all data in the operations_stats table
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect(con)
+# pg = dbDriver("PostgreSQL")
+# 
+# # Connection to the database
+# con = dbConnect(pg,
+#                 user = Sys.getenv("DATABASE_USERNAME") ,
+#                 password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"),
+#                 port=Sys.getenv("DATABASE_PORT"),
+#                 dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# #select all data in the operations table
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# #select all data in the operations_stats table
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect(con)
 
 
 #Read kml files for the SRR
@@ -70,6 +70,21 @@ secmar <- secmar %>%
                                  nombre_flotteurs_peche_impliques > 0 |
                                  nombre_flotteurs_autre_impliques > 0 |
                                  nombre_aeronefs_impliques, 0, 1 )) %>% 
+                  mutate(flotteurs_plaisance_autre =
+                           ifelse(nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques == 0 &
+                                    nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques == 0 &
+                                    nombre_flotteurs_plaisance_a_voile_impliques == 0 
+                                    , 1, 0 )) %>% 
+                  mutate(flotteurs_vehicule_nautique = 
+                           ifelse(nombre_flotteurs_planche_a_voile_impliques ==0 &
+                                  nombre_flotteurs_kitesurf_impliques == 0 &
+                                  nombre_flotteurs_plaisance_voile_legere_impliques == 0 &
+                                  nombre_flotteurs_ski_nautique_impliques == 0 &
+                                  nombre_flotteurs_surf_impliques == 0 &
+                                  nombre_flotteurs_autre_loisir_nautique_impliques == 0 &
+                                  nombre_flotteurs_engin_de_plage_impliques == 0 &
+                                  nombre_flotteurs_canoe_kayak_aviron_impliques == 0, 
+                                  1, 0)) %>% 
                   mutate(distance_cote_milles_nautiques = 
                            if_else(is.na(distance_cote_milles_nautiques), 0, distance_cote_milles_nautiques)) #Replace na with 0
 
@@ -134,6 +149,27 @@ flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
                             'Autre' = 'nombre_flotteurs_autre_impliques',
                             'Aeronéf' = 'nombre_aeronefs_impliques',
                             'Sans flotteur' = 'sans_flotteur')
+
+plaisance_choices <- c('Moteur < 8m', 'Moteur > 8m', 'Voile', 'Autre')
+plaisance_choices_dico <- c('Moteur < 8m' = 'nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques',
+                           'Moteur > 8m' = 'nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques',
+                           'Voile' = 'nombre_flotteurs_plaisance_a_voile_impliques',
+                           'Autre' = 'flotteurs_plaisance_autre')
+
+
+ln_choices <- c('Planche à voile', 'Kitesurf',
+                'Plaisance voile légère','Ski nautique',
+                'Surf', 'Autre loisir nautique', 
+                'Engin de plage', 'Canoë / Kayak / Aviron', 'Vehicule nautique à moteur')
+ln_choices_dico <- c('Planche à voile' = 'nombre_flotteurs_planche_a_voile_impliques',
+                     'Kitesurf' = 'nombre_flotteurs_kitesurf_impliques',
+                     'Plaisance voile légère' = 'nombre_flotteurs_plaisance_voile_legere_impliques',
+                     'Ski nautique' = 'nombre_flotteurs_ski_nautique_impliques',
+                     'Surf' = 'nombre_flotteurs_surf_impliques',
+                     'Autre loisir nautique' = 'nombre_flotteurs_autre_loisir_nautique_impliques',
+                     'Engin de plage' = 'nombre_flotteurs_engin_de_plage_impliques',
+                     'Canoë / Kayak / Aviron' = 'nombre_flotteurs_canoe_kayak_aviron_impliques',
+                     'Vehicule nautique à moteur' = 'flotteurs_vehicule_nautique')
 
 #Data set for current year
 secmar_year <- secmar %>%
@@ -203,8 +239,24 @@ ui <- dashboardPage(
                                    choices = unique(secmar$saison), selected = unique(secmar$saison)),
               bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
                         placement = "right", options = list(container = "body")),
-              sliderInput("heure", label = "Heure de l'alerte (UTC)", min = 0, 
-                          max = 24, value = c(0,24))),
+               sliderInput("heure", label = "Heure de l'alerte (UTC)", min = 0, 
+                           max = 24, value = c(0,24))
+              # splitLayout(
+              #     selectInput(
+              #       "start_heure",
+              #       label = h4("De"),
+              #       choices = (c(0:24)),
+              #       multiple = FALSE,
+              #       selected = 22
+              #     ),
+              #     selectInput(
+              #       "end_heure",
+              #       label = h4("à"),
+              #       choices = (c(0:24)),
+              #       multiple = FALSE,
+              #       selected = 24
+              #     ))
+              ),
       menuItem("Type d'opérations", tabName = "op", icon = icon("ambulance"),
                pickerInput(inputId="operation", label=h5("Quel type d'intervention ?"),
                            choices=unique(secmar$type_operation),
@@ -223,12 +275,31 @@ ui <- dashboardPage(
                            choices=flotteur_choices,
                            options = list(
                              `selected-text-format` = "count > 5",
-                             `count-selected-text` = "{0} flotteur sélectionnés",
+                             `count-selected-text` = "{0} flotteurs sélectionnés",
                              `actions-box` = TRUE,
                              `deselect-all-text` = "Tout désélectionner",
                              `select-all-text` = "Tout sélectionner"
                            ),
                            selected = flotteur_choices,
+                           multiple = TRUE),
+               pickerInput(inputId="plaisance",
+                           label = 'Plaisance',
+                           choices=plaisance_choices,
+                           options = list(
+                             `selected-text-format` = "count > 5",
+                             `count-selected-text` = "{0} flotteurs de plaisance sélectionnés"
+                           ),
+                           selected = flotteur_choices,
+                           multiple = TRUE),
+               pickerInput(inputId="loisirs",
+                           label = "Loisirs nautiques",
+                           choices=ln_choices,
+                           options = list(
+                             `selected-text-format` = "count > 5",
+                             `count-selected-text` = "{0} flotteurs loisirs nautiques sélectionnés"#,
+                             #`none-selected-text` = "Please make a selection!"
+                           ),
+                           selected = ln_choices,
                            multiple = TRUE)
                ),
       menuItem("Gravité", tabName = "gravite", icon = icon("heartbeat"),
@@ -386,6 +457,11 @@ server <- function(input, output, session) {
   })
   
   heureInput <- reactive({
+    # if (input$start_heure >= input$end_heure){
+    #   saisonInput() %>% filter(date_heure >= input$start_heure | date_heure <= input$end_heure)
+    # } else {
+    #   saisonInput() %>% filter((date_heure >= input$start_heure) & (date_heure <= input$end_heure))
+    # }
     saisonInput() %>% filter(date_heure >= input$heure[1] & date_heure <= input$heure[2])
   })
 
@@ -405,6 +481,18 @@ server <- function(input, output, session) {
       decesInput() %>% filter(nombre_moyens_aeriens_engages > 0)
     }
   })
+  
+  observe({
+    updatePickerInput(
+      session, 'plaisance', choices = plaisance_choices,
+      selected = if ('Plaisance' %in% input$flotteur) plaisance_choices)
+  })
+  
+  observe({
+    updatePickerInput(
+      session, 'loisirs', choices = ln_choices,
+      selected = if ('Loisirs nautiques' %in% input$flotteur) ln_choices)
+  })
 
   flotteurInput <- reactive({
   #If all values are selected, keep whole dataset
@@ -419,6 +507,38 @@ server <- function(input, output, session) {
      #Check for each row if at least one of input column value is greater than 0
      filter_at(aerienInput(), vars(list), any_vars(. > 0))
   }
+  })
+  
+  plaisanceInput <- reactive({
+    #If all values are selected, keep whole dataset
+    if (length(input$plaisance) == length(plaisance_choices)){
+      flotteurInput()
+      #If nothing is selected, return empty dataset
+    } else if (is.null(input$plaisance)) {
+      flotteurInput() 
+    } else {
+      #Map flotteurs plaisance input choices with dictionnary created before
+      plaisance_not_selected <- plaisance_choices[(!plaisance_choices %in% input$plaisance)]
+      list_plaisance <- plyr::revalue(plaisance_not_selected, plaisance_choices_dico)
+      #Check for each row if at least one of input column value is  0
+      filter_at(flotteurInput(), vars(list_plaisance), all_vars(. == 0))
+    }
+  })
+  
+  loisirsInput <- reactive({
+    #If all values are selected, keep whole dataset
+    if (length(input$loisirs) == length(ln_choices)){
+      plaisanceInput()
+      #If nothing is selected, return empty dataset
+    } else if (is.null(input$loisirs)) {
+      plaisanceInput() 
+    } else {
+      #Map flotteurs loisirs nautiques input choices with dictionnary created before
+      ln_not_selected <- ln_choices[(!ln_choices %in% input$loisirs)]
+      list_ln <- plyr::revalue(ln_not_selected, ln_choices_dico)
+      #Check for each row if at least one of input column value is  0
+      filter_at(plaisanceInput(), vars(list_ln), all_vars(. == 0))
+    }
   })
 
   output$mymap <- renderLeaflet({
@@ -464,7 +584,7 @@ server <- function(input, output, session) {
   #Change map based on filters 
     observe({
     if (input$heatmap == FALSE) {
-      m <- leafletProxy("mymap", data = flotteurInput()) %>% 
+      m <- leafletProxy("mymap", data = loisirsInput()) %>% 
         clearHeatmap() %>%
         clearMarkerClusters()
       m %>% addMarkers(~longitude, ~latitude,
@@ -479,7 +599,7 @@ server <- function(input, output, session) {
       
       
     } else if (input$heatmap == TRUE) {
-      m <- leafletProxy("mymap", data = flotteurInput()) %>% clearHeatmap() %>% clearMarkerClusters()
+      m <- leafletProxy("mymap", data = loisirsInput()) %>% clearHeatmap() %>% clearMarkerClusters()
       m %>% addHeatmap(group="heat", lng=~longitude, lat=~latitude, blur=20, radius = 11)
     }
 
@@ -492,7 +612,7 @@ server <- function(input, output, session) {
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
   #Filter dataset with points that are inside the bounds
-    subset(flotteurInput(),  latitude >= latRng[1] & latitude <= latRng[2] & longitude >= lngRng[1] & longitude <= lngRng[2])
+    subset(loisirsInput(),  latitude >= latRng[1] & latitude <= latRng[2] & longitude >= lngRng[1] & longitude <= lngRng[2])
   })
 
  output$text <- DT::renderDataTable({
