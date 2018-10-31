@@ -180,11 +180,35 @@ join (
 join operations_points op on op.operation_id = o.operation_id
 ;
 
-update operations_stats set concerne_snosan = true where
-  nombre_flotteurs_plaisance_impliques > 0 or
-  nombre_flotteurs_loisirs_nautiques_impliques > 0 or
-  nombre_flotteurs_annexe_impliques > 0
-;
+update operations_stats set sans_flotteur_implique = true
+where operation_id in (
+  select
+    os.operation_id
+  from operations_stats os
+  left join flotteurs f on f.operation_id = os.operation_id
+  where f.operation_id is null
+);
+
+update operations_stats set concerne_snosan = true
+where nombre_flotteurs_plaisance_impliques > 0
+   or nombre_flotteurs_loisirs_nautiques_impliques > 0
+   or nombre_flotteurs_annexe_impliques > 0
+   or operation_id in (
+    select op.operation_id
+    from operations op
+    join operations_stats stats on stats.operation_id = op.operation_id and stats.sans_flotteur_implique
+    where op.evenement in (
+      'Sans avarie inexpérience', 'Autre événement', 'Baignade', 
+      'Découverte de corps','Plongée en apnée', 'Accident en mer',
+      'Isolement par la marée / Envasé','Autre accident', 'Blessé EvaMed',
+      'Chasse sous-marine', 'Blessé EvaSan', 'Disparu en mer', 
+      'Plongée avec bouteille', 'Sans avarie en dérive','Incertitude sur la position', 
+      'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique', 
+      'Chute falaise / Emporté par une lame', 'Malade EvaSan',
+      'Blessé projection d''une équipe médicale',
+      'Absence d''un moyen de communication'
+    )
+   );
 
 update operations_stats set concerne_plongee = true
 where operation_id in (
@@ -210,11 +234,4 @@ from (
 ) t
 where t.mois = operations_stats.mois;
 
-update operations_stats set sans_flotteur_implique = true
-where operation_id in (
-  select
-    os.operation_id
-  from operations_stats os
-  left join flotteurs f on f.operation_id = os.operation_id
-  where f.operation_id is null
-);
+
