@@ -79,6 +79,7 @@ select
   coalesce(f.nombre_flotteurs_planche_a_voile_impliques, 0) nombre_flotteurs_planche_a_voile_impliques,
   coalesce(f.nombre_flotteurs_ski_nautique_impliques, 0) nombre_flotteurs_ski_nautique_impliques,
   coalesce(f.nombre_flotteurs_surf_impliques, 0) nombre_flotteurs_surf_impliques,
+  coalesce(f.nombre_flotteurs_vehicule_nautique_a_moteur_impliques, 0) nombre_flotteurs_vehicule_nautique_a_moteur_impliques,
   false sans_flotteur_implique
 from operations o
 left join (
@@ -156,7 +157,8 @@ left join (
     sum((type_flotteur = 'Plaisance à voile')::int) nombre_flotteurs_plaisance_a_voile_impliques,
     sum((type_flotteur = 'Planche à voile')::int) nombre_flotteurs_planche_a_voile_impliques,
     sum((type_flotteur = 'Ski nautique')::int) nombre_flotteurs_ski_nautique_impliques,
-    sum((type_flotteur = 'Surf')::int) nombre_flotteurs_surf_impliques
+    sum((type_flotteur = 'Surf')::int) nombre_flotteurs_surf_impliques,
+    sum((type_flotteur = 'Véhicule nautique à moteur')::int) nombre_flotteurs_vehicule_nautique_a_moteur_impliques
   from flotteurs f
   group by f.operation_id
 ) f on f.operation_id = o.operation_id
