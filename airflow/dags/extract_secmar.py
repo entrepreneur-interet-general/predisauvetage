@@ -285,17 +285,33 @@ queries = {
         ) operations_points on true
     ''',
     'concerne_snosan': '''
-        select count(1) = 0
-        from (
-            select distinct operation_id
-            from flotteurs
-            where categorie_flotteur in ('Plaisance', 'Loisir nautique') and type_flotteur = 'Annexe'
-              and operation_id not in (
-                select operation_id
-                from operations_stats
-                where concerne_snosan
-            )
-        ) t
+        select
+             nb_operations_snosan = nb_operations_concerne_snosan
+        from ( 
+            select count(1) nb_operations_snosan 
+            from operations op
+            join operations_stats stats on stats.operation_id = op.operation_id
+            where nombre_flotteurs_plaisance_impliques > 0
+               or nombre_flotteurs_loisirs_nautiques_impliques > 0
+               or nombre_flotteurs_annexe_impliques > 0
+               or op.operation_id in (
+                    select op.operation_id
+                    from operations op
+                    join operations_stats stats on stats.operation_id = op.operation_id and stats.sans_flotteur_implique
+                    where op.evenement in (
+                     'Sans avarie inexpérience', 'Autre événement', 'Baignade', 
+                     'Découverte de corps','Plongée en apnée', 'Accident en mer',
+                     'Isolement par la marée / Envasé','Autre accident', 'Blessé EvaMed',
+                     'Chasse sous-marine', 'Blessé EvaSan', 'Disparu en mer', 
+                     'Plongée avec bouteille', 'Sans avarie en dérive','Incertitude sur la position', 
+                     'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique', 
+                     'Chute falaise / Emporté par une lame', 'Malade EvaSan',
+                     'Blessé projection d''une équipe médicale',
+                     'Absence d''un moyen de communication'))) snosan
+         join (select 
+                  count(1) nb_operations_concerne_snosan
+               from operations_stats where concerne_snosan) nb_concerne_snosan on true
+
     ''',
     'operations_count_2017': '''
         select count(1) between 11100 and 11300
