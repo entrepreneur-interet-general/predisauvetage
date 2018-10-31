@@ -784,6 +784,12 @@ components:
           description: Le nombre de surfs impliqués dans l'opération.
           example: 1
           minimum: 0
+        nombre_flotteurs_vehicule_nautique_a_moteur_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de véhicules nautique à moteur (jetski, scooter des mer, moto des mers etc.) impliqués dans l'opération.
+          example: 1
+          minimum: 0
         sans_flotteur_implique:
           type: boolean
           description: Indique si aucun flotteur n'est impliqué dans cette opération.
