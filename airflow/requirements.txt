@@ -1,7 +1,7 @@
 apache-airflow==1.9.0
 apache-airflow[crypto]
 psycopg2==2.7.4
-requests==2.19.1
+requests>=2.20.0
 jours-feries-france
 awscli==1.15.66
 vacances-scolaires-france
