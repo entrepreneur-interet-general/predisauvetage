@@ -414,6 +414,7 @@ components:
         concerne_snosan:
           type: boolean
           description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques). Actuellement, une opération est dans le cadre d'étude du SNOSAN dès lors qu'elle implique au moins un flotteur de plaisance, de loisirs nautiques ou une annexe ou si l'événement déclenchant est propre aux loisirs (par exemple, l'isolement par la marée) et qu'aucun flotteur n'est impliqué dans l'opération.
+          example: False
         concerne_plongee:
           type: boolean
           description: Indique si cette opération est une opération qui concerne une activité de plongée (bouteille ou apnée) ou de chasse sous-marine
@@ -423,11 +424,13 @@ components:
           format: int32
           description: La distance entre la plus proche côte ou frontière terrestre en territoire français en mètres. Cette distance peut être égale à 0 si l'opération se déroule très près des côtes ou à l'intérieur des terres en cas de fausse alerte. La distance peut être très élevée lors d'un déclenchement d'une balise par erreur ou en cas de coordination d'une opération impliquant un flotteur français en eaux internationales.
           nullable: true
+          example: 12300
         distance_cote_milles_nautiques:
           type: number
           format: float
           description: La distance entre la plus proche côte ou frontière terrestre en territoire français en milles nautiques. Cette distance peut être égale à 0 si l'opération se déroule très près des côtes ou à l'intérieur des terres en cas de fausse alerte. La distance peut être très élevée lors d'un déclenchement d'une balise par erreur ou en cas de coordination d'une opération impliquant un flotteur français en eaux internationales.
           nullable: true
+          example: 1.52
         est_dans_stm:
           type: boolean
           description: Indique si l'opération se déroule dans la zone d'un service de trafic maritime où une veille est renforcée.
