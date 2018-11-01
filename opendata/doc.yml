@@ -413,8 +413,7 @@ components:
           nullable: true
         concerne_snosan:
           type: boolean
-          description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques). Actuellement, une opération est dans le cadre d'étude du SNOSAN dès lors qu'elle implique au moins un flotteur de plaisance ou de loisirs nautiques ou une annexe ou qu'elle est sans flotteur mais concerne certains événements('Sans avarie inexpérience', 'Autre événement', 'Baignade', Découverte de corps, Plongée en apnée, Accident en mer, Isolement par la marée / Envasé, Autre accident, Blessé EvaMed, Chasse sous-marine, Blessé EvaSan, Disparu en mer, Plongée avec bouteille, Sans avarie en dérive, Incertitude sur la position, Homme à la mer, Malade EvaMed, Ski nautique, Accident aéronautique, Chute falaise / Emporté par une lame, Malade EvaSan, Blessé projection d'une équipe médicale, Absence d'un moyen de communication). Ainsi, si aucun flotteur de ces types n'est impliqué, elle ne rentre pas dans le cadre d'étude du SNOSAN.
-          example: true
+          description: Indique si cette opération rentre dans le cadre d'étude du SNOSAN (Système National d'Observation de la Sécurité des Activités Nautiques). Actuellement, une opération est dans le cadre d'étude du SNOSAN dès lors qu'elle implique au moins un flotteur de plaisance, de loisirs nautiques ou une annexe ou si l'événement déclenchant est propre aux loisirs (par exemple, l'isolement par la marée) et qu'aucun flotteur n'est impliqué dans l'opération.
         concerne_plongee:
           type: boolean
           description: Indique si cette opération est une opération qui concerne une activité de plongée (bouteille ou apnée) ou de chasse sous-marine
