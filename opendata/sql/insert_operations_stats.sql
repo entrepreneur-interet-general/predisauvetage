@@ -198,12 +198,12 @@ where nombre_flotteurs_plaisance_impliques > 0
     from operations op
     join operations_stats stats on stats.operation_id = op.operation_id and stats.sans_flotteur_implique
     where op.evenement in (
-      'Sans avarie inexpérience', 'Autre événement', 'Baignade', 
-      'Découverte de corps','Plongée en apnée', 'Accident en mer',
-      'Isolement par la marée / Envasé','Autre accident', 'Blessé EvaMed',
-      'Chasse sous-marine', 'Blessé EvaSan', 'Disparu en mer', 
-      'Plongée avec bouteille', 'Sans avarie en dérive','Incertitude sur la position', 
-      'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique', 
+      'Sans avarie inexpérience', 'Autre événement', 'Baignade',
+      'Découverte de corps', 'Plongée en apnée', 'Accident en mer',
+      'Isolement par la marée / Envasé', 'Autre accident', 'Blessé EvaMed',
+      'Chasse sous-marine', 'Blessé EvaSan', 'Disparu en mer',
+      'Plongée avec bouteille', 'Sans avarie en dérive', 'Incertitude sur la position',
+      'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique',
       'Chute falaise / Emporté par une lame', 'Malade EvaSan',
       'Blessé projection d''une équipe médicale',
       'Absence d''un moyen de communication'
@@ -233,5 +233,3 @@ from (
   select 12 mois, 'Décembre' mois_texte
 ) t
 where t.mois = operations_stats.mois;
-
-
