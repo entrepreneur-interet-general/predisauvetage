@@ -14,9 +14,7 @@ class TestOperationsStatsTransformer(BaseTest):
                 "nombre_moyens_aeriens_engages",
                 "duree_engagement_moyens_nautiques_minutes",
                 "duree_engagement_moyens_terrestres_minutes",
-                "duree_engagement_moyens_aeriens_minutes",
-                "maree_port",
-                "maree_coefficient"
+                "duree_engagement_moyens_aeriens_minutes"
             ]
         )
 
