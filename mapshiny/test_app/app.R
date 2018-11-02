@@ -34,6 +34,10 @@ library(writexl)
 #                 dbname= Sys.getenv("DATABASE_NAME"))
 # 
 # #select all data in the operations table
+# 
+# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+# 
 # query <- dbSendQuery(con, 'select * from operations;')
 # operations <- fetch(query, n=-1)
 # dbClearResult(query)
@@ -99,6 +103,7 @@ secmar <- secmar %>%
                             "2-6 milles", 
                             "6-60 milles", 
                             "+60 milles"))))
+# dbDisconnect (con)
 
 #Reorder and rename direction du vent
 secmar <- secmar %>% 
@@ -346,8 +351,8 @@ ui <- dashboardPage(
    br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", 
                   style='padding:5px; font-size:80%')
-  # ,
-    #actionButton("doc", "Documentation")
+  ,
+  actionButton("doc", "Documentation")
   
    )),
 
@@ -395,13 +400,63 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
-  # observeEvent(input$doc, {
-  #   showModal(modalDialog(
-  #     title =  h1("Documentation"),
-  #     easyClose = TRUE,
-  #     footer = NULL
-  #   ))
-  # })
+  observeEvent(input$doc, {
+    showModal(modalDialog(
+      title =  h1("Documentation"),
+      div(style =  " padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Précaution de lecture")),
+      "Les points sur la cartographie représentent les opérations géolocalisées coordonées par les CROSS (Centres régionaux opérationnels de surveillance et de sauvetage). Ce jeu de données ne reflète ni l'accidentologie totale survenue au-delà de la bande des 300 mètres ni même l'activité globale des CROSS pour la mission de sauvetage. En effet, apparaissent sur la cartographie seulement les opérations avec des coordonnées géographiques(longitude, latitude)",
+      div(style =  " padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Fonctionnalités de la cartographie")),
+      div(h4("Panneau de filtre à gauche"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction:", 
+          tags$ul(
+           tags$li("D'une période temporelle"),
+           tags$li("Du type d'événements déclanchant l'opération (homme à la mer, abordage, voie d'eau, etc..."),
+           tags$li("Du CROSS qui a coordonné l'opération ou du département dans lequel il se déroule"),
+           tags$li("D'une tranche horraire et de la saison des opérations"),
+           tags$li("Du type d'opérations (sauvetage, asssitance ou autre"),
+           tags$li("Du type de flotteurs impliqués (plaisance, commerce, pêche, etc...)"),
+           tags$li("De la gravité d'une opération (si au moins une personne est décédée ou disparue ou qu'au moins un moyen aérien ait été engagé)"),
+           tags$li("De la distance des côtes et de la zone de responsabilité de l'opération")
+      )),
+      div(h4("Fond de carte"), "En cliquant sur l'icône en haut à droite de la cartographie vous pouvez choisir le fond de carte à afficher. Vous avez accès à OpenSeaMap, SHOM, IGN et un fond de carte noir et blanc. "),
+      div(h4("Carte de chaleur et cluster"), "Vous pouvez changer la visualisation des points en cliquant sur Changer de visualisation en haut à gauche. Vous avez accès à deux formats:", 
+          tags$ul(
+            tags$li("Cluster: Chaque point est modélisé par un marqueur bleu et en cliquant dessus, vous verrez apparaitre des détails sur l'opérations. Les cercles représentent un regroupement de plusieurs points et le nombre sur le cercle indique le nombre de points. En zoomant sur la carte, vous verrez apparaitre de plus en plus de points isolés. "),
+            tags$li("Heatmap: La carte de chaleur modélise le nombre d'opération dans une zone avec une echelle de couleur allant du vert au rouge, le rouge représentant les plus grands nombres d'interventions.")
+          )),
+      div(h4("Panneau de visualisations à droite"), 
+          "Le panneau de droite s'adapte à la zone que vous avez affichée sur la cartographie et aux filtres que vous avez appliqués. Si vous zoomez ou dezoomez, vous verrez les informations changées. Ce panneau peut être déplacé en cliquant et en le glissant. Tout en haut du panneau, vous avez une information sur le nombre d'opération dans la zone affichée. En dessous, vous avez un premier graphique pour lequel vous pouvez choisir la visualisation à afficher (en passant votre souris sur les graphiques vous aurez plus de détails) :",
+          tags$ul(
+            tags$li("La répartition du bilan humain affiche sous forme de camambert la proportion de personnes secourues, décédées, etc... dans la zone"),
+            tags$li("Le Top 5 des événements affiche sous forme d'un histogramme des 5 événements avec le plus d'opérations dans la zone"),
+            tags$li("La répartition phase de la journée affiche sous forme de camambert la proportion d'opérations pour chaque phase de la journée (matinée,déjeuner, après-midi,nuit)"),
+            tags$li("La répartition des flotteurs affiche sous forme de camambert la proportion du nombre de chaque flotteurs (commerce, pêche, ect...) dans la zone"),
+            tags$li("La répartition nombre de moyens engagés affiche sous forme de camambert la proportion du nombre de moyens engagés (terrestre, nautique, aérien) dans la zone"),
+            tags$li("La répartition heures de moyens engagés affiche sous forme de camambert la proportion des heures de moyens engagés (terrestre, nautique, aérien) dans la zone"),
+            tags$li("L'évolution temporelle affiche le nombre d'opérations par jour sur la zone affichée et la période selectionnée.")
+          ),
+          "Le graphique en bas vous permet d'avoir d'autres visualisations :"),
+      tags$ul(
+        tags$li("La force du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque force de vent (de 0 à 12 selon l'échelle de Beaufort) dans la zone"),
+        tags$li("La force de la mer affiche sous forme d'histogramme le nombre d'opérations pour chaque force de la mer (de 0 à 9 selon l'échelle de Beaufort) dans la zone"),
+        tags$li("La direction du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque direction de vent de vent (nord, nord-ouest, nord-est, etc...) dans la zone")
+      ),
+      div(h4("Export des données"),
+          "Vous pouvez télécharger en format csv ou excel les opérations affichées dans la zone sur laquelle vous avez zoomée. Il suffit de cliquer en bas à gauche sur télécharger les données dans la zone."),
+      div(style =  "padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Pour plus d'informations")),
+      a(href="https://www.data.gouv.fr/fr/datasets/operations-coordonnees-par-les-cross/", "Dataset complet des données des opérations CROSS depuis 1985"),
+      br(),
+      a(href="https://mtes-mct.github.io/secmar-documentation/", "Documentation sur les tables de données et l'explication de chaque colonne en détail"),
+      br(),
+      a(href="https://github.com/entrepreneur-interet-general/predisauvetage/blob/master/mapshiny/test_app/app.R", "Code source de l'application"),
+      div(
+        class = "box-footer",
+        style = "color: #ffffff ;background-color:#19339e;",
+       "contact :",
+        a("tech@snosan.fr", href = "mailto:tech@snosan.fr")),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
   
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
