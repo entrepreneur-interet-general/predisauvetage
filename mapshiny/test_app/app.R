@@ -23,27 +23,27 @@ library(shinyjs)
 library(shinyBS)
 library(writexl)
 
-pg = dbDriver("PostgreSQL")
-
-# Connection to the database
-con = dbConnect(pg,
-                user = Sys.getenv("DATABASE_USERNAME") ,
-                password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"),
-                port=Sys.getenv("DATABASE_PORT"),
-                dbname= Sys.getenv("DATABASE_NAME"))
-
-#select all data in the operations table
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-#select all data in the operations_stats table
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect(con)
+# pg = dbDriver("PostgreSQL")
+# 
+# # Connection to the database
+# con = dbConnect(pg,
+#                 user = Sys.getenv("DATABASE_USERNAME") ,
+#                 password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"),
+#                 port=Sys.getenv("DATABASE_PORT"),
+#                 dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# #select all data in the operations table
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# #select all data in the operations_stats table
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect(con)
 
 
 #Read kml files for the SRR
@@ -193,11 +193,14 @@ ui <- dashboardPage(
             switchInput("snosan", value = FALSE, label = "SNOSAN")
             ),
   ##add pop up to explain what is SNOSAN     
+  tags$head(tags$style(HTML('.popover-content{ 
+    font size="4"; 
+  }'))),
          div(
           style="display:inline-block; ",
           bsButton("q1", label = "", icon = icon("question"),
                    style = "info", size = "extra-small"),
-          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes.", 
+          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes ainsi que les opérations sans flotteur liées à des activités de loisirs nautiques (isolement par la marée, baignade, etc...).", 
                     placement = "right",  options = list(container = "body")
                     )
         )
