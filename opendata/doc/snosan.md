@@ -35,3 +35,8 @@ On définit qu'une opération rentre dans le cadre d'étude du SNOSAN dès lors 
     - Sans avarie en dérive
     - Sans avarie inexpérience
     - Ski nautique
+
+## Contact
+Vous pouvez contacter le SNOSAN par message électronique aux adresses :
+- `contact@snosan.fr` pour les problématiques métier
+- `tech@snosan.fr` pour les problématiques techniques
