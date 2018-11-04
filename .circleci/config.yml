@@ -146,7 +146,7 @@ jobs:
       - run:
           name: Push SNOSAN documentation to GitHub
           command: |
-            git clone -q https://${GITHUB_TOKEN}@github.com/snosan-tools/snosan-documentation.git /tmp/snosan-documentation
+            git clone -q https://${GITHUB_TOKEN}@github.com/snosan-tools/documentation.snosan.fr.git /tmp/snosan-documentation
             unzip -o /tmp/out/secmar-documentation.zip -d /tmp/snosan-documentation/
             cd /tmp/snosan-documentation
             git add .
