@@ -58,13 +58,15 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
+          name: Pull CHANGELOG
+          command: wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
+      - run:
           name: Build Markdown documentation for opendata
           command: |
             cp -r /tmp/secmar-documentation /tmp/secmar-documentation-opendata
             oa-to-md opendata_doc.yml opendata_schema.md fr
-            wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
             cat doc/schema.md opendata_schema.md > /tmp/file && mv /tmp/file doc/opendata_schema.md
-            cp doc/{preambule.md,CHANGELOG.md,cross.md,donnees.md,tables_codes.md} /tmp/secmar-documentation-opendata/
+            cp doc/*.md /tmp/secmar-documentation-opendata/
             cp doc/opendata_schema.md /tmp/secmar-documentation-opendata/schema.md
             cd /tmp/secmar-documentation-opendata/
             MODE='opendata' yarn run build
@@ -72,10 +74,8 @@ jobs:
           name: Build Markdown documentation for SNOSAN
           command: |
             oa-to-md doc.yml schema.md fr
-            wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
-            cat doc/schema.md schema.md > /tmp/file && mv /tmp/file doc/snosan_schema.md
-            cp doc/{CHANGELOG.md,tables_codes.md,langage_sql.md,redash.md} /tmp/secmar-documentation/
-            cp doc/snosan_schema.md /tmp/secmar-documentation/schema.md
+            cat doc/schema.md schema.md > /tmp/file && mv /tmp/file doc/schema.md
+            cp doc/*.md /tmp/secmar-documentation/
             cd /tmp/secmar-documentation/
             yarn run build
       - run:
