@@ -205,7 +205,7 @@ ui <- dashboardPage(
           style="display:inline-block; ",
           bsButton("q1", label = "", icon = icon("question"),
                    style = "info", size = "extra-small"),
-          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes ainsi que les opérations sans flotteur liées à des activités de loisirs nautiques (isolement par la marée, baignade, etc...).",
+          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes ainsi que les opérations sans flotteur liées à des activités de loisirs nautiques (isolement par la marée, baignade, etc…).",
                     placement = "right",  options = list(container = "body")
                     )
         )
@@ -409,11 +409,11 @@ server <- function(input, output, session) {
       div(h4("Panneau de filtre à gauche"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction :",
           tags$ul(
            tags$li("D'une période temporelle"),
-           tags$li("Du type d'événements déclenchant l'opération (homme à la mer, abordage, voie d'eau, etc..."),
+           tags$li("Du type d'événements déclenchant l'opération (homme à la mer, abordage, voie d'eau, etc…"),
            tags$li("Du CROSS qui a coordonné l'opération ou du département dans lequel il se déroule"),
            tags$li("D'une plage horaire et de la saison des opérations"),
            tags$li("Du type d'opérations (sauvetage, assistance ou autre"),
-           tags$li("Du type de flotteurs impliqués (plaisance, commerce, pêche, etc...)"),
+           tags$li("Du type de flotteurs impliqués (plaisance, commerce, pêche, etc…)"),
            tags$li("De la gravité d'une opération (si au moins une personne est décédée ou disparue ou qu'au moins un moyen aérien ait été engagé)"),
            tags$li("De la distance des côtes et de la zone de responsabilité de l'opération")
       )),
@@ -426,10 +426,10 @@ server <- function(input, output, session) {
       div(h4("Panneau de visualisations à droite"),
           "Le panneau de droite s'adapte à la zone que vous avez affichée sur la cartographie et aux filtres que vous avez appliqués. Si vous zoomez ou dézoomez, vous verrez les informations changées. Ce panneau peut être déplacé en cliquant et en le glissant. Tout en haut du panneau, vous avez une information sur le nombre d'opération dans la zone affichée. En dessous, vous avez un premier graphique pour lequel vous pouvez choisir la visualisation à afficher (en passant votre souris sur les graphiques vous aurez plus de détails) :",
           tags$ul(
-            tags$li("La répartition du bilan humain affiche sous forme de camembert la proportion de personnes secourues, décédées, etc... dans la zone"),
+            tags$li("La répartition du bilan humain affiche sous forme de camembert la proportion de personnes secourues, décédées, etc… dans la zone"),
             tags$li("Le top 5 des événements affiche sous forme d'un histogramme les 5 événements avec le plus d'opérations dans la zone"),
             tags$li("La répartition par phase de la journée affiche sous forme de camembert la proportion d'opérations pour chaque phase de la journée (matinée, déjeuner, après-midi, nuit)"),
-            tags$li("La répartition des flotteurs affiche sous forme de camembert la proportion du nombre de chaque type flotteurs (commerce, pêche, etc...) dans la zone"),
+            tags$li("La répartition des flotteurs affiche sous forme de camembert la proportion du nombre de chaque type flotteurs (commerce, pêche, etc…) dans la zone"),
             tags$li("La répartition nombre de moyens engagés affiche sous forme de camembert la proportion du nombre de moyens engagés (terrestre, nautique, aérien) dans la zone"),
             tags$li("La répartition heures de moyens engagés affiche sous forme de camembert la proportion des heures de moyens engagés (terrestre, nautique, aérien) dans la zone"),
             tags$li("L'évolution temporelle affiche le nombre d'opérations par jour sur la zone affichée et la période sélectionnée.")
@@ -438,7 +438,7 @@ server <- function(input, output, session) {
       tags$ul(
         tags$li("La force du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque force de vent (de 0 à 12 selon l'échelle de Beaufort) dans la zone"),
         tags$li("La force de la mer affiche sous forme d'histogramme le nombre d'opérations pour chaque force de la mer (de 0 à 9 selon l'échelle de Douglas) dans la zone"),
-        tags$li("La direction du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque direction de vent de vent (nord, nord-ouest, nord-est, etc...) dans la zone")
+        tags$li("La direction du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque direction de vent de vent (nord, nord-ouest, nord-est, etc…) dans la zone")
       ),
       div(h4("Export des données"),
           "Vous pouvez télécharger en format CSV ou Excel les opérations affichées dans la zone sur laquelle vous avez zoomé. Il suffit de cliquer en bas à gauche sur télécharger les données dans la zone."),
