@@ -363,6 +363,11 @@ queries = {
         join operations op on op.operation_id = stats.operation_id
         where op.latitude is not null
           and (stats.distance_cote_milles_nautiques is null or stats.distance_cote_metres is null)
+    ''',
+    'recent_data_last_72h': '''
+        select count(1) > 0
+        from operations
+        where date_heure_reception_alerte > current_date - interval '2 day'
     '''
 }
 
