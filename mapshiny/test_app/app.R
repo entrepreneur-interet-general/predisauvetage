@@ -23,31 +23,31 @@ library(shinyjs)
 library(shinyBS)
 library(writexl)
 
-pg = dbDriver("PostgreSQL")
-
-# Connection to the database
-con = dbConnect(pg,
-                user = Sys.getenv("DATABASE_USERNAME") ,
-                password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"),
-                port=Sys.getenv("DATABASE_PORT"),
-                dbname= Sys.getenv("DATABASE_NAME"))
-
-#select all data in the operations table
-
-con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
-                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
-
-query <- dbSendQuery(con, 'select * from operations;')
-operations <- fetch(query, n=-1)
-dbClearResult(query)
-
-#select all data in the operations_stats table
-query <- dbSendQuery(con, 'select * from operations_stats;')
-operations_stat <- fetch(query, n=-1)
-dbClearResult(query)
-
-dbDisconnect(con)
+# pg = dbDriver("PostgreSQL")
+# 
+# # Connection to the database
+# con = dbConnect(pg,
+#                 user = Sys.getenv("DATABASE_USERNAME") ,
+#                 password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"),
+#                 port=Sys.getenv("DATABASE_PORT"),
+#                 dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# #select all data in the operations table
+# 
+# con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+#                 host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+# 
+# query <- dbSendQuery(con, 'select * from operations;')
+# operations <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# #select all data in the operations_stats table
+# query <- dbSendQuery(con, 'select * from operations_stats;')
+# operations_stat <- fetch(query, n=-1)
+# dbClearResult(query)
+# 
+# dbDisconnect(con)
 
 
 #Read kml files for the SRR
@@ -341,18 +341,13 @@ ui <- dashboardPage(
                           selected = unique(secmar$zone_responsabilite),
                           multiple = TRUE)
      ),
-     menuItem("Code source", icon = icon("file-code-o"),
-              href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
-     menuItem("Documentation", icon = icon("book"),
-              href = "https://mtes-mct.github.io/secmar-documentation") ,
+   actionButton("doc", HTML("&nbsp;&nbsp;Documentation"),  icon("book"), style = "margin: 4px 5px 6px 5px; background-color: #222d32;color: #b8c7ce;border-color:#222d32"),
    downloadButton("downloadData", "Télécharger les données dans la zone (Excel)",
                   style='padding:5px; font-size:80%'),
    br(),
    br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)",
                   style='padding:5px; font-size:80%')
-  ,
-  actionButton("doc", "Documentation")
 
    )),
 
@@ -402,11 +397,12 @@ server <- function(input, output, session) {
 
   observeEvent(input$doc, {
     showModal(modalDialog(
-      title =  h1("Documentation"),
-      div(h3("Précaution de lecture", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
+      title =  h1("Documentation"), div(style= "position: relative; top: -110px;left:844px;", actionButton("fermer", label = "", icon = icon("close"),
+                                                                                                            style = "background-color: white" )),
+      div(style = "font-size: 16px;padding: 15px 30px;line-height: 1.6;", div(h3("Précaution de lecture", style="margin-top: -1.5em;padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
       "Les points sur la cartographie représentent les opérations géolocalisées coordonnées par les CROSS (Centres régionaux opérationnels de surveillance et de sauvetage). Ce jeu de données ne reflète ni l'accidentologie totale survenue au-delà de la bande des 300 mètres ni même l'activité globale des CROSS pour la mission de sauvetage. En effet, apparaissent sur la cartographie seulement les opérations avec des coordonnées géographiques(longitude, latitude)",
       div(h3("Fonctionnalités de la cartographie", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
-      div(h4("Panneau de filtre à gauche"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction :",
+      div(h4("Panneau de filtre à gauche", style="padding:0.5em;margin-top: 20px;color: #ffffff ;background-color:#0B3F94"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction :",
           tags$ul(
            tags$li("D'une période temporelle"),
            tags$li("Du type d'événements déclenchant l'opération (homme à la mer, abordage, voie d'eau, etc…"),
@@ -417,13 +413,13 @@ server <- function(input, output, session) {
            tags$li("De la gravité d'une opération (si au moins une personne est décédée ou disparue ou qu'au moins un moyen aérien ait été engagé)"),
            tags$li("De la distance des côtes et de la zone de responsabilité de l'opération")
       )),
-      div(h4("Fond de carte"), "En cliquant sur l'icône en haut à droite de la cartographie vous pouvez choisir le fond de carte à afficher. Vous avez accès à OpenSeaMap, SHOM, IGN et un fond de carte noir et blanc. "),
-      div(h4("Carte de chaleur et cluster"), "Vous pouvez changer la visualisation des points en cliquant sur Changer de visualisation en haut à gauche. Vous avez accès à deux formats :",
+      div(h4("Fond de carte", style="padding:0.5em;margin-top: 20px;color: #ffffff ;background-color:#0B3F94"), "En cliquant sur l'icône en haut à droite de la cartographie vous pouvez choisir le fond de carte à afficher. Vous avez accès à OpenSeaMap, SHOM, IGN et un fond de carte noir et blanc. "),
+      div(h4("Carte de chaleur et cluster", style="padding:0.5em;margin-top: 20px;color: #ffffff ;background-color:#0B3F94"), "Vous pouvez changer la visualisation des points en cliquant sur Changer de visualisation en haut à gauche. Vous avez accès à deux formats :",
           tags$ul(
             tags$li("Cluster : chaque point est modélisé par un marqueur bleu et en cliquant dessus, vous verrez apparaître des détails sur l'opération. Les cercles représentent un regroupement de plusieurs points et le nombre sur le cercle indique le nombre de points. En zoomant sur la carte, vous verrez apparaître de plus en plus de points isolés. "),
             tags$li("Heatmap : La carte de chaleur modélise le nombre d'opération dans une zone avec une échelle de couleur allant du vert au rouge, le rouge représentant les plus grands nombres d'opérations.")
           )),
-      div(h4("Panneau de visualisations à droite"),
+      div(h4("Panneau de visualisations à droite", style="padding:0.5em;margin-top: 20px;color: #ffffff ;background-color:#0B3F94"),
           "Le panneau de droite s'adapte à la zone que vous avez affichée sur la cartographie et aux filtres que vous avez appliqués. Si vous zoomez ou dézoomez, vous verrez les informations changées. Ce panneau peut être déplacé en cliquant et en le glissant. Tout en haut du panneau, vous avez une information sur le nombre d'opération dans la zone affichée. En dessous, vous avez un premier graphique pour lequel vous pouvez choisir la visualisation à afficher (en passant votre souris sur les graphiques vous aurez plus de détails) :",
           tags$ul(
             tags$li("La répartition du bilan humain affiche sous forme de camembert la proportion de personnes secourues, décédées, etc… dans la zone"),
@@ -440,7 +436,7 @@ server <- function(input, output, session) {
         tags$li("La force de la mer affiche sous forme d'histogramme le nombre d'opérations pour chaque force de la mer (de 0 à 9 selon l'échelle de Douglas) dans la zone"),
         tags$li("La direction du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque direction de vent de vent (nord, nord-ouest, nord-est, etc…) dans la zone")
       ),
-      div(h4("Export des données"),
+      div(h4("Export des données", style="padding:0.5em;margin-top: 20px;color: #ffffff ;background-color:#0B3F94"),
           "Vous pouvez télécharger en format CSV ou Excel les opérations affichées dans la zone sur laquelle vous avez zoomé. Il suffit de cliquer en bas à gauche sur télécharger les données dans la zone."),
       div(h3("Pour plus d'informations", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
       a(href="https://www.data.gouv.fr/fr/datasets/operations-coordonnees-par-les-cross/", "Jeu de données des opérations CROSS depuis 1985"),
@@ -452,10 +448,15 @@ server <- function(input, output, session) {
         class = "box-footer",
         style = "color: #ffffff ;background-color:#0B3F94; margin-top: 1.5em",
        "Contact :",
-        a("tech@snosan.fr", href = "mailto:tech@snosan.fr")),
+        a("tech@snosan.fr", href = "mailto:tech@snosan.fr"))),
       easyClose = TRUE,
+      size = 'l',
       footer = NULL
     ))
+  })
+  
+  observeEvent(input$fermer,{
+    removeModal()
   })
 
   snosanInput <- reactive({
