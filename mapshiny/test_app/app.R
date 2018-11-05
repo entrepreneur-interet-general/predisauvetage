@@ -403,9 +403,9 @@ server <- function(input, output, session) {
   observeEvent(input$doc, {
     showModal(modalDialog(
       title =  h1("Documentation"),
-      div(style =  " padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Précaution de lecture")),
+      div(h3("Précaution de lecture", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
       "Les points sur la cartographie représentent les opérations géolocalisées coordonnées par les CROSS (Centres régionaux opérationnels de surveillance et de sauvetage). Ce jeu de données ne reflète ni l'accidentologie totale survenue au-delà de la bande des 300 mètres ni même l'activité globale des CROSS pour la mission de sauvetage. En effet, apparaissent sur la cartographie seulement les opérations avec des coordonnées géographiques(longitude, latitude)",
-      div(style =  "padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Fonctionnalités de la cartographie")),
+      div(h3("Fonctionnalités de la cartographie", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
       div(h4("Panneau de filtre à gauche"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction :",
           tags$ul(
            tags$li("D'une période temporelle"),
@@ -442,7 +442,7 @@ server <- function(input, output, session) {
       ),
       div(h4("Export des données"),
           "Vous pouvez télécharger en format CSV ou Excel les opérations affichées dans la zone sur laquelle vous avez zoomé. Il suffit de cliquer en bas à gauche sur télécharger les données dans la zone."),
-      div(style =  "padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Pour plus d'informations")),
+      div(h3("Pour plus d'informations", style="padding: 0.2em 0; border-bottom: 2px solid #E2001D")),
       a(href="https://www.data.gouv.fr/fr/datasets/operations-coordonnees-par-les-cross/", "Jeu de données des opérations CROSS depuis 1985"),
       br(),
       a(href="https://mtes-mct.github.io/secmar-documentation/", "Documentation sur les tables de données et l'explication de chaque colonne en détail"),
@@ -450,7 +450,7 @@ server <- function(input, output, session) {
       a(href="https://github.com/entrepreneur-interet-general/predisauvetage/blob/master/mapshiny/test_app/app.R", "Code source de l'application"),
       div(
         class = "box-footer",
-        style = "color: #ffffff ;background-color:#19339e;",
+        style = "color: #ffffff ;background-color:#0B3F94; margin-top: 1.5em",
        "Contact :",
         a("tech@snosan.fr", href = "mailto:tech@snosan.fr")),
       easyClose = TRUE,
