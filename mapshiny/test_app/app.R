@@ -34,6 +34,10 @@ con = dbConnect(pg,
                 dbname= Sys.getenv("DATABASE_NAME"))
 
 #select all data in the operations table
+
+con = dbConnect(pg, user = Sys.getenv("DATABASE_USERNAME") , password = Sys.getenv("DATABASE_PASSWORD"),
+                host=Sys.getenv("DATABASE_HOST"), port=Sys.getenv("DATABASE_PORT"), dbname= Sys.getenv("DATABASE_NAME"))
+
 query <- dbSendQuery(con, 'select * from operations;')
 operations <- fetch(query, n=-1)
 dbClearResult(query)
@@ -63,19 +67,19 @@ secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner
 #Create Hause/saison basse saison and create a boolean for operations without flotteur
 secmar <- secmar %>%
                  mutate(saison = ifelse(mois>4 & mois<10, 'Haute saison', 'Basse saison')) %>%
-                 mutate(sans_flotteur = 
+                 mutate(sans_flotteur =
                           ifelse(nombre_flotteurs_commerce_impliques > 0 |
                                  nombre_flotteurs_plaisance_impliques > 0 |
                                  nombre_flotteurs_loisirs_nautiques_impliques > 0 |
                                  nombre_flotteurs_peche_impliques > 0 |
                                  nombre_flotteurs_autre_impliques > 0 |
-                                 nombre_aeronefs_impliques, 0, 1 )) %>% 
+                                 nombre_aeronefs_impliques, 0, 1 )) %>%
                   mutate(flotteurs_plaisance_autre =
                            ifelse(nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques == 0 &
                                     nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques == 0 &
-                                    nombre_flotteurs_plaisance_a_voile_impliques == 0 
-                                    , 1, 0 )) %>% 
-                  mutate(flotteurs_vehicule_nautique = 
+                                    nombre_flotteurs_plaisance_a_voile_impliques == 0
+                                    , 1, 0 )) %>%
+                  mutate(flotteurs_vehicule_nautique =
                            ifelse(nombre_flotteurs_planche_a_voile_impliques ==0 &
                                   nombre_flotteurs_kitesurf_impliques == 0 &
                                   nombre_flotteurs_plaisance_voile_legere_impliques == 0 &
@@ -83,43 +87,44 @@ secmar <- secmar %>%
                                   nombre_flotteurs_surf_impliques == 0 &
                                   nombre_flotteurs_autre_loisir_nautique_impliques == 0 &
                                   nombre_flotteurs_engin_de_plage_impliques == 0 &
-                                  nombre_flotteurs_canoe_kayak_aviron_impliques == 0, 
-                                  1, 0)) %>% 
-                  mutate(distance_cote_milles_nautiques = 
+                                  nombre_flotteurs_canoe_kayak_aviron_impliques == 0,
+                                  1, 0)) %>%
+                  mutate(distance_cote_milles_nautiques =
                            if_else(is.na(distance_cote_milles_nautiques), 0, distance_cote_milles_nautiques)) #Replace na with 0
 
 #Create categories for distance_cote_milles_nautiques
 secmar <- secmar %>%
-          mutate(distance_cote_milles_nautiques_cat = 
+          mutate(distance_cote_milles_nautiques_cat =
              as.character(
                cut(
-                 distance_cote_milles_nautiques, 
+                 distance_cote_milles_nautiques,
                  breaks = c(-Inf, 2, 6, 60, Inf),
-                 labels = c("0-2 milles", 
-                            "2-6 milles", 
-                            "6-60 milles", 
+                 labels = c("0-2 milles",
+                            "2-6 milles",
+                            "6-60 milles",
                             "+60 milles"))))
+# dbDisconnect (con)
 
 #Reorder and rename direction du vent
-secmar <- secmar %>% 
-          mutate(vent_direction_categorie = 
-                   factor(vent_direction_categorie, 
+secmar <- secmar %>%
+          mutate(vent_direction_categorie =
+                   factor(vent_direction_categorie,
                           levels = c("nord-ouest",
-                                     "nord", 
+                                     "nord",
                                      "nord-est",
-                                     "est", 
-                                     "sud-est", 
-                                     "sud", 
-                                     "sud-ouest", 
+                                     "est",
+                                     "sud-est",
+                                     "sud",
+                                     "sud-ouest",
                                      "ouest"),
                           labels = c("NO", "N", "NE", "E", "SE", "S", "SO", "O")))
 #Extract decimal hour
-secmar <- secmar %>% 
+secmar <- secmar %>%
           mutate(date_heure = as.numeric(format(date_heure_reception_alerte, "%H")) +
                               as.numeric(format(date_heure_reception_alerte, "%M"))/60)
 #Replace na by Non renseigné in type_operation and departement
 secmar <- secmar %>%
-          mutate(type_operation = replace_na(type_operation, "Non renseigné")) %>% 
+          mutate(type_operation = replace_na(type_operation, "Non renseigné")) %>%
           mutate(departement = replace_na(departement, 'Non renseigné'))
 
 # Create a column with a list of flotteurs involved
@@ -130,15 +135,15 @@ secmar <- secmar %>%
          flotteurs_loisirs_nautiques = ifelse(nombre_flotteurs_loisirs_nautiques_impliques > 0, 'loisirs nautiques', ''),
          flotteurs_autre = ifelse(nombre_flotteurs_autre_impliques > 0, 'autre', ''),
          flotteurs_aeronef = ifelse(nombre_aeronefs_impliques > 0, 'aeronef', ''),
-         flotteurs_sans_flotteur = ifelse(sans_flotteur_implique > 0, 'sans flotteur', '')) %>% 
-  mutate(liste_flotteurs = paste(flotteurs_peche, 
+         flotteurs_sans_flotteur = ifelse(sans_flotteur_implique > 0, 'sans flotteur', '')) %>%
+  mutate(liste_flotteurs = paste(flotteurs_peche,
                                  flotteurs_commerce,
-                                 flotteurs_plaisance, 
+                                 flotteurs_plaisance,
                                  flotteurs_loisirs_nautiques,
                                  flotteurs_autre,
                                  flotteurs_aeronef,
                                  flotteurs_sans_flotteur))
-          
+
 
 #Create dico to map flotteurs values
 flotteur_choices <- c('Commerce', 'Plaisance', 'Loisirs nautiques', 'Pêche', 'Autre', 'Aeronéf', 'Sans flotteur')
@@ -159,7 +164,7 @@ plaisance_choices_dico <- c('Moteur < 8m' = 'nombre_flotteurs_plaisance_a_moteur
 
 ln_choices <- c('Planche à voile', 'Kitesurf',
                 'Plaisance voile légère','Ski nautique',
-                'Surf', 'Autre loisir nautique', 
+                'Surf', 'Autre loisir nautique',
                 'Engin de plage', 'Canoë / Kayak / Aviron', 'Vehicule nautique à moteur')
 ln_choices_dico <- c('Planche à voile' = 'nombre_flotteurs_planche_a_voile_impliques',
                      'Kitesurf' = 'nombre_flotteurs_kitesurf_impliques',
@@ -192,25 +197,28 @@ ui <- dashboardPage(
         div(style="width:50%; display:inline-block;",
             switchInput("snosan", value = FALSE, label = "SNOSAN")
             ),
-  ##add pop up to explain what is SNOSAN     
+  ##add pop up to explain what is SNOSAN
+  tags$head(tags$style(HTML('.popover-content{
+    font size="4";
+  }'))),
          div(
           style="display:inline-block; ",
           bsButton("q1", label = "", icon = icon("question"),
                    style = "info", size = "extra-small"),
-          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes.", 
+          bsPopover("q1", title ="", content = "Le SNOSAN prend en compte les opérations sur des flotteurs de plaisance, loisirs nautiques et annexes ainsi que les opérations sans flotteur liées à des activités de loisirs nautiques (isolement par la marée, baignade, etc…).",
                     placement = "right",  options = list(container = "body")
                     )
         )
-      ), 
+      ),
   ##Switch input to change visualization
       switchInput("heatmap", value = FALSE, size = 'mini',
                   onLabel = 'Heatmap', offLabel = 'Cluster', label = 'Changer de visualisation'),
         dateRangeInput('dateRange',
                               label = "Date d'intervention",
-                              start = as.Date(paste(c(as.character(Sys.Date(), "%Y"),'01-01'),collapse='-'), format="%Y-%m-%d"), 
+                              start = as.Date(paste(c(as.character(Sys.Date(), "%Y"),'01-01'),collapse='-'), format="%Y-%m-%d"),
                               end = Sys.Date(),
                               separator = " - ", startview = "year", format = "dd/mm/yyyy"
-            ), 
+            ),
      menuItem("Évenement", tabName = "event", icon = icon("anchor"),
               checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
@@ -237,9 +245,9 @@ ui <- dashboardPage(
                                    status = "primary",
                                    checkIcon = list(yes = icon("ok", lib = "glyphicon"), no = icon("remove", lib = "glyphicon")),
                                    choices = unique(secmar$saison), selected = unique(secmar$saison)),
-              bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.", 
+              bsPopover("saison", title = "", content = "La haute saison concerne les opérations du 1er mai au 30 septembre.",
                         placement = "right", options = list(container = "body")),
-               sliderInput("heure", label = "Heure de l'alerte (UTC)", min = 0, 
+               sliderInput("heure", label = "Heure de l'alerte (UTC)", min = 0,
                            max = 24, value = c(0,24))
               # splitLayout(
               #     selectInput(
@@ -331,21 +339,21 @@ ui <- dashboardPage(
                             `select-all-text` = "Tout sélectionner"
                           ),
                           selected = unique(secmar$zone_responsabilite),
-                          multiple = TRUE)   
+                          multiple = TRUE)
      ),
      menuItem("Code source", icon = icon("file-code-o"),
               href = "https://github.com/entrepreneur-interet-general/predisauvetage"),
      menuItem("Documentation", icon = icon("book"),
-              href = "https://mtes-mct.github.io/secmar-documentation") ,     
+              href = "https://mtes-mct.github.io/secmar-documentation") ,
    downloadButton("downloadData", "Télécharger les données dans la zone (Excel)",
                   style='padding:5px; font-size:80%'),
    br(),
    br(),
-   downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)", 
+   downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)",
                   style='padding:5px; font-size:80%')
-  # ,
-    #actionButton("doc", "Documentation")
-  
+  ,
+  actionButton("doc", "Documentation")
+
    )),
 
   #Body content
@@ -359,7 +367,7 @@ ui <- dashboardPage(
                 absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                               draggable = TRUE, top = 20, left = "auto", right = 20, bottom = "auto",
                               width = 350, height = "auto",
-                     div(style="padding: 10px;",          
+                     div(style="padding: 10px;",
                      br(),
                      ###Return the number of operations in the selected area
                      h4(textOutput("operation")),
@@ -391,15 +399,65 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-  
-  # observeEvent(input$doc, {
-  #   showModal(modalDialog(
-  #     title =  h1("Documentation"),
-  #     easyClose = TRUE,
-  #     footer = NULL
-  #   ))
-  # })
-  
+
+  observeEvent(input$doc, {
+    showModal(modalDialog(
+      title =  h1("Documentation"),
+      div(style =  " padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Précaution de lecture")),
+      "Les points sur la cartographie représentent les opérations géolocalisées coordonnées par les CROSS (Centres régionaux opérationnels de surveillance et de sauvetage). Ce jeu de données ne reflète ni l'accidentologie totale survenue au-delà de la bande des 300 mètres ni même l'activité globale des CROSS pour la mission de sauvetage. En effet, apparaissent sur la cartographie seulement les opérations avec des coordonnées géographiques(longitude, latitude)",
+      div(style =  "padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Fonctionnalités de la cartographie")),
+      div(h4("Panneau de filtre à gauche"), "À gauche de l'écran, vous avez accès à un panneau qui vous permet de filtrer les opérations qui apparaissent sur la cartographie en fonction :",
+          tags$ul(
+           tags$li("D'une période temporelle"),
+           tags$li("Du type d'événements déclenchant l'opération (homme à la mer, abordage, voie d'eau, etc…"),
+           tags$li("Du CROSS qui a coordonné l'opération ou du département dans lequel il se déroule"),
+           tags$li("D'une plage horaire et de la saison des opérations"),
+           tags$li("Du type d'opérations (sauvetage, assistance ou autre"),
+           tags$li("Du type de flotteurs impliqués (plaisance, commerce, pêche, etc…)"),
+           tags$li("De la gravité d'une opération (si au moins une personne est décédée ou disparue ou qu'au moins un moyen aérien ait été engagé)"),
+           tags$li("De la distance des côtes et de la zone de responsabilité de l'opération")
+      )),
+      div(h4("Fond de carte"), "En cliquant sur l'icône en haut à droite de la cartographie vous pouvez choisir le fond de carte à afficher. Vous avez accès à OpenSeaMap, SHOM, IGN et un fond de carte noir et blanc. "),
+      div(h4("Carte de chaleur et cluster"), "Vous pouvez changer la visualisation des points en cliquant sur Changer de visualisation en haut à gauche. Vous avez accès à deux formats :",
+          tags$ul(
+            tags$li("Cluster : chaque point est modélisé par un marqueur bleu et en cliquant dessus, vous verrez apparaître des détails sur l'opération. Les cercles représentent un regroupement de plusieurs points et le nombre sur le cercle indique le nombre de points. En zoomant sur la carte, vous verrez apparaître de plus en plus de points isolés. "),
+            tags$li("Heatmap : La carte de chaleur modélise le nombre d'opération dans une zone avec une échelle de couleur allant du vert au rouge, le rouge représentant les plus grands nombres d'opérations.")
+          )),
+      div(h4("Panneau de visualisations à droite"),
+          "Le panneau de droite s'adapte à la zone que vous avez affichée sur la cartographie et aux filtres que vous avez appliqués. Si vous zoomez ou dézoomez, vous verrez les informations changées. Ce panneau peut être déplacé en cliquant et en le glissant. Tout en haut du panneau, vous avez une information sur le nombre d'opération dans la zone affichée. En dessous, vous avez un premier graphique pour lequel vous pouvez choisir la visualisation à afficher (en passant votre souris sur les graphiques vous aurez plus de détails) :",
+          tags$ul(
+            tags$li("La répartition du bilan humain affiche sous forme de camembert la proportion de personnes secourues, décédées, etc… dans la zone"),
+            tags$li("Le top 5 des événements affiche sous forme d'un histogramme les 5 événements avec le plus d'opérations dans la zone"),
+            tags$li("La répartition par phase de la journée affiche sous forme de camembert la proportion d'opérations pour chaque phase de la journée (matinée, déjeuner, après-midi, nuit)"),
+            tags$li("La répartition des flotteurs affiche sous forme de camembert la proportion du nombre de chaque type flotteurs (commerce, pêche, etc…) dans la zone"),
+            tags$li("La répartition nombre de moyens engagés affiche sous forme de camembert la proportion du nombre de moyens engagés (terrestre, nautique, aérien) dans la zone"),
+            tags$li("La répartition heures de moyens engagés affiche sous forme de camembert la proportion des heures de moyens engagés (terrestre, nautique, aérien) dans la zone"),
+            tags$li("L'évolution temporelle affiche le nombre d'opérations par jour sur la zone affichée et la période sélectionnée.")
+          ),
+          "Le graphique en bas vous permet d'avoir d'autres visualisations :"),
+      tags$ul(
+        tags$li("La force du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque force de vent (de 0 à 12 selon l'échelle de Beaufort) dans la zone"),
+        tags$li("La force de la mer affiche sous forme d'histogramme le nombre d'opérations pour chaque force de la mer (de 0 à 9 selon l'échelle de Douglas) dans la zone"),
+        tags$li("La direction du vent affiche sous forme d'histogramme le nombre d'opérations pour chaque direction de vent de vent (nord, nord-ouest, nord-est, etc…) dans la zone")
+      ),
+      div(h4("Export des données"),
+          "Vous pouvez télécharger en format CSV ou Excel les opérations affichées dans la zone sur laquelle vous avez zoomé. Il suffit de cliquer en bas à gauche sur télécharger les données dans la zone."),
+      div(style =  "padding: 4px; border-top: 3px solid;border-bottom: 3px solid; border-top-color: #e54110; border-bottom-color:#e54110;", h3("Pour plus d'informations")),
+      a(href="https://www.data.gouv.fr/fr/datasets/operations-coordonnees-par-les-cross/", "Jeu de données des opérations CROSS depuis 1985"),
+      br(),
+      a(href="https://mtes-mct.github.io/secmar-documentation/", "Documentation sur les tables de données et l'explication de chaque colonne en détail"),
+      br(),
+      a(href="https://github.com/entrepreneur-interet-general/predisauvetage/blob/master/mapshiny/test_app/app.R", "Code source de l'application"),
+      div(
+        class = "box-footer",
+        style = "color: #ffffff ;background-color:#19339e;",
+       "Contact :",
+        a("tech@snosan.fr", href = "mailto:tech@snosan.fr")),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
       #Need to remove missing values for longitude and latitude because heatmap doesn't handle missing values
@@ -412,18 +470,18 @@ server <- function(input, output, session) {
   crossInput <- reactive({
       snosanInput() %>% filter(cross %in% input$cross)
   })
-  
+
   operationInput <- reactive({
     crossInput() %>% filter(type_operation %in% input$operation)
   })
-  
+
   observe({
     updateSelectizeInput(
       session, 'departement', choices = sort(unique(secmar$departement)),
       selected = if (input$dep) sort(unique(secmar$departement))
     )
   })
-  
+
   departementInput <- reactive({
     operationInput() %>% filter(departement %in% input$departement)
   })
@@ -438,11 +496,11 @@ server <- function(input, output, session) {
   evenementInput <- reactive({
       departementInput() %>% filter(evenement %in% input$evenement)
   })
-  
+
   cotesInput <- reactive({
     evenementInput() %>% filter(distance_cote_milles_nautiques_cat %in% input$cotes)
   })
-  
+
   zonesInput <- reactive({
     cotesInput() %>% filter(zone_responsabilite %in% input$zones)
   })
@@ -454,7 +512,7 @@ server <- function(input, output, session) {
   saisonInput <- reactive({
     dateInput() %>% filter(saison %in% input$saison)
   })
-  
+
   heureInput <- reactive({
     # if (input$start_heure >= input$end_heure){
     #   saisonInput() %>% filter(date_heure >= input$start_heure | date_heure <= input$end_heure)
@@ -480,13 +538,13 @@ server <- function(input, output, session) {
       decesInput() %>% filter(nombre_moyens_aeriens_engages > 0)
     }
   })
-  
+
   observe({
     updatePickerInput(
       session, 'plaisance', choices = plaisance_choices,
       selected = if ('Plaisance' %in% input$flotteur) plaisance_choices)
   })
-  
+
   observe({
     updatePickerInput(
       session, 'loisirs', choices = ln_choices,
@@ -507,14 +565,14 @@ server <- function(input, output, session) {
      filter_at(aerienInput(), vars(list), any_vars(. > 0))
   }
   })
-  
+
   plaisanceInput <- reactive({
     #If all values are selected, keep whole dataset
     if (length(input$plaisance) == length(plaisance_choices)){
       flotteurInput()
       #If nothing is selected, return empty dataset
     } else if (is.null(input$plaisance)) {
-      flotteurInput() 
+      flotteurInput()
     } else {
       #Map flotteurs plaisance input choices with dictionnary created before
       plaisance_not_selected <- plaisance_choices[(!plaisance_choices %in% input$plaisance)]
@@ -523,14 +581,14 @@ server <- function(input, output, session) {
       filter_at(flotteurInput(), vars(list_plaisance), all_vars(. == 0))
     }
   })
-  
+
   loisirsInput <- reactive({
     #If all values are selected, keep whole dataset
     if (length(input$loisirs) == length(ln_choices)){
       plaisanceInput()
       #If nothing is selected, return empty dataset
     } else if (is.null(input$loisirs)) {
-      plaisanceInput() 
+      plaisanceInput()
     } else {
       #Map flotteurs loisirs nautiques input choices with dictionnary created before
       ln_not_selected <- ln_choices[(!ln_choices %in% input$loisirs)]
@@ -542,16 +600,16 @@ server <- function(input, output, session) {
 
   output$mymap <- renderLeaflet({
 # Base map
-    leaflet(secmar_year) %>% 
-      addTiles() %>% 
-      addProviderTiles(providers$OpenSeaMap, 
-                       group = "OpenSeaMap") %>% 
+    leaflet(secmar_year) %>%
+      addTiles() %>%
+      addProviderTiles(providers$OpenSeaMap,
+                       group = "OpenSeaMap") %>%
       addProviderTiles(providers$CartoDB.Positron,
-                       group = "Noir et blanc") %>% 
-      addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', 
-               attribution = '&copy; https://www.geoportail.gouv.fr', 
+                       group = "Noir et blanc") %>%
+      addTiles(urlTemplate = 'https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}',
+               attribution = '&copy; https://www.geoportail.gouv.fr',
                group = "IGN") %>%
-      addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png', 
+      addTiles(urlTemplate = 'https://geoapi.fr/shomgt/tile.php/gtpyr/{z}/{x}/{y}.png',
                attribution =  '<a href="http://www.shom.fr/">SHOM</a>',
                group = "SHOM") %>%
       setView(lng = 0.340375, lat = 46.580224, zoom = 6) %>%
@@ -564,26 +622,26 @@ server <- function(input, output, session) {
                               "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                               "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
                   clusterOptions = markerClusterOptions()) %>%
-      addLayersControl(baseGroups = c("OpenSeaMap", "SHOM", "IGN", "Noir et blanc")) %>% 
+      addLayersControl(baseGroups = c("OpenSeaMap", "SHOM", "IGN", "Noir et blanc")) %>%
       #Add kml files for SRR
       addKML(srr_etel,  color = 'red',fill=FALSE, weight = 0.5, label = "Etel", labelOptions = labelOptions(
         style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px", opacity = 4, color = "black",
-        direction = "auto")) %>% 
-      addKML(srr_corsen,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_grisnez,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_antillesguyane,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_lagarde,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_jobourg,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_lareunion,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_noumea,  color = 'red',fill=FALSE, weight = 0.5) %>% 
-      addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5) 
-    
+        direction = "auto")) %>%
+      addKML(srr_corsen,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_grisnez,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_antillesguyane,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_lagarde,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_jobourg,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_lareunion,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_noumea,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5)
+
   })
-  
-  #Change map based on filters 
+
+  #Change map based on filters
     observe({
     if (input$heatmap == FALSE) {
-      m <- leafletProxy("mymap", data = loisirsInput()) %>% 
+      m <- leafletProxy("mymap", data = loisirsInput()) %>%
         clearHeatmap() %>%
         clearMarkerClusters()
       m %>% addMarkers(~longitude, ~latitude,
@@ -594,9 +652,9 @@ server <- function(input, output, session) {
                                     "</br> Type de flotteurs impliqués : ", liste_flotteurs,
                                     "</br> Nombre de personnes décédées ou disparues : ", nombre_personnes_tous_deces_ou_disparues,
                                     "</br> Distance des côtes (milles) : ", distance_cote_milles_nautiques),
-                       clusterOptions = markerClusterOptions()) 
-      
-      
+                       clusterOptions = markerClusterOptions())
+
+
     } else if (input$heatmap == TRUE) {
       m <- leafletProxy("mymap", data = loisirsInput()) %>% clearHeatmap() %>% clearMarkerClusters()
       m %>% addHeatmap(group="heat", lng=~longitude, lat=~latitude, blur=20, radius = 11)
@@ -604,7 +662,7 @@ server <- function(input, output, session) {
 
   })
 
-  #Find bounds of the map at current screen state  
+  #Find bounds of the map at current screen state
   zipsInBounds <- reactive({
     req(input$mymap_bounds)
     bounds <- input$mymap_bounds
@@ -653,51 +711,51 @@ server <- function(input, output, session) {
    if (input$pie == 'Répartition du bilan humain'){
      secmar_bilan <- zipsInBounds() %>%
                      select(nombre_personnes_disparues,
-                            nombre_personnes_assistees, 
-                            nombre_personnes_impliquees_dans_fausse_alerte, 
-                            nombre_personnes_tirees_daffaire_seule, 
-                            nombre_personnes_retrouvees, nombre_personnes_secourues, 
+                            nombre_personnes_assistees,
+                            nombre_personnes_impliquees_dans_fausse_alerte,
+                            nombre_personnes_tirees_daffaire_seule,
+                            nombre_personnes_retrouvees, nombre_personnes_secourues,
                             nombre_personnes_tous_deces) %>%
                      replace(is.na(.), 0)
-     names(secmar_bilan) <- c("Diparues", 
+     names(secmar_bilan) <- c("Diparues",
                               "Assistées",
-                              "Impliquées dans fausses alertes", 
-                              "Tirées d'affaires elles mêmes", 
+                              "Impliquées dans fausses alertes",
+                              "Tirées d'affaires elles mêmes",
                               "Retrouvées",
                               "Secourues",
                               "Décédées")
      sumdata <- data.frame(value=apply(secmar_bilan,2,sum))
      sumdata$key = rownames(sumdata)
-     plot_ly(sumdata, labels=~key, values=~value) %>% 
+     plot_ly(sumdata, labels=~key, values=~value) %>%
        add_pie(hole = 0.4) %>%
-       layout(showlegend = TRUE, 
+       layout(showlegend = TRUE,
               legend = list(font = list(size=5),
                             orientation = 'v'),
               margin = list(b = 0))
-     
+
    } else if (input$pie == 'Répartition des flotteurs'){
-     secmar_flotteur <- zipsInBounds() %>% 
+     secmar_flotteur <- zipsInBounds() %>%
                         select(nombre_flotteurs_commerce_impliques,
                                nombre_flotteurs_peche_impliques,
                                nombre_flotteurs_plaisance_impliques,
                                nombre_flotteurs_loisirs_nautiques_impliques,
-                               nombre_flotteurs_autre_impliques)  %>% 
+                               nombre_flotteurs_autre_impliques)  %>%
                         replace(is.na(.), 0)
-     names(secmar_flotteur) <- c("Commerce", 
-                                 "Pêche", 
-                                 "Plaisance", 
+     names(secmar_flotteur) <- c("Commerce",
+                                 "Pêche",
+                                 "Plaisance",
                                  "Loisirs nautiques",
                                  "Autre")
      sumdata_flotteur <- data.frame(value=apply(secmar_flotteur,2,sum))
      sumdata_flotteur$key=rownames(sumdata_flotteur)
      plot_ly(sumdata_flotteur, labels=~key, values=~value) %>%
-       add_pie(hole = 0.4) %>% 
+       add_pie(hole = 0.4) %>%
        layout(showlegend = TRUE,
               legend = list(font = list(size=5), orientation = 'v'),
               margin = list(b = 0))
-     
+
    } else if (input$pie == "Répartition nombre de moyens engagés") {
-     secmar_moyens <- zipsInBounds() %>% 
+     secmar_moyens <- zipsInBounds() %>%
                       select(nombre_moyens_nautiques_engages,
                              nombre_moyens_terrestres_engages,
                              nombre_moyens_aeriens_engages)  %>%
@@ -707,34 +765,34 @@ server <- function(input, output, session) {
      sumdata_moyens$key=rownames(sumdata_moyens)
      plot_ly(sumdata_moyens, labels=~key, values=~value) %>%
        add_pie(hole = 0.4) %>%
-       layout(showlegend = TRUE, 
+       layout(showlegend = TRUE,
               legend = list(font = list(size=5), orientation = 'v'),
               margin = list(b = 0))
-     
+
    } else if (input$pie == "Répartition heures de moyens engagés") {
-     secmar_moyens_heures <- zipsInBounds() %>% 
+     secmar_moyens_heures <- zipsInBounds() %>%
                              select(duree_engagement_moyens_nautiques_heures,
-                                    duree_engagement_moyens_terrestres_heures, 
-                                    duree_engagement_moyens_aeriens_heures)  %>% 
+                                    duree_engagement_moyens_terrestres_heures,
+                                    duree_engagement_moyens_aeriens_heures)  %>%
                              replace(is.na(.), 0)
-     names(secmar_moyens_heures) <- c('Heures moyens nautiques', 
-                                      "Heures moyens terrestres", 
+     names(secmar_moyens_heures) <- c('Heures moyens nautiques',
+                                      "Heures moyens terrestres",
                                       'Heures moyens aériens')
      sumdata_moyens <- data.frame(value=apply(secmar_moyens_heures,2,sum))
      sumdata_moyens$key=rownames(sumdata_moyens)
      plot_ly(sumdata_moyens, labels=~key, values=~value) %>%
        add_pie(hole = 0.4) %>%
-       layout(showlegend = TRUE, 
+       layout(showlegend = TRUE,
               legend = list(font = list(size=5), orientation = 'v'),
               margin = list(b = 0))
-     
+
    } else if (input$pie == 'Répartition du top 5 événements'){
      grouped_event <- zipsInBounds() %>%
-                      dplyr::group_by(evenement) %>% 
-                      summarize(count = n()) %>% 
+                      dplyr::group_by(evenement) %>%
+                      summarize(count = n()) %>%
                       top_n(5) %>%
                       arrange(desc(count))
-     grouped_event$evenement <- factor(grouped_event$evenement, 
+     grouped_event$evenement <- factor(grouped_event$evenement,
                                        levels = unique(grouped_event$evenement)
                                        [order(grouped_event$count, decreasing = TRUE)])
      plot_ly(grouped_event, x= ~evenement, y = ~count, type = 'bar') %>%
@@ -742,17 +800,17 @@ server <- function(input, output, session) {
               yaxis = list(title = ""),
               font = list(size = 8),
               margin = list(b = 60))
-     
+
    } else if (input$pie == "Répartition phase de la journée"){
-     grouped_phase <- zipsInBounds() %>% 
+     grouped_phase <- zipsInBounds() %>%
                       dplyr::group_by(phase_journee) %>%
                       summarize(count = n())
      plot_ly(grouped_phase, labels= ~phase_journee, values = ~count) %>%
-      add_pie(hole = 0.4) %>% 
+      add_pie(hole = 0.4) %>%
       layout(showlegend = TRUE,
              legend = list(font = list(size=5), orientation = 'v'),
              margin = list(b = 0))
-     
+
    } else if (input$pie == 'Evolution temporelle') {
      grouped_date = zipsInBounds() %>% count(date)
      plot_ly(grouped_date, x = ~date, y= ~n, mode='lines') %>%
@@ -762,7 +820,7 @@ server <- function(input, output, session) {
 
   output$camembert <- renderPlotly({
     validate(
-      need(zipsInBounds(), "Sorry, there is no data for you requested combination. 
+      need(zipsInBounds(), "Sorry, there is no data for you requested combination.
                       Please change your input selections"
       )
     )
@@ -775,7 +833,7 @@ server <- function(input, output, session) {
     content = function(file) {
       write_xlsx(zipsInBounds(), file)
     })
-  
+
   output$downloadDataCSV <- downloadHandler(
     filename = "map_data.csv",
     content = function(file) {
