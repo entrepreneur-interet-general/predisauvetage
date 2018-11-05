@@ -104,10 +104,32 @@ Par défaut, si la requête source avait un rafraîchissement défini, votre nou
 
 ## Visualisations
 ### Créer une visualisation graphique
-Instructions en cours de rédaction.
+Une fois que vous avez [créé une requête](/redash.html#requetes), vous pouvez construire plusieurs visualisations à partir des données obtenues (histogramme, nuage de points, camembert par exemple).
+
+Pour créer une nouvelle visualisation, la démarche à suivre est la suivante :
+- Vous rendre sur la requête sur laquelle vous souhaitez créer une visualisation
+- Cliquer sur le bouton `New Visualization`
+- Choisir le type de graphique souhaité dans `Chart type` (par défaut, un histogramme)
+- Choisir les données à afficher en X et en Y (vous pouvez en mettre plusieurs en Y)
+- Choisir si vous souhaitez avoir plusieurs groupes selon les valeurs d'une colonne dans la partie `Group By`
+- Remplir le titre du graphique dans `Visualization Name`
+- Renseigner les légendes dans les onglets `X Axis` et `Y Axis`
+- Enregistrer la visualisation avec le bouton bleu `Save`, en bas à droite
+
+::: tip Mon axe X n'est pas le bon
+Il est possible que Redash ne comprenne pas automatiquement les données à afficher selon l'axe X. Vous pouvez alors vous rendre dans l'onglet `X Axis`, changer l'échelle dans la partie `Scale` et choisir de trier ou non vos données avec la case à cocher `Sort Values`.
+:::
+
+::: tip Changer le nom des séries
+Vous pouvez renommer les noms des colonnes de vos données dans l'onglet `Series`.
+:::
+
+::: warning Disparition de colonnes
+Si vous avez changé le nom de vos colonnes après avoir créé une visualisation, vous devrez à nouveau choisir le bon nom de colonne en modifiant la visualisation que vous aviez créée.
+:::
 
 ### Créer un compteur
-Un compteur vous permet de suivre en temps réel le compte d'une certaine valeur (par exemple, le nombre d'opérations, le nombre de personnes décédées, le nombre de moyens engagés, etc...). Le compteur s'incrémente automatiquement à la fréquence de rafraichissement choisie pour la requête. 
+Un compteur vous permet de suivre en temps réel le compte d'une certaine valeur (par exemple, le nombre d'opérations, le nombre de personnes décédées, le nombre de moyens engagés, etc...). Le compteur s'incrémente automatiquement à la fréquence de rafraîchissement choisie pour la requête.
 
 Pour créer un compteur : 
 - Vous rendre sur la requête sur laquelle vous souhaitez le mettre en place
