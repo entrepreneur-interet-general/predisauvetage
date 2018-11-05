@@ -135,25 +135,25 @@ Pour créer un compteur :
 - Vous rendre sur la requête sur laquelle vous souhaitez le mettre en place
 - En dessous de l'éditeur de requête, cliquez sur `+ New Visualization`
 - Dans la partie Visualization Type, choisissez `Counter`
-- Dans la partie Visualization Name, vous pouvez nommer à quoi correspond le chiffre de votre compteur. 
-- Dans la partie Counter Value Column Name, choisissez la colonne que vous souhaitez afficher sur votre compteur. 
-- Dans la partie Format, vous pouvez formatter le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc...
-
+- Dans la partie Visualization Name, vous pouvez nommer à quoi correspond le chiffre de votre compteur
+- Dans la partie `Counter Value`, choisissez la colonne que vous souhaitez afficher sur votre compteur
+- Dans la partie `Format, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc...
 
 ### Créer un tableau croisé dynamique
-Un tableau croisé dynamique(pivot table) est une fonctionnalité qui permet de générer une synthèse d'une table de données brutes. Il permet de regrouper des données selon une ou plusieurs de ses propres catégories et faire les opérations nécessaires entre les montants correspondants (sommes, moyennes, comptages, etc.).
+Un tableau croisé dynamique (*pivot table*) est une fonctionnalité qui permet de générer une synthèse d'une table de données brutes. Il permet de regrouper des données selon une ou plusieurs de ses propres catégories et faire les opérations nécessaires entre les montants correspondants (sommes, moyennes, comptages, etc.).
 
 Pour créer un tableau croisé dynamique : 
 - Vous rendre sur la requête sur laquelle vous souhaitez le mettre en place
 - En dessous de l'éditeur de requête, cliquez sur `+ New Visualization`
-- Dans la partie Visualization Type, choisissez `Pivot Table`
-- Dans la partie Visualization Name, vous pouvez donner un titre à votre tableau
-- Vous pouvez ensuite glisser vos colonnes en haut et à gauche. Les colonnes en haut, corresponderont aux futures colonnes du tableau et celles à gauche aux lignes
-- Il faut ensuite cliquer sur `count`pour choisir l'opération à effectuer et choisir en dessous sur quelle colonne elle s'appliquera 
-- En cliquant sur `Table', vous aurez le choix du rendu du tableau. Vous pouvez par exemple faire des tableaux avec des zones de chaleurs (nuance de blanc à rouge en fonction de la valeur) par ligne (`Row Heatmap`) ou par colonne (`Col Heatmap`.)
-- Cocher `Hide Pivot Controls` vous permet de n'afficher que votre tableau croisé dynamique sans les paramètres choisis. 
+- Dans la partie `Visualization Type`, choisissez `Pivot Table`
+- Dans la partie `Visualization Name`, vous pouvez donner un titre à votre tableau
+- Vous pouvez ensuite glisser vos colonnes en haut et à gauche. Les colonnes en haut, correspondront aux futures colonnes du tableau et celles à gauche aux lignes
+- Il faut ensuite cliquer sur `count` pour choisir l'opération à effectuer et choisir en dessous sur quelle colonne elle s'appliquera
+- En cliquant sur `Table`, vous aurez le choix du rendu du tableau. Vous pouvez par exemple faire des tableaux avec des zones de chaleurs (nuance de blanc à rouge en fonction de la valeur) par ligne (`Row Heatmap`) ou par colonne (`Col Heatmap`)
+- Cocher `Hide Pivot Controls` vous permet de n'afficher que votre tableau croisé dynamique sans les paramètres choisis
 
-
+Un exemple d'un tableau croisé dynamique est présenté ci-dessous.
+![Exemple d'un tableau croisé dynamique](https://i.imgur.com/v2c66kG.png)
 
 ## Tableaux de bord
 ### Créer un tableau de bord
