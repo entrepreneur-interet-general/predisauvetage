@@ -343,11 +343,11 @@ ui <- dashboardPage(
      ),
    actionButton("doc", HTML("&nbsp;&nbsp;Documentation"),  icon("book"), style = "margin: 4px 5px 6px 5px; background-color: #222d32;color: #b8c7ce;border-color:#222d32"),
    downloadButton("downloadData", "Télécharger les données dans la zone (Excel)",
-                  style='padding:5px; font-size:80%'),
+                  style='padding:7px; font-size:80%; margin-left:1.5em; margin-top:1em'),
    br(),
    br(),
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)",
-                  style='padding:5px; font-size:80%')
+                  style='padding:7px; font-size:80%; margin-left:1.5em; margin-top: -1em')
 
    )),
 
