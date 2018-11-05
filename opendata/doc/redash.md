@@ -60,6 +60,10 @@ Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROS
 
 ![Résultat de la requête avec des filtres](https://i.imgur.com/izuytNo.png)
 
+### Supprimer une requête
+Pour supprimer une requête, voici la démarche à suivre :
+- Cliquez sur `...`en haut à droite de la requête et choisir `Archive`
+
 ### Raccourcis dans les requêtes
 Pour écrire des requêtes plus rapidement, il existe des raccourcis qui permettent de générer automatiquement des squelettes de requête comme base de départ. Il faut taper un mot clé puis le sélectionner dans l'autocomplétion.
 
@@ -179,7 +183,7 @@ Après avoir créé des visualisations et un tableau de bord, vous pouvez les aj
 - Cliquer sur le bouton, en haut à droite, `...`
 - Choisir le menu `Edit`
 - Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
-- Taper le nom de la requête qui contient les visualisations souhaitées
+- Taper le nom de la requête qui contient les visualisations souhaitées ou le numéro de requête présent dans l'URL de la requête
 - Choisir la visualisation désirée dans le menu déroulant
 
 Il est ensuite possible de réorganiser et d'adapter la taille de chaque visualisation à l'aide de la souris.
@@ -227,7 +231,7 @@ Vous pouvez mettre du texte en gras à l'aide de la syntaxe suivante :
 Vous pouvez mettre du texte en italique à l'aide de la syntaxe suivante :
 
 ```markdown
-*Ceci est en gras*. Mais là non.
+*Ceci est en italique*. Mais là non.
 ```
 
 #### Faire un lien vers une page web
