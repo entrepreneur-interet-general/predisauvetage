@@ -111,5 +111,10 @@ def checks():
             select count(1) > 0
             from operations
             where date_heure_reception_alerte > current_date - interval '2 day'
+        ''',
+        'school_holidays_over_last_2_months': '''
+            select count(1) > 0
+            from operations_stats
+            where est_vacances_scolaires and date >= (current_date - interval '2 months')
         '''
     }
