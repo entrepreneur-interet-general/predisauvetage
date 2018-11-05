@@ -137,7 +137,7 @@ Pour créer un compteur :
 - Dans la partie Visualization Type, choisissez `Counter`
 - Dans la partie Visualization Name, vous pouvez nommer à quoi correspond le chiffre de votre compteur
 - Dans la partie `Counter Value`, choisissez la colonne que vous souhaitez afficher sur votre compteur
-- Dans la partie `Format, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc...
+- Dans la partie `Format`, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc...
 
 ### Créer un tableau croisé dynamique
 Un tableau croisé dynamique (*pivot table*) est une fonctionnalité qui permet de générer une synthèse d'une table de données brutes. Il permet de regrouper des données selon une ou plusieurs de ses propres catégories et faire les opérations nécessaires entre les montants correspondants (sommes, moyennes, comptages, etc.).
