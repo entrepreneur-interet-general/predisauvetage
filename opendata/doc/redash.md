@@ -138,8 +138,8 @@ Un compteur vous permet de suivre en temps réel le compte d'une certaine valeur
 Pour créer un compteur : 
 - Vous rendre sur la requête sur laquelle vous souhaitez le mettre en place
 - En dessous de l'éditeur de requête, cliquez sur `+ New Visualization`
-- Dans la partie Visualization Type, choisissez `Counter`
-- Dans la partie Visualization Name, vous pouvez nommer à quoi correspond le chiffre de votre compteur
+- Dans la partie `Visualization Type`, choisissez `Counter`
+- Dans la partie `Visualization Name`, vous pouvez nommer à quoi correspond le chiffre de votre compteur
 - Dans la partie `Counter Value`, choisissez la colonne que vous souhaitez afficher sur votre compteur
 - Dans la partie `Format`, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc…
 
