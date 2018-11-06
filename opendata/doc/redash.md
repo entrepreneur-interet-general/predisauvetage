@@ -99,7 +99,7 @@ Il est parfois souhaitable de reprendre une requête existante pour l'adapter po
 
 La démarche à suivre est la suivante :
 - Vous rendre sur la requête sur laquelle vous souhaitez vous baser
-- En haut à droite de la page, cliquer sur `...` et choisir le menu `Fork`
+- En haut à droite de la page, cliquer sur `…` et choisir le menu `Fork`
 - Renommer votre requête, adapter la requête SQL et les visualisations
 
 ::: warning Rafraîchissement de la requête copiée
@@ -133,7 +133,7 @@ Si vous avez changé le nom de vos colonnes après avoir créé une visualisatio
 :::
 
 ### Créer un compteur
-Un compteur vous permet de suivre en temps réel le compte d'une certaine valeur (par exemple, le nombre d'opérations, le nombre de personnes décédées, le nombre de moyens engagés, etc...). Le compteur s'incrémente automatiquement à la fréquence de rafraîchissement choisie pour la requête.
+Un compteur vous permet de suivre en temps réel le compte d'une certaine valeur (par exemple, le nombre d'opérations, le nombre de personnes décédées, le nombre de moyens engagés, etc…). Le compteur s'incrémente automatiquement à la fréquence de rafraîchissement choisie pour la requête.
 
 Pour créer un compteur : 
 - Vous rendre sur la requête sur laquelle vous souhaitez le mettre en place
@@ -141,7 +141,7 @@ Pour créer un compteur :
 - Dans la partie Visualization Type, choisissez `Counter`
 - Dans la partie Visualization Name, vous pouvez nommer à quoi correspond le chiffre de votre compteur
 - Dans la partie `Counter Value`, choisissez la colonne que vous souhaitez afficher sur votre compteur
-- Dans la partie `Format`, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc...
+- Dans la partie `Format`, vous pouvez formater le nombre qui s'affiche en choisissant par exemple un séparateur pour les milliers, le nombre de décimal à afficher, etc…
 
 ### Créer un tableau croisé dynamique
 Un tableau croisé dynamique (*pivot table*) est une fonctionnalité qui permet de générer une synthèse d'une table de données brutes. Il permet de regrouper des données selon une ou plusieurs de ses propres catégories et faire les opérations nécessaires entre les montants correspondants (sommes, moyennes, comptages, etc.).
@@ -180,7 +180,7 @@ Des exemples possibles de noms de tableaux de bord. Notez le hashtag au début d
 Après avoir créé des visualisations et un tableau de bord, vous pouvez les ajouter à un tableau de bord en suivant la démarche suivante :
 
 - Vous rendre sur le tableau de bord en question
-- Cliquer sur le bouton, en haut à droite, `...`
+- Cliquer sur le bouton, en haut à droite, `…`
 - Choisir le menu `Edit`
 - Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
 - Taper le nom de la requête qui contient les visualisations souhaitées ou le numéro de requête présent dans l'URL de la requête
@@ -199,7 +199,7 @@ Il est possible d'ajouter du texte et du contenu média à un tableau de bord. L
 
 Pour ajouter du texte à un tableau de bord, voici la démarche à suivre :
 - Vous rendre sur le tableau de bord en question
-- Cliquer sur le bouton, en haut à droite, `...`
+- Cliquer sur le bouton, en haut à droite, `…`
 - Choisir le menu `Edit`
 - Une barre blanche apparaît en bas de l'écran, cliquer le bouton le `Add Widget`
 - Sélectionner l'onglet `Text Box`
@@ -254,7 +254,7 @@ Si votre image n'est pas encore sur Internet, vous pouvez utiliser un service pr
 Par défaut, après avoir créé un tableau de bord, seule la personne qui l'a créé peut modifier l'agencement et les visualisations du tableau de bord. Vous pouvez faire en sorte que plusieurs personnes aient ces droits en suivant la démarche suivante :
 
 - Vous rendre sur le tableau de bord en question
-- Cliquer sur le bouton, en haut à droite, `...`
+- Cliquer sur le bouton, en haut à droite, `…`
 - Choisir le menu `Manage Permissions`
 - Renseigner le nom de la personne qui doit pouvoir éditer le tableau de bord (vous pouvez également supprimer d'anciens collaborateurs)
 - Fermer la fenêtre à l'aide de la croix en haut à droite
