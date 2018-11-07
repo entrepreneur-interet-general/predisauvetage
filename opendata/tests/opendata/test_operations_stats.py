@@ -14,7 +14,10 @@ class TestOperationsStatsTransformer(BaseTest):
                 "nombre_moyens_aeriens_engages",
                 "duree_engagement_moyens_nautiques_minutes",
                 "duree_engagement_moyens_terrestres_minutes",
-                "duree_engagement_moyens_aeriens_minutes"
+                "duree_engagement_moyens_aeriens_minutes",
+                "duree_engagement_moyens_nautiques_heures",
+                "duree_engagement_moyens_terrestres_heures",
+                "duree_engagement_moyens_aeriens_heures",
             ]
         )
 
