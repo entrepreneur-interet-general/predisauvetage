@@ -6,6 +6,7 @@ Cette page contient des instructions spécifiques au backend du site web snosan 
 
 ## Modifier la structure du site
 La structure des onglets en haut du site web SNOSAN n'est pas figée. Vous avez la possibilité de la modifier. 
+
 ![Onglets](http://image.noelshack.com/fichiers/2018/45/4/1541702756-capture-d-ecran-2018-11-08-a-19-45-44.png)
 
 ### Ajouter un onglet sur le site
@@ -75,7 +76,7 @@ Une fois votre article enregistré, cela ne signifie pas qu'il est publié sur l
 - Il est possible de citer d'autres articles en ajoutant un lien vers l'article mais sans copié-collé le contenu de l'article
 :::
 
-### Suprimer un article
+### Supprimer un article
 - Allez dans `Post`
 - Cochez l'article à supprimer 
 - Cliquez sur `Delete selected`
