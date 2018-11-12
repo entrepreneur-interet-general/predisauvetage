@@ -53,6 +53,7 @@ CREATE TABLE public.flotteurs (
     "type_flotteur" varchar(50) not null,
     "categorie_flotteur" varchar(50) not null,
     "numero_immatriculation" varchar(40),
+    "immatriculation_omi" varchar(20),
     "marque" varchar(250),
     "nom_serie" varchar(500),
     "assurance" boolean,

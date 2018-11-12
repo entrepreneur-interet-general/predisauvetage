@@ -2,6 +2,7 @@
   "models": ["moyens", "moyens_snsm"],
   "columns": {
     "flotteurs":[
+      "immatriculation_omi",
       "marque",
       "nom_serie",
       "assurance",

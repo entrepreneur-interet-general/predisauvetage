@@ -9,6 +9,7 @@ from transformers.base import BaseTransformer
 class FlotteursTransformer(BaseTransformer):
     CSV_DTYPE = {
         'numero_immatriculation': str,
+        'immatriculation_omi': str,
         'marque': str,
         'nom_serie': str,
         'puissance_moteurs': np.float64,

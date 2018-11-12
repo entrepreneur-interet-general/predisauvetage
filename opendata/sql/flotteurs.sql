@@ -6,6 +6,7 @@ SELECT
   sctp.LIBELLE type_flotteur,
   sccf.LIBELLE categorie_flotteur,
   t.NUM_IMMAT numero_immatriculation,
+  flo.NUM_IMO immatriculation_omi,
   t.MARQUE marque,
   t.NOM_SERIE nom_serie,
   t.ASSURANCE assurance,
