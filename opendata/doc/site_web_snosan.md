@@ -1,6 +1,6 @@
-# Site web snosan
+# Site web SNOSAN
 
-Cette page contient des instructions spécifiques au backend du site web snosan accessible à l'adresse [https://www.snosan.fr/backend/cms](https://www.snosan.fr/backend/cms)
+Cette page contient des instructions spécifiques au backend du site web SNOSAN accessible à l'adresse [www.snosan.fr/backend](https://www.snosan.fr/backend)
 
 [[toc]]
 
@@ -21,7 +21,7 @@ Vous pouvez également ajouter plusieurs sous-catégories pour vos onglets. Pour
 - Passez votre souris sur l'onglet dans lequel vous souhaitez ajouter votre catégorie
 - Cliquez ensuite sur `+ Add subpage`
 - Nommez votre catégorie
-- Cliquez sur `Save`en dessous du nom 
+- Cliquez sur `Save` en dessous du nom
 
 ### Déplacer un onglet
 Pour changer l'ordre des onglets :
@@ -42,7 +42,7 @@ Pour qu'un onglet n'apparaisse plus sur le site pendant une certaine période :
 - Cochez `Hidden`et `Hide in Navigation`
 - Cliquez sur `Save`
 
-L'onglet n'apparaitra plus sur le site, vous pouvez vérifier en allant sur le site dans une fenêtre de navigation privée.
+L'onglet n’apparaîtra plus sur le site, vous pouvez vérifier en allant sur le site dans une fenêtre de navigation privée.
 Pour réafficher votre onglet, il suffit de décochez les deux cases. 
 
 ## Articles
@@ -68,10 +68,10 @@ Une fois votre article enregistré, cela ne signifie pas qu'il est publié sur l
 - Cliquez en dessous de Feature images et choisir une photo à associer à l'article 
 - Cliquez sur `Save`
 
-::: tip Conseils pour la redaction d'un article
+::: tip Conseils pour la rédaction d'un article
 - Vérifier que chaque graphique possède un titre pertinent, une légende et des titres d'axes
 - Chaque graphique présenté doit servir à appuyer le propos et être commenté
-- La source des informations qui ne proviennent pas des données Secmar doit être citée explicitement
+- La source des informations qui ne proviennent pas des données SECMAR doit être citée explicitement
 - L'article doit raconter une histoire et comporter une conclusion
 - Il est possible de citer d'autres articles en ajoutant un lien vers l'article mais sans copié-collé le contenu de l'article
 :::
@@ -83,18 +83,18 @@ Une fois votre article enregistré, cela ne signifie pas qu'il est publié sur l
 
 Cependant, il est conseiller de dépublier un article en décochant la case `Published` plutôt que de le supprimer.  
 
-## Ecrire du contenu dans un onglet ou sur un article
-Vous pouvez ecrire du contenu directement dans les pages des onglets ou sur les articles. Il y a ensuite plusieurs manières de mettre en forme le contenu : 
+## Écrire du contenu dans un onglet ou sur un article
+Vous pouvez écrire du contenu directement dans les pages des onglets ou sur les articles. Il y a ensuite plusieurs manières de mettre en forme le contenu :
 - Utiliser la barre de menu de l'éditeur de texte 
 ![Barre de menu de l'éditeur de texte des onglets](http://image.noelshack.com/fichiers/2018/45/4/1541699497-capture-d-ecran-2018-11-08-a-18-51-20.png) 
-- Cliquer sur `</>` dans la barre de menu de l'onglet pour écrire le contenu directement en html/css
-- Ecrire le contenu directement en markdown ou html/css dans les articles
+- Cliquer sur `</>` dans la barre de menu de l'onglet pour écrire le contenu directement en HTML/CSS
+- Écrire le contenu directement en Markdown ou HTML/CSS dans les articles
 
 ### Ajouter des images ou des liens
 #### Avec le menu
 Vous pouvez ajouter des images ou des liens en cliquant sur les icônes correspondantes dans la barre de menu
 ![](http://image.noelshack.com/fichiers/2018/45/4/1541699497-capture-d-ecran-2018-11-08-a-18-51-20.png) 
-#### En markdown 
+#### En Markdown
 ##### Faire un lien vers une page web
 Vous pouvez faire un lien vers une page web à l'aide de la syntaxe suivante :
 
@@ -111,10 +111,10 @@ Vous pouvez inclure une image déjà hébergée sur Internet à l'aide de la syn
 
 Si votre image n'est pas encore sur Internet, vous pouvez utiliser un service proposant de mettre en ligne votre image et copier-coller l'adresse de votre image. Vous pouvez par exemple utiliser [imgur.com](https://imgur.com/upload).
 
-### Ajouter des graphiques redash
-Pour ajouter des graphiques redash sur le site (dans les articles ou dans l'accidentalité en direct), vous avez besoin d'ajouter des iframes en html dans votre contenu. Pour celà :
-- Allez sur la requête redash qui contient votre graphique 
-- Selectionnez le graphique 
+### Ajouter des graphiques Redash
+Pour ajouter des graphiques Redash sur le site (dans les articles ou dans l'accidentalité en direct), vous avez besoin d'ajouter des iframes en HTML dans votre contenu. Pour cela :
+- Allez sur la requête Redash qui contient votre graphique
+- Sélectionnez le graphique
 - Cliquez sur `< > Embed`
 - Copiez ce qui s'affiche en rouge
 ![iframe](http://image.noelshack.com/fichiers/2018/45/4/1541701765-capture-d-ecran-2018-11-08-a-19-28-54.png) 
@@ -130,5 +130,3 @@ Pour ajouter des graphiques redash sur le site (dans les articles ou dans l'acci
 <iframe src="https://redash.snosan.fr/embed/query/124/visualization/279?api_key=ZBP1RgyvtHgOcwkbiJyFDJx6PjSEoFLsqrwhxT3z" width="500" height="600" scrolling="no" frameborder="0"></iframe>
 ```
 :::
-
-
