@@ -8,6 +8,7 @@ class TestOperationsStatsTransformer(BaseTest):
         self.assertEquals(
             OperationsStatsTransformer('/tmp/fake').columns_to_drop(),
             [
+                "nombre_navires_mas_omi",
                 "concerne_snosan",
                 "nombre_moyens_nautiques_engages",
                 "nombre_moyens_terrestres_engages",

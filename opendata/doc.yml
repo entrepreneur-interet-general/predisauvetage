@@ -473,6 +473,12 @@ components:
           example: '96-120'
           enum: ['20-45', '46-70', '71-95', '96-120']
           nullable: true
+        nombre_navires_mas_omi:
+          type: integer
+          format: int32
+          description: Le nombre de navires en situation de MAS OMI, aussi appelés DEFREP. Dénombre le nombre de navires ayant une immatriculation OMI renseignée pour des opérations MAS.
+          example: 3
+          minimum: 0
         nombre_personnes_blessees:
           type: integer
           format: int32

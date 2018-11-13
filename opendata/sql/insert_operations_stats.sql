@@ -26,6 +26,7 @@ select
   null maree_port,
   null maree_coefficient,
   null maree_categorie,
+  coalesce(mas_omi.nb_flotteurs, 0) nombre_navires_mas_omi,
   coalesce(rh.nombre_personnes_blessees, 0) nombre_personnes_blessees,
   coalesce(rh.nombre_personnes_assistees, 0) nombre_personnes_assistees,
   coalesce(rh.nombre_personnes_decedees, 0) nombre_personnes_decedees,
@@ -162,6 +163,15 @@ left join (
   from flotteurs f
   group by f.operation_id
 ) f on f.operation_id = o.operation_id
+left join (
+  select
+    o.operation_id,
+    count(1) nb_flotteurs
+  from operations o
+  join flotteurs f on f.operation_id = o.operation_id and f.immatriculation_omi is not null
+  where o.type_operation = 'MAS'
+  group by 1
+) mas_omi on mas_omi.operation_id = o.operation_id
 join (
   select
     o.operation_id,
