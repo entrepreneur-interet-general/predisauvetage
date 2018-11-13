@@ -168,3 +168,39 @@ Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`
 | Surf |
 | Véhicule nautique à moteur |
 
+## Ports de référence pour la marée
+Ceci décrit les valeurs possibles dans `operations_stats.maree_port`
+
+| Nom du port |
+| ------------- |
+| Arcachon Eyrac |
+| Barfleur |
+| Boucau-Bayonne |
+| Boulogne-sur-Mer |
+| Brest |
+| Calais |
+| Cherbourg |
+| Concarneau |
+| Dielette |
+| Dieppe |
+| Dunkerque |
+| Etretat |
+| Fecamp |
+| Granville |
+| La Rochelle-Pallice |
+| Le Havre |
+| Le Touquet |
+| Le Treport |
+| Les Sables-d'Olonne |
+| Ouistreham |
+| Paimpol |
+| Pointe de Grave |
+| Port-Navalo |
+| Port-Tudy |
+| Portbail |
+| Roscoff |
+| Saint-Jean-de-Luz |
+| Saint-Malo |
+| Saint-Nazaire |
+| Vieux-Boucau |
+| Wissant |
