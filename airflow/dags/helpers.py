@@ -82,7 +82,7 @@ def default_args(conf):
     default = {
         'owner': 'antoine-augusti',
         'depends_on_past': False,
-        'email': ['antoine.augusti@developpement-durable.gouv.fr'],
+        'email': ['tech@snosan.fr'],
         'email_on_failure': True,
         'email_on_retry': False,
         'retries': 2,
