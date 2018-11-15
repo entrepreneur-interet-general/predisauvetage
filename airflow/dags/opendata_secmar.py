@@ -54,20 +54,20 @@ def filter_operations_fn(**kwargs):
 
 
 def update_last_date_data_gouv_fn(api_key, **kwargs):
-    last_week = (datetime.utcnow() - timedelta(days=7)).replace(
+    yesterday = (datetime.utcnow() - timedelta(days=1)).replace(
         hour=0,
         minute=0,
         second=0,
         microsecond=0
     )
-    last_week_str = last_week.isoformat() + "Z"
+    yesterday_str = yesterday.isoformat() + "Z"
 
     r = requests.put(
         'https://www.data.gouv.fr/api/1/datasets/operations-coordonnees-par-les-cross/',
         json={
             "temporal_coverage": {
                 "start": "1985-01-01T00:00:00Z",
-                "end": last_week_str
+                "end": yesterday_str
             },
             "tags": [
                 'direction-affaires-maritimes',
