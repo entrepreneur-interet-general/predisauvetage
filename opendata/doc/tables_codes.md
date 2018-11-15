@@ -171,6 +171,8 @@ Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`
 ## Ports de référence pour la marée
 Ceci décrit les valeurs possibles dans `operations_stats.maree_port`
 
+![Carte des ports](https://i.imgur.com/TtmZmCc.png)
+
 | Nom du port |
 | ------------- |
 | Arcachon Eyrac |
