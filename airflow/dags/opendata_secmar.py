@@ -13,7 +13,6 @@ filter out these operations first before creating final CSV files.
 When datasets are available, we push them to a remote server so that they can be served by a webserver + CDN.
 """
 from datetime import datetime
-from datetime import timedelta
 
 from airflow import DAG
 from airflow.models import Variable
@@ -26,8 +25,6 @@ import pandas as pd
 import helpers
 from secmar_dags import SECMAR_TABLES, opendata_transformer, out_path
 from secmar_dags import secmar_transform, opendata_path
-
-import requests
 
 default_args = helpers.default_args({
     'start_date': datetime(2018, 5, 22, 5, 40),
@@ -51,46 +48,6 @@ def filter_operations_fn(**kwargs):
         operations_stats['operation_id']
     ), :]
     df.to_csv(out_path('operations'), index=False)
-
-
-def update_last_date_data_gouv_fn(api_key, **kwargs):
-    yesterday = (datetime.utcnow() - timedelta(days=1)).replace(
-        hour=0,
-        minute=0,
-        second=0,
-        microsecond=0
-    )
-    yesterday_str = yesterday.isoformat() + "Z"
-
-    r = requests.put(
-        'https://www.data.gouv.fr/api/1/datasets/operations-coordonnees-par-les-cross/',
-        json={
-            "temporal_coverage": {
-                "start": "1985-01-01T00:00:00Z",
-                "end": yesterday_str
-            },
-            "tags": [
-                'direction-affaires-maritimes',
-                'dam',
-                'mer',
-                'sauvetage',
-                'secours',
-                'snsm',
-                'gendarmerie',
-                'douanes',
-                'sdis',
-                'accidentologie',
-                'cross',
-                'mtes'
-            ]
-        },
-        headers={
-            'X-API-KEY': api_key
-        }
-    )
-    r.raise_for_status()
-
-    return r
 
 start = DummyOperator(task_id='start', dag=dag)
 end_transform = DummyOperator(task_id='end_transform', dag=dag)
@@ -151,14 +108,3 @@ publish_csv_files = BashOperator(
     dag=dag,
 )
 publish_csv_files.set_upstream(end_transform)
-
-update_last_date_data_gouv = PythonOperator(
-    task_id='update_last_date_data_gouv',
-    python_callable=update_last_date_data_gouv_fn,
-    provide_context=True,
-    dag=dag,
-    op_kwargs={
-        'api_key': Variable.get('DATA_GOUV_FR_API_KEY')
-    }
-)
-update_last_date_data_gouv.set_upstream(publish_csv_files)
