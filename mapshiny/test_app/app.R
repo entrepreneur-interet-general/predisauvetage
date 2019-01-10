@@ -637,7 +637,7 @@ server <- function(input, output, session) {
       addKML(srr_lareunion,  color = 'red',fill=FALSE, weight = 0.5) %>%
       addKML(srr_noumea,  color = 'red',fill=FALSE, weight = 0.5) %>%
       addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5) %>%
-      addKML(srr_jrcc_tahiti,  color = 'orange',fill=FALSE, weight = 0.5)
+      addKML(srr_jrcc_tahiti,  color = 'orange',fill=FALSE, weight = 0.8)
 
   })
 
