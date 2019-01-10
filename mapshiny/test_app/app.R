@@ -60,6 +60,7 @@ srr_jobourg <- read_file('kml_srr/SRR_Jobourg.kml')
 srr_lareunion <- read_file('kml_srr/la-reunion.kml')
 srr_noumea <- read_file('kml_srr/noumea.kml')
 srr_tahiti <- read_file('kml_srr/tahiti.kml')
+srr_jrcc_tahiti <- read_file('kml_srr/jrcc-tahiti.kml')
 
 #join the two tables
 secmar <- plyr::join(operations, operations_stat, by='operation_id', type="inner")
@@ -454,7 +455,7 @@ server <- function(input, output, session) {
       footer = NULL
     ))
   })
-  
+
   observeEvent(input$fermer,{
     removeModal()
   })
@@ -635,7 +636,8 @@ server <- function(input, output, session) {
       addKML(srr_jobourg,  color = 'red',fill=FALSE, weight = 0.5) %>%
       addKML(srr_lareunion,  color = 'red',fill=FALSE, weight = 0.5) %>%
       addKML(srr_noumea,  color = 'red',fill=FALSE, weight = 0.5) %>%
-      addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5)
+      addKML(srr_tahiti,  color = 'red',fill=FALSE, weight = 0.5) %>%
+      addKML(srr_jrcc_tahiti,  color = 'orange',fill=FALSE, weight = 0.5)
 
   })
 
