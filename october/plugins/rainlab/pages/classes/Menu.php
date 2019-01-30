@@ -1,30 +1,22 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
-use Url;
+namespace RainLab\Pages\Classes;
+
+use Cms\Classes\CmsObject;
+use Cms\Classes\Theme;
+use Event;
 use File;
 use Lang;
-use Yaml;
-use Event;
-use Config;
-use Request;
-use Validator;
-use RainLab\Pages\Classes\MenuItem;
-use RainLab\Pages\Classes\MenuItemReference;
-use Cms\Classes\Theme;
-use Cms\Classes\CmsObject;
-use Cms\Classes\Controller as CmsController;
 use October\Rain\Support\Str;
-use October\Rain\Router\Helper as RouterHelper;
-use ApplicationException;
-use ValidationException;
+use Request;
 use SystemException;
-use DirectoryIterator;
-use Exception;
+use Url;
+use ValidationException;
+use Yaml;
 
 /**
  * Represents a front-end menu.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Menu extends CmsObject
@@ -56,7 +48,7 @@ class Menu extends CmsObject
         'content',
         'code',
         'name',
-        'itemData'
+        'itemData',
     ];
 
     /**
@@ -65,11 +57,12 @@ class Menu extends CmsObject
     protected $purgeable = [
         'code',
         'name',
-        'itemData'
+        'itemData',
     ];
 
     /**
      * Triggered before the menu is saved.
+     *
      * @return void
      */
     public function beforeSave()
@@ -79,25 +72,27 @@ class Menu extends CmsObject
 
     /**
      * Validate custom attributes.
+     *
      * @return void
      */
     public function beforeValidate()
     {
         if (!strlen($this->code)) {
             throw new ValidationException([
-                'code' => Lang::get('rainlab.pages::lang.menu.code_required')
+                'code' => Lang::get('rainlab.pages::lang.menu.code_required'),
             ]);
         }
 
         if (!preg_match('/^[0-9a-z\-\_]+$/i', $this->code)) {
             throw new ValidationException([
-                'code' => Lang::get('rainlab.pages::lang.menu.invalid_code')
+                'code' => Lang::get('rainlab.pages::lang.menu.invalid_code'),
             ]);
         }
     }
 
     /**
      * Returns the menu code.
+     *
      * @return string
      */
     public function getCodeAttribute()
@@ -111,13 +106,13 @@ class Menu extends CmsObject
         if ($place !== false) {
             return substr($this->fileName, 0, $place);
         }
-
-        return null;
     }
 
     /**
      * Sets the menu code.
+     *
      * @param string $code Specifies the file code.
+     *
      * @return \Cms\Classes\CmsObject Returns the object instance.
      */
     public function setCodeAttribute($code)
@@ -135,6 +130,7 @@ class Menu extends CmsObject
 
     /**
      * Returns a default value for name attribute.
+     *
      * @return string
      */
     public function getNameAttribute()
@@ -149,6 +145,7 @@ class Menu extends CmsObject
     /**
      * Returns a default value for items attribute.
      * Items are objects of the \RainLab\Pages\Classes\MenuItem class.
+     *
      * @return array
      */
     public function getItemsAttribute()
@@ -159,8 +156,7 @@ class Menu extends CmsObject
 
         if ($items = array_get($this->parseContent(), 'items')) {
             $itemObjects = MenuItem::initFromArray($items);
-        }
-        else {
+        } else {
             $itemObjects = [];
         }
 
@@ -169,6 +165,7 @@ class Menu extends CmsObject
 
     /**
      * Returns a default value for itemData attribute.
+     *
      * @return array
      */
     public function getItemDataAttribute()
@@ -182,6 +179,7 @@ class Menu extends CmsObject
 
     /**
      * Processes the content attribute to an array of menu data.
+     *
      * @return array|null
      */
     protected function parseContent()
@@ -193,7 +191,7 @@ class Menu extends CmsObject
         $parsedData = Yaml::parse($this->content);
 
         if (!is_array($parsedData)) {
-            return null;
+            return;
         }
 
         if (!array_key_exists('name', $parsedData)) {
@@ -205,6 +203,7 @@ class Menu extends CmsObject
 
     /**
      * Compile the content for this CMS object, used by the theme logger.
+     *
      * @return string
      */
     public function toCompiled()
@@ -214,13 +213,14 @@ class Menu extends CmsObject
 
     /**
      * Renders the menu data as a content string in YAML format.
+     *
      * @return string
      */
     protected function renderContent()
     {
         $contentData = [
             'name'  => $this->name,
-            'items' => $this->itemData ? $this->itemData : []
+            'items' => $this->itemData ? $this->itemData : [],
         ];
 
         return Yaml::render($contentData);
@@ -228,6 +228,7 @@ class Menu extends CmsObject
 
     /**
      * Initializes a cache item.
+     *
      * @param array &$item The cached item array.
      */
     public static function initCacheItem(&$item)
@@ -240,7 +241,9 @@ class Menu extends CmsObject
     /**
      * Returns the menu item references.
      * This function is used on the front-end.
+     *
      * @param Cms\Classes\Page $page The current page object.
+     *
      * @return array Returns an array of the \RainLab\Pages\Classes\MenuItemReference objects.
      */
     public function generateReferences($page)
@@ -254,11 +257,11 @@ class Menu extends CmsObject
         $currentUrl = Str::lower(Url::to($currentUrl));
 
         $activeMenuItem = $page->activeMenuItem ?: false;
-        $iterator = function($items) use ($currentUrl, &$iterator, $activeMenuItem) {
+        $iterator = function ($items) use ($currentUrl, &$iterator, $activeMenuItem) {
             $result = [];
 
             foreach ($items as $item) {
-                $parentReference = new MenuItemReference;
+                $parentReference = new MenuItemReference();
                 $parentReference->title = $item->title;
                 $parentReference->code = $item->code;
                 $parentReference->viewBag = $item->viewBag;
@@ -270,8 +273,7 @@ class Menu extends CmsObject
                 if ($item->type == 'url') {
                     $parentReference->url = $item->url;
                     $parentReference->isActive = $currentUrl == Str::lower($item->url) || $activeMenuItem === $item->code;
-                }
-                else {
+                } else {
                     /*
                      * If the item type is not URL, use the API to request the item type's provider to
                      * return the item URL, subitems and determine whether the item is active.
@@ -289,11 +291,11 @@ class Menu extends CmsObject
                             }
 
                             if (isset($itemInfo['items'])) {
-                                $itemIterator = function($items) use (&$itemIterator, $parentReference) {
+                                $itemIterator = function ($items) use (&$itemIterator, $parentReference) {
                                     $result = [];
 
                                     foreach ($items as $item) {
-                                        $reference = new MenuItemReference;
+                                        $reference = new MenuItemReference();
                                         $reference->title = isset($item['title']) ? $item['title'] : '--no title--';
                                         $reference->url = isset($item['url']) ? $item['url'] : '#';
                                         $reference->isActive = isset($item['isActive']) ? $item['isActive'] : false;
@@ -327,8 +329,7 @@ class Menu extends CmsObject
 
                 if (!$item->replace) {
                     $result[] = $parentReference;
-                }
-                else {
+                } else {
                     foreach ($parentReference->items as $subItem) {
                         $result[] = $subItem;
                     }
@@ -343,7 +344,7 @@ class Menu extends CmsObject
         /*
          * Populate the isChildActive property
          */
-        $hasActiveChild = function($items) use (&$hasActiveChild) {
+        $hasActiveChild = function ($items) use (&$hasActiveChild) {
             foreach ($items as $item) {
                 if ($item->isActive) {
                     return true;
@@ -356,7 +357,7 @@ class Menu extends CmsObject
             }
         };
 
-        $iterator = function($items) use (&$iterator, &$hasActiveChild) {
+        $iterator = function ($items) use (&$iterator, &$hasActiveChild) {
             foreach ($items as $item) {
                 $item->isChildActive = $hasActiveChild($item->items);
 

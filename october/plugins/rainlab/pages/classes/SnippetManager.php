@@ -1,18 +1,17 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
-use Event;
-use Lang;
+namespace RainLab\Pages\Classes;
+
 use Cache;
-use Config;
 use Cms\Classes\Partial;
+use Config;
+use Event;
 use System\Classes\PluginManager;
 use SystemException;
-use RainLab\Pages\Classes\Snippet;
 
 /**
  * Returns information about snippets based on partials and components.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class SnippetManager
@@ -23,7 +22,9 @@ class SnippetManager
 
     /**
      * Returns a list of available snippets.
+     *
      * @param \Cms\Classes\Theme $theme Specifies a parent theme.
+     *
      * @return array Returns an unsorted array of snippet objects.
      */
     public function listSnippets($theme)
@@ -41,16 +42,18 @@ class SnippetManager
     /**
      * Finds a snippet by its code.
      * This method is used internally by the system.
-     * @param \Cms\Classes\Theme $theme Specifies a parent theme.
-     * @param string $code Specifies the snippet code.
-     * @param string $$componentClass Specifies the snippet component class, if available.
-     * @param boolean $allowCaching Specifies whether caching is allowed for the call.
+     *
+     * @param \Cms\Classes\Theme $theme           Specifies a parent theme.
+     * @param string             $code            Specifies the snippet code.
+     * @param string             $$componentClass Specifies the snippet component class, if available.
+     * @param bool               $allowCaching    Specifies whether caching is allowed for the call.
+     *
      * @return array Returns an array of Snippet objects.
      */
     public function findByCodeOrComponent($theme, $code, $componentClass, $allowCaching = false)
     {
         if (!$allowCaching) {
-            // If caching is not allowed, list all available snippets, 
+            // If caching is not allowed, list all available snippets,
             // find the snippet in the list and return it.
             $snippets = $this->listSnippets($theme);
 
@@ -64,7 +67,7 @@ class SnippetManager
                 }
             }
 
-            return null;
+            return;
         }
 
         // If caching is allowed, and the requested snippet is a partial snippet,
@@ -75,22 +78,21 @@ class SnippetManager
             $map = $this->getPartialSnippetMap($theme);
 
             if (!array_key_exists($code, $map)) {
-                return null;
+                return;
             }
 
             $partialName = $map[$code];
             $partial = Partial::loadCached($theme, $partialName);
 
             if (!$partial) {
-                return null;
+                return;
             }
 
-            $snippet = new Snippet;
+            $snippet = new Snippet();
             $snippet->initFromPartial($partial);
 
             return $snippet;
-        }
-        else {
+        } else {
             // If the snippet is a component snippet, initialize it
             // from the component
 
@@ -98,7 +100,7 @@ class SnippetManager
                 throw new SystemException(sprintf('The snippet component class %s is not found.', $componentClass));
             }
 
-            $snippet = new Snippet;
+            $snippet = new Snippet();
             $snippet->initFromComponentInfo($componentClass, $code);
 
             return $snippet;
@@ -107,6 +109,7 @@ class SnippetManager
 
     /**
      * Clears front-end run-time cache.
+     *
      * @param \Cms\Classes\Theme $theme Specifies a parent theme.
      */
     public static function clearCache($theme)
@@ -123,12 +126,15 @@ class SnippetManager
     {
         $key = crc32($theme->getPath()).'snippet-partial-map';
         Event::fire('pages.snippet.getPartialMapCacheKey', [&$key]);
+
         return $key;
     }
 
     /**
      * Returns a list of partial-based snippets and corresponding partial names.
+     *
      * @param \Cms\Classes\Theme $theme Specifies a parent theme.
+     *
      * @return Returns an associative array with the snippet code in keys and partial file names in values.
      */
     public function getPartialSnippetMap($theme)
@@ -162,7 +168,9 @@ class SnippetManager
 
     /**
      * Returns a list of snippets in the specified theme.
+     *
      * @param \Cms\Classes\Theme $theme Specifies a parent theme.
+     *
      * @return array Returns an array of Snippet objects.
      */
     protected function listThemeSnippets($theme)
@@ -175,7 +183,7 @@ class SnippetManager
             $viewBag = $partial->getViewBag();
 
             if (strlen($viewBag->property('snippetCode'))) {
-                $snippet = new Snippet;
+                $snippet = new Snippet();
                 $snippet->initFromPartial($partial);
                 $result[] = $snippet;
             }
@@ -186,6 +194,7 @@ class SnippetManager
 
     /**
      * Returns a list of snippets created from components.
+     *
      * @return array Returns an array of Snippet objects.
      */
     protected function listComponentSnippets()
@@ -206,9 +215,9 @@ class SnippetManager
             }
 
             foreach ($snippets as $componentClass => $componentCode) {
-                // TODO: register snippet components later, during 
+                // TODO: register snippet components later, during
                 // the page life cycle.
-                $snippet = new Snippet;
+                $snippet = new Snippet();
                 $snippet->initFromComponentInfo($componentClass, $componentCode);
                 $result[] = $snippet;
             }
