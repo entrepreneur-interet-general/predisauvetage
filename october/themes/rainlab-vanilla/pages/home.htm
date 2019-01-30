@@ -6,6 +6,9 @@ meta_description = "Le SNOSAN est un observatoire interministériel qui répond 
 is_hidden = 0
 ==
 <div class="container">
+    <div class="alert alert-danger annonce-accueil">
+        {% content 'annonce-accueil' %}
+    </div>
     <div class="row justify-content-center align-items-center">
         <div class="col-md-4">
             <img src="{{ '/assets/images/plaisance.jpg'|theme }}" alt="Navires de plaisance" class="img-thumbnail">
@@ -29,3 +32,12 @@ is_hidden = 0
         </div>
     </div>
 </div>
+{% put scripts %}
+<script>
+$(document).ready(function() {
+  if ($.trim($('.annonce-accueil').text()).length == 0 ) {
+    $('.annonce-accueil').remove();
+  }
+});
+</script>
+{% endput %}

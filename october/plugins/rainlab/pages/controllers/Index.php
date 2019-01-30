@@ -1,33 +1,35 @@
-<?php
+<?php namespace RainLab\Pages\Controllers;
 
-namespace RainLab\Pages\Controllers;
-
-use ApplicationException;
-use Backend\Classes\Controller;
-use BackendMenu;
-use Cms\Classes\CmsCompoundObject;
-use Cms\Classes\Theme;
-use Cms\Widgets\TemplateList;
-use Config;
-use Event;
-use Exception;
-use Flash;
+use Url;
 use Lang;
+use Flash;
+use Event;
+use Config;
+use Request;
+use Response;
+use BackendMenu;
+use Cms\Classes\Layout;
+use Cms\Classes\Theme;
+use Cms\Classes\CmsCompoundObject;
+use Cms\Widgets\TemplateList;
+use Backend\Classes\Controller;
+use RainLab\Pages\Widgets\PageList;
+use RainLab\Pages\Widgets\MenuList;
+use RainLab\Pages\Widgets\SnippetList;
+use RainLab\Pages\Classes\Snippet;
+use RainLab\Pages\Classes\Page as StaticPage;
+use RainLab\Pages\Classes\Router;
 use RainLab\Pages\Classes\Content;
 use RainLab\Pages\Classes\MenuItem;
-use RainLab\Pages\Classes\Page as StaticPage;
-use RainLab\Pages\Classes\Snippet;
-use RainLab\Pages\Classes\SnippetManager;
 use RainLab\Pages\Plugin as PagesPlugin;
-use RainLab\Pages\Widgets\MenuList;
-use RainLab\Pages\Widgets\PageList;
-use RainLab\Pages\Widgets\SnippetList;
-use Request;
-use Url;
+use RainLab\Pages\Classes\SnippetManager;
+use ApplicationException;
+use Exception;
 
 /**
- * Pages and Menus index.
+ * Pages and Menus index
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Index extends Controller
@@ -56,10 +58,11 @@ class Index extends Controller
             new MenuList($this, 'menuList');
             new SnippetList($this, 'snippetList');
 
-            new TemplateList($this, 'contentList', function () {
+            new TemplateList($this, 'contentList', function() {
                 return $this->getContentTemplateList();
             });
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             $this->handleError($ex);
         }
     }
@@ -115,7 +118,7 @@ class Index extends Controller
         $result = [
             'objectPath'  => $type != 'content' ? $object->getBaseFileName() : $object->fileName,
             'objectMtime' => $object->mtime,
-            'tabTitle'    => $this->getTabTitle($type, $object),
+            'tabTitle'    => $this->getTabTitle($type, $object)
         ];
 
         if ($type == 'page') {
@@ -126,7 +129,7 @@ class Index extends Controller
 
         $successMessages = [
             'page' => 'rainlab.pages::lang.page.saved',
-            'menu' => 'rainlab.pages::lang.menu.saved',
+            'menu' => 'rainlab.pages::lang.menu.saved'
         ];
 
         $successMessage = isset($successMessages[$type])
@@ -166,8 +169,8 @@ class Index extends Controller
                 'objectTheme'  => $this->theme->getDirName(),
                 'objectMtime'  => null,
                 'objectParent' => $parent,
-                'parentPage'   => $parentPage,
-            ]),
+                'parentPage'   => $parentPage
+            ])
         ];
 
         return $result;
@@ -183,7 +186,7 @@ class Index extends Controller
 
         $result = [
             'deletedObjects' => $deletedObjects,
-            'theme'          => $this->theme->getDirName(),
+            'theme' => $this->theme->getDirName()
         ];
 
         return $result;
@@ -216,18 +219,20 @@ class Index extends Controller
                 $deletedObjects = $object->delete();
                 if (is_array($deletedObjects)) {
                     $deleted = array_merge($deleted, $deletedObjects);
-                } else {
+                }
+                else {
                     $deleted[] = $path;
                 }
             }
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             $error = $ex->getMessage();
         }
 
         return [
             'deleted' => $deleted,
             'error'   => $error,
-            'theme'   => Request::input('theme'),
+            'theme'   => Request::input('theme')
         ];
     }
 
@@ -241,7 +246,7 @@ class Index extends Controller
         $type = Request::input('type');
 
         return [
-            'menuItemTypeInfo' => MenuItem::getTypeInfo($type),
+            'menuItemTypeInfo' => MenuItem::getTypeInfo($type)
         ];
     }
 
@@ -276,8 +281,8 @@ class Index extends Controller
             'configuration' => [
                 'properties'  => $configuration,
                 'title'       => $snippet->getName(),
-                'description' => $snippet->getDescription(),
-            ],
+                'description' => $snippet->getDescription()
+            ]
         ];
     }
 
@@ -299,13 +304,14 @@ class Index extends Controller
 
             if (!$snippet) {
                 $result[$snippetCode] = trans('rainlab.pages::lang.snippet.not_found', ['code' => $snippetCode]);
-            } else {
-                $result[$snippetCode] = $snippet->getName();
+            }
+            else {
+                $result[$snippetCode] =$snippet->getName();
             }
         }
 
         return [
-            'names' => $result,
+            'names' => $result
         ];
     }
 
@@ -337,12 +343,12 @@ class Index extends Controller
     {
         $class = $this->resolveTypeClassName($type);
 
-        if (!($object = call_user_func([$class, 'load'], $this->theme, $path))) {
+        if (!($object = call_user_func(array($class, 'load'), $this->theme, $path))) {
             if (!$ignoreNotFound) {
                 throw new ApplicationException(trans('rainlab.pages::lang.object.not_found'));
             }
 
-            return;
+            return null;
         }
 
         return $object;
@@ -364,7 +370,7 @@ class Index extends Controller
         $types = [
             'page'    => 'RainLab\Pages\Classes\Page',
             'menu'    => 'RainLab\Pages\Classes\Menu',
-            'content' => 'RainLab\Pages\Classes\Content',
+            'content' => 'RainLab\Pages\Classes\Content'
         ];
 
         if (!array_key_exists($type, $types)) {
@@ -379,7 +385,7 @@ class Index extends Controller
         $formConfigs = [
             'page'    => '~/plugins/rainlab/pages/classes/page/fields.yaml',
             'menu'    => '~/plugins/rainlab/pages/classes/menu/fields.yaml',
-            'content' => '~/plugins/rainlab/pages/classes/content/fields.yaml',
+            'content' => '~/plugins/rainlab/pages/classes/content/fields.yaml'
         ];
 
         if (!array_key_exists($type, $formConfigs)) {
@@ -394,7 +400,7 @@ class Index extends Controller
         $widget = $this->makeWidget('Backend\Widgets\Form', $widgetConfig);
 
         if ($type == 'page') {
-            $widget->bindEvent('form.extendFieldsBefore', function () use ($widget, $object) {
+            $widget->bindEvent('form.extendFieldsBefore', function() use ($widget, $object) {
                 $this->checkContentField($widget, $object);
                 $this->addPagePlaceholders($widget, $object);
                 $this->addPageSyntaxFields($widget, $object);
@@ -421,9 +427,7 @@ class Index extends Controller
         $fields = $page->listLayoutSyntaxFields();
 
         foreach ($fields as $fieldCode => $fieldConfig) {
-            if ($fieldConfig['type'] == 'fileupload') {
-                continue;
-            }
+            if ($fieldConfig['type'] == 'fileupload') continue;
 
             if ($fieldConfig['type'] == 'repeater') {
                 $fieldConfig['form']['fields'] = array_get($fieldConfig, 'fields', []);
@@ -433,16 +437,16 @@ class Index extends Controller
             /*
             * Custom fields placement
             */
-            $placement = (!empty($fieldConfig['placement']) ? $fieldConfig['placement'] : null);
+            $placement = (!empty($fieldConfig['placement']) ? $fieldConfig['placement'] : NULL);
 
             switch ($placement) {
-                case 'primary':
-                    $formWidget->tabs['fields']['viewBag['.$fieldCode.']'] = $fieldConfig;
+                case "primary":
+                    $formWidget->tabs['fields']['viewBag[' . $fieldCode . ']'] = $fieldConfig;
                     break;
 
                 default:
-                    $fieldConfig['cssClass'] = 'secondary-tab '.array_get($fieldConfig, 'cssClass', '');
-                    $formWidget->secondaryTabs['fields']['viewBag['.$fieldCode.']'] = $fieldConfig;
+                    $fieldConfig['cssClass'] = 'secondary-tab ' . array_get($fieldConfig, 'cssClass', '');
+                    $formWidget->secondaryTabs['fields']['viewBag[' . $fieldCode . ']'] = $fieldConfig;
                     break;
             }
 
@@ -469,12 +473,13 @@ class Index extends Controller
             $fieldConfig = [
                 'tab'     => $placeholderTitle,
                 'stretch' => '1',
-                'size'    => 'huge',
+                'size'    => 'huge'
             ];
 
             if ($info['type'] != 'text') {
                 $fieldConfig['type'] = 'richeditor';
-            } else {
+            }
+            else {
                 $fieldConfig['type'] = 'codeeditor';
                 $fieldConfig['language'] = 'text';
                 $fieldConfig['theme'] = 'chrome';
@@ -505,14 +510,16 @@ class Index extends Controller
             }
 
             return $result;
-        } elseif ($type == 'menu') {
+        }
+        elseif ($type == 'menu') {
             $result = $object->name;
             if (!strlen($result)) {
                 $result = trans('rainlab.pages::lang.menu.new');
             }
 
             return $result;
-        } elseif ($type == 'content') {
+        }
+        elseif ($type == 'content') {
             $result = in_array($type, ['asset', 'content'])
                 ? $object->getFileName()
                 : $object->getBaseFileName();
@@ -550,7 +557,8 @@ class Index extends Controller
         foreach ($fields as $field) {
             if (array_key_exists($field, $saveData)) {
                 $objectData[$field] = $saveData[$field];
-            } elseif (array_key_exists($field, $postData)) {
+            }
+            elseif (array_key_exists($field, $postData)) {
                 $objectData[$field] = $postData[$field];
             }
         }
@@ -618,8 +626,8 @@ class Index extends Controller
                 'objectType'   => $type,
                 'objectTheme'  => $this->theme->getDirName(),
                 'objectMtime'  => $object->mtime,
-                'objectParent' => Request::input('parentFileName'),
-            ]),
+                'objectParent' => Request::input('parentFileName')
+            ])
         ];
     }
 
@@ -637,9 +645,7 @@ class Index extends Controller
     /**
      * Replaces Windows style (/r/n) line endings with unix style (/n)
      * line endings.
-     *
      * @param string $markup The markup to convert to unix style endings
-     *
      * @return string
      */
     protected function convertLineEndings($markup)
@@ -651,8 +657,7 @@ class Index extends Controller
     }
 
     /**
-     * Returns a list of content files.
-     *
+     * Returns a list of content files
      * @return \October\Rain\Database\Collection
      */
     protected function getContentTemplateList()

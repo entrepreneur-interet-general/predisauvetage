@@ -1,18 +1,17 @@
-<?php
+<?php namespace RainLab\Pages\Classes;
 
-namespace RainLab\Pages\Classes;
-
-use Cms\Classes\CmsException;
-use Cms\Classes\Layout;
+use Lang;
 use Cms\Classes\Page as CmsPage;
 use Cms\Classes\Theme;
-use Exception;
-use Lang;
+use Cms\Classes\Layout;
+use Cms\Classes\CmsException;
 use October\Rain\Parse\Syntax\Parser as SyntaxParser;
+use Exception;
 
 /**
  * Represents a static page controller.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Controller
@@ -34,9 +33,7 @@ class Controller
 
     /**
      * Creates a CMS page from a static page and configures it.
-     *
      * @param string $url Specifies the static page URL.
-     *
      * @return \Cms\Classes\Page Returns the CMS page object or NULL of the requested page was not found.
      */
     public function initCmsPage($url)
@@ -45,7 +42,7 @@ class Controller
         $page = $router->findByUrl($url);
 
         if (!$page) {
-            return;
+            return null;
         }
 
         $viewBag = $page->viewBag;
@@ -113,9 +110,10 @@ class Controller
         try {
             return SyntaxParser::parse($content, [
                 'varPrefix' => 'extraData.',
-                'tagPrefix' => 'page:',
+                'tagPrefix' => 'page:'
             ])->toTwig();
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             return $content;
         }
     }

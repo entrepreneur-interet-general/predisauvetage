@@ -1,6 +1,9 @@
-<?php
+<?php namespace RainLab\Pages\Classes;
 
-namespace RainLab\Pages\Classes;
+use ApplicationException;
+use Validator;
+use Lang;
+use Event;
 
 /**
  * Represents a front-end menu item.
@@ -8,6 +11,7 @@ namespace RainLab\Pages\Classes;
  * In the back-end items are represented with the
  * \RainLab\Pages\Classes\MenuItem objects.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class MenuItemReference

@@ -11,7 +11,6 @@ use Config;
 use Request;
 use Response;
 use Assetic\Asset\FileAsset;
-use Assetic\Asset\GlobAsset;
 use Assetic\Asset\AssetCache;
 use Assetic\Asset\AssetCollection;
 use Assetic\Factory\AssetFactory;
@@ -205,6 +204,17 @@ class CombineAssets
     {
         // Disable cache always
         $this->storagePath = null;
+
+        // Prefix all assets
+        if ($localPath) {
+            if (substr($localPath, -1) !== '/') {
+                $localPath = $localPath.'/';
+            }
+            $assets = array_map(function($asset) use ($localPath) {
+                if (substr($asset, 0, 1) === '@') return $asset;
+                return $localPath.$asset;
+            }, $assets);
+        }
 
         list($assets, $extension) = $this->prepareAssets($assets);
 
@@ -488,9 +498,8 @@ class CombineAssets
         if ($actionExists) {
             return Url::action($combineAction, [$outputFilename], false);
         }
-        else {
-            return '/combine/'.$outputFilename;
-        }
+
+        return '/combine/'.$outputFilename;
     }
 
     /**
@@ -634,7 +643,7 @@ class CombineAssets
         if ($destination === null) {
             $file = File::name($firstFile);
             $path = dirname($firstFile);
-            $preprocessors = array_except(self::$cssExtensions, 'css');
+            $preprocessors = array_diff(self::$cssExtensions, ['css']);
 
             if (in_array($extension, $preprocessors)) {
                 $cssPath = $path.'/../css';

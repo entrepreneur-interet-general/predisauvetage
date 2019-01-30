@@ -9,6 +9,7 @@ return [
         'ar' => 'العربية',
         'be' => 'Беларуская',
         'bg' => 'Български',
+        'ca' => 'Català',
         'cs' => 'Čeština',
         'da' => 'Dansk',
         'en' => 'English (United States)',
@@ -236,7 +237,9 @@ return [
         'deleting' => 'Deleting Template...',
         'deleting_layout' => 'Deleting Layout...',
         'sending' => 'Sending test message...',
-        'return' => 'Return to template list'
+        'return' => 'Return to template list',
+        'options' => 'Options',
+        'disable_auto_inline_css' => 'Disable automatic inline CSS'
     ],
     'mail_brand' => [
         'menu_label' => 'Mail branding',

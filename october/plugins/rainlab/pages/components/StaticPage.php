@@ -1,14 +1,14 @@
-<?php
+<?php namespace RainLab\Pages\Components;
 
-namespace RainLab\Pages\Components;
-
-use Cms\Classes\ComponentBase;
+use Request;
 use Cms\Classes\Theme;
+use Cms\Classes\ComponentBase;
 use RainLab\Pages\Classes\Router;
 
 /**
  * The static page component.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class StaticPage extends ComponentBase
@@ -37,10 +37,10 @@ class StaticPage extends ComponentBase
     {
         return [
             'name'        => 'rainlab.pages::lang.component.static_page_name',
-            'description' => 'rainlab.pages::lang.component.static_page_description',
+            'description' => 'rainlab.pages::lang.component.static_page_description'
         ];
     }
-
+    
     public function defineProperties()
     {
         return [
@@ -49,22 +49,22 @@ class StaticPage extends ComponentBase
                 'description'       => 'rainlab.pages::lang.component.static_page_use_content_description',
                 'default'           => 1,
                 'type'              => 'checkbox',
-                'showExternalParam' => false,
+                'showExternalParam' => false
             ],
             'default' => [
                 'title'             => 'rainlab.pages::lang.component.static_page_default_name',
                 'description'       => 'rainlab.pages::lang.component.static_page_default_description',
                 'default'           => 0,
                 'type'              => 'checkbox',
-                'showExternalParam' => false,
+                'showExternalParam' => false
             ],
             'childLayout' => [
                 'title'             => 'rainlab.pages::lang.component.static_page_child_layout_name',
                 'description'       => 'rainlab.pages::lang.component.static_page_child_layout_description',
                 'type'              => 'string',
-                'showExternalParam' => false,
-            ],
-
+                'showExternalParam' => false
+            ]
+            
         ];
     }
 
@@ -131,7 +131,7 @@ class StaticPage extends ComponentBase
             'is_hidden',
             'navigation_hidden',
             'meta_title',
-            'meta_description',
+            'meta_description'
         ];
 
         $extraData = array_diff_key(
@@ -148,9 +148,7 @@ class StaticPage extends ComponentBase
 
     /**
      * Implements the getter functionality.
-     *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return void
      */
     public function __get($name)
@@ -158,13 +156,13 @@ class StaticPage extends ComponentBase
         if (array_key_exists($name, $this->extraData)) {
             return $this->extraData[$name];
         }
+
+        return null;
     }
 
     /**
      * Determine if an attribute exists on the object.
-     *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return void
      */
     public function __isset($key)

@@ -24,9 +24,13 @@ items:
         replace: '1'
     -
         title: Cartographie
+        nesting: ''
         type: url
         url: 'https://carte.snosan.fr'
         code: ''
+        reference: ''
+        cmsPage: ''
+        replace: ''
         viewBag:
             isHidden: '0'
             cssClass: ''
@@ -40,6 +44,17 @@ items:
         reference: blog
         cmsPage: ''
         replace: ''
+        viewBag:
+            isHidden: '0'
+            cssClass: ''
+            isExternal: '0'
+    -
+        title: Contact
+        nesting: '0'
+        type: static-page
+        code: ''
+        reference: contact-us
+        replace: '0'
         viewBag:
             isHidden: '0'
             cssClass: ''

@@ -1,17 +1,18 @@
-<?php
+<?php namespace RainLab\Pages\Widgets;
 
-namespace RainLab\Pages\Widgets;
-
-use Backend\Classes\WidgetBase;
-use Cms\Classes\Theme;
-use Input;
-use Lang;
-use RainLab\Pages\Classes\PageList as StaticPageList;
 use Str;
+use Lang;
+use Input;
+use Request;
+use Response;
+use Backend\Classes\WidgetBase;
+use RainLab\Pages\Classes\PageList as StaticPageList;
+use Cms\Classes\Theme;
 
 /**
  * Static page list widget.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class PageList extends WidgetBase
@@ -30,8 +31,9 @@ class PageList extends WidgetBase
     public $deleteConfirmation = 'rainlab.pages::lang.page.delete_confirmation';
 
     public $noRecordsMessage = 'rainlab.pages::lang.page.no_records';
-
+    
     public $addSubpageLabel = 'rainlab.pages::lang.page.add_subpage';
+
 
     public function __construct($controller, $alias)
     {
@@ -45,13 +47,12 @@ class PageList extends WidgetBase
 
     /**
      * Renders the widget.
-     *
      * @return string
      */
     public function render()
     {
         return $this->makePartial('body', [
-            'data' => $this->getData(),
+            'data' => $this->getData()
         ]);
     }
 
@@ -99,14 +100,14 @@ class PageList extends WidgetBase
         if (strlen($searchTerm)) {
             $words = explode(' ', $searchTerm);
 
-            $iterator = function ($pages) use (&$iterator, $words) {
+            $iterator = function($pages) use (&$iterator, $words) {
                 $result = [];
 
                 foreach ($pages as $page) {
                     if ($this->textMatchesSearch($words, $this->subtreeToText($page))) {
                         $result[] = (object) [
                             'page'     => $page->page,
-                            'subpages' => $iterator($page->subpages),
+                            'subpages' => $iterator($page->subpages)
                         ];
                     }
                 }
@@ -134,7 +135,7 @@ class PageList extends WidgetBase
     {
         $result = $this->pageToText($page->page);
 
-        $iterator = function ($pages) use (&$iterator, &$result) {
+        $iterator = function($pages) use (&$iterator, &$result) {
             foreach ($pages as $page) {
                 $result .= ' '.$this->pageToText($page->page);
                 $iterator($page->subpages);
