@@ -19,6 +19,5 @@ from operations
 where operation_id not in (select operation_id from operations_points);
 
 -- Remove old rows
-delete from
-from operations_points
+delete from operations_points
 where operation_id not in (select operation_id from operations);
