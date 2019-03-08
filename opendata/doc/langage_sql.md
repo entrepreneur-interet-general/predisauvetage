@@ -28,6 +28,7 @@ WHERE "op"."cross" = 'Jobourg'
   AND ("op"."vent_force" <= 4 OR "op"."vent_force" > 7) -- Vent jusqu'à 4 ou strictement supérieur à 7
   AND "stats"."mois_texte" <> 'Juin' -- Tous les mois sauf Juin
 GROUP BY 1, 2, 3 -- Aggrège par les colonnes 1, 2 et 3 (année, CROSS et type d'opération)
+HAVING SUM("stats"."nombre_personnes_impliquees") >=  10 -- Ne conserver que les groupes avec au moins 10 personnes impliquées
 ORDER BY 1 ASC, 2 DESC -- Tri par l'ordre ascendant la colonne 1 (année) puis descendant par la colonne 2 (CROSS)
 ```
 
