@@ -6,7 +6,7 @@ operation_id,phase_journee,est_jour_ferie,est_vacances_scolaires
 -66714,matinée,False,True
 -66605,nuit,False,False
 -66596,déjeuner,False,False
--66554,,False,
+-66554,,False,False
 -66482,déjeuner,False,False
 -66478,déjeuner,False,False
 -66364,matinée,False,False
@@ -97,4 +97,4 @@ operation_id,phase_journee,est_jour_ferie,est_vacances_scolaires
 -55103,après-midi,False,False
 -55092,nuit,False,False
 -54840,matinée,True,True
--54731,matinée,False,
+-54731,matinée,False,True
