@@ -5,7 +5,7 @@ SELECT
   scrf.LIBELLE resultat_flotteur,
   sctp.LIBELLE type_flotteur,
   sccf.LIBELLE categorie_flotteur,
-  t.NUM_IMMAT numero_immatriculation,
+  coalesce(t.NUM_IMMAT, flo.NUM_IMMAT_FR) numero_immatriculation,
   flo.NUM_IMO immatriculation_omi,
   t.MARQUE marque,
   t.NOM_SERIE nom_serie,
