@@ -354,6 +354,7 @@ ui <- dashboardPage(
 
   #Body content
   dashboardBody(
+              tags$head(includeScript("ga.js")),
               fluidPage(
                 div(class="outer",
                 tags$style(type = "text/css", ".outer {position: fixed; top: 41px; left: 0; right: 0; bottom: 0; overflow: hidden; padding: 0}"),
