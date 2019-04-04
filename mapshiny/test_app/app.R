@@ -354,6 +354,7 @@ ui <- dashboardPage(
 
   #Body content
   dashboardBody(
+              tags$head(tags$script(src = "https://www.googletagmanager.com/gtag/js?id=UA-133494078-2")),
               tags$head(includeScript("ga.js")),
               fluidPage(
                 div(class="outer",
