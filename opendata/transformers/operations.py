@@ -14,7 +14,6 @@ class OperationsTransformer(BaseTransformer):
     def transform(self, output):
         df = self.read_csv()
 
-        df["vent_direction"] = df["vent_direction"].astype(int)
         df["numero_sitrep"] = df.apply(lambda r: self.numero_sitrep(r), axis=1)
         df["cross_sitrep"] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df["fuseau_horaire"] = self.fuseau_horaire(df.cross)
