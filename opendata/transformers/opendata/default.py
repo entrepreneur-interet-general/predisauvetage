@@ -17,7 +17,7 @@ class DefaultTransformer(BaseTransformer):
         if len(cols_to_drop) > 0:
             df.drop(cols_to_drop, axis=1, inplace=True)
 
-        df.sort_values(by=['operation_id'], inplace=True)
+        df.sort_values(by=["operation_id"], inplace=True)
 
         self.to_csv(df, output)
 
@@ -25,7 +25,9 @@ class DefaultTransformer(BaseTransformer):
         return self.column_dropper().for_model(self.MODEL)
 
     def column_dropper(self):
-        return ColumnDropper(self.resolve_filepath('config/filter_doc.json'))
+        return ColumnDropper(self.resolve_filepath("config/filter_doc.json"))
 
     def resolve_filepath(self, f):
-        return op.join(op.abspath(op.join(__file__, op.pardir, op.pardir, op.pardir)), f)
+        return op.join(
+            op.abspath(op.join(__file__, op.pardir, op.pardir, op.pardir)), f
+        )

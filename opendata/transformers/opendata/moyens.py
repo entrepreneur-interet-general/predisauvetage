@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class MoyensTransformer(DefaultTransformer):
-    MODEL = 'Moyen'
+    MODEL = "Moyen"

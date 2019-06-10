@@ -8,7 +8,7 @@ from test_schema import TestSchemaMatches
 
 class TestSqlSchema(TestSchemaMatches):
     def test_content(self):
-        the_regex = r'(CREATE TABLE.*?\);)+'
+        the_regex = r"(CREATE TABLE.*?\);)+"
         flags = re.MULTILINE | re.DOTALL
         matches = re.findall(the_regex, self.sql_content(), flags)
 
@@ -16,22 +16,17 @@ class TestSqlSchema(TestSchemaMatches):
         tables = []
         for match in matches:
             table = DdlParse().parse(
-                match,
-                source_database=DdlParse.DATABASE.postgresql
+                match, source_database=DdlParse.DATABASE.postgresql
             )
             tables.append(table.name)
 
-            self.assertEquals(
-                open_data[table.name],
-                list(table.columns.keys())
-            )
+            self.assertEquals(open_data[table.name], list(table.columns.keys()))
 
         self.assertEquals(
-            set(tables),
-            set(map(lambda e: e.replace('.csv', ''), open_data.keys()))
+            set(tables), set(map(lambda e: e.replace(".csv", ""), open_data.keys()))
         )
 
     def sql_content(self):
-        with open(self.filepath('sql/schema.sql'), 'r', encoding='utf-8') as f:
+        with open(self.filepath("sql/schema.sql"), "r", encoding="utf-8") as f:
             content = f.read()
         return content

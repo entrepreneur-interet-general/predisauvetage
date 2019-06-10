@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class FlotteursTransformer(DefaultTransformer):
-    MODEL = 'Flotteur'
+    MODEL = "Flotteur"

@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class OperationsTransformer(DefaultTransformer):
-    MODEL = 'Operation'
+    MODEL = "Operation"
