@@ -6,14 +6,11 @@ from opendata.base import BaseTest
 
 class TestMoyensTransformer(BaseTest):
     def test_basic_file(self):
-        in_file = self.filepath('tests/files/moyens.csv')
+        in_file = self.filepath("tests/files/moyens.csv")
         self.run_for_files(in_file)
 
     def transformers(self):
-        return [
-            MoyensTransformer,
-            OpendataMoyensTransformer
-        ]
+        return [MoyensTransformer, OpendataMoyensTransformer]
 
     def test_model(self):
-        self.model_is('Moyen')
+        self.model_is("Moyen")

@@ -3,4 +3,4 @@ from transformers.opendata.default import DefaultTransformer
 
 
 class ResultatsHumainTransformer(DefaultTransformer):
-    MODEL = 'ResultatHumain'
+    MODEL = "ResultatHumain"

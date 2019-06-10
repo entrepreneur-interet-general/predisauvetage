@@ -18,25 +18,18 @@ class SunriseSunset(object):
     datetime class as input and output.
     """
 
-    def __init__(
-            self,
-            dt,
-            latitude,
-            longitude,
-            localOffset=0,
-            zenith=None,
-        ):
+    def __init__(self, dt, latitude, longitude, localOffset=0, zenith=None):
         self.dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
         if latitude < -90 or latitude > 90:
-            raise ValueError('Invalid latitude value')
+            raise ValueError("Invalid latitude value")
         if longitude < -180 or longitude > 180:
-            raise ValueError('Invalid longitude value')
+            raise ValueError("Invalid longitude value")
         if localOffset < -12 or localOffset > 14:
-            raise ValueError('Invalid localOffset value')
+            raise ValueError("Invalid localOffset value")
         self.latitude = latitude
         self.longitude = longitude
         self.localOffset = localOffset
-        self.zenith = (zenith if zenith is not None else CIVIL_ZENITH)
+        self.zenith = zenith if zenith is not None else CIVIL_ZENITH
 
     def calculate(self):
         """Computes the sunset and sunrise for the current day, in local time"""
@@ -60,19 +53,26 @@ class SunriseSunset(object):
         # Calculate the Sun's true longitude, and adjust angle to be between 0
         # and 360
 
-        L_rise = (M_rise + 1.916 * math.sin(math.radians(M_rise))
-                  + 0.020 * math.sin(math.radians(2 * M_rise))
-                  + 282.634) % 360
-        L_set = (M_set + 1.916 * math.sin(math.radians(M_set)) + 0.020
-                 * math.sin(math.radians(2 * M_set)) + 282.634) % 360
+        L_rise = (
+            M_rise
+            + 1.916 * math.sin(math.radians(M_rise))
+            + 0.020 * math.sin(math.radians(2 * M_rise))
+            + 282.634
+        ) % 360
+        L_set = (
+            M_set
+            + 1.916 * math.sin(math.radians(M_set))
+            + 0.020 * math.sin(math.radians(2 * M_set))
+            + 282.634
+        ) % 360
 
         # Calculate the Sun's right ascension, and adjust angle to be between 0 and
         # 360
 
-        RA_rise = math.degrees(math.atan(0.91764
-                               * math.tan(math.radians(L_rise)))) % 360
-        RA_set = math.degrees(math.atan(0.91764
-                              * math.tan(math.radians(L_set)))) % 360
+        RA_rise = (
+            math.degrees(math.atan(0.91764 * math.tan(math.radians(L_rise)))) % 360
+        )
+        RA_set = math.degrees(math.atan(0.91764 * math.tan(math.radians(L_set)))) % 360
 
         # Right ascension value needs to be in the same quadrant as L
 
@@ -103,10 +103,12 @@ class SunriseSunset(object):
         radian_lat = math.radians(self.latitude)
         sin_latitude = math.sin(radian_lat)
         cos_latitude = math.cos(radian_lat)
-        cosH_rise = (cos_zenith - sinDec_rise * sin_latitude) \
-            / (cosDec_rise * cos_latitude)
-        cosH_set = (cos_zenith - sinDec_set * sin_latitude) \
-            / (cosDec_set * cos_latitude)
+        cosH_rise = (cos_zenith - sinDec_rise * sin_latitude) / (
+            cosDec_rise * cos_latitude
+        )
+        cosH_set = (cos_zenith - sinDec_set * sin_latitude) / (
+            cosDec_set * cos_latitude
+        )
 
         # Finish calculating H and convert into hours
 
@@ -141,7 +143,7 @@ class SunriseSunset(object):
         set_dt = date.replace(hour=h_set, minute=m_set)
 
         if rise_dt < set_dt:
-                rise_dt = rise_dt + timedelta(hours=24)
-        assert(set_dt < rise_dt)
+            rise_dt = rise_dt + timedelta(hours=24)
+        assert set_dt < rise_dt
 
         return (rise_dt, set_dt)

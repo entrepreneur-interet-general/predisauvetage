@@ -32,18 +32,22 @@ class PgDownloadOperator(BaseOperator):
 
     """
 
-    template_fields = ('sql', 'csv_path',)
-    template_ext = ('.sql',)
-    ui_color = '#ededed'
+    template_fields = ("sql", "csv_path")
+    template_ext = (".sql",)
+    ui_color = "#ededed"
 
     @apply_defaults
     def __init__(
-            self, sql,
-            csv_path,
-            postgres_conn_id='postgres_default', autocommit=False,
-            pandas_sql_params=None,
-            csv_params=None,
-            *args, **kwargs):
+        self,
+        sql,
+        csv_path,
+        postgres_conn_id="postgres_default",
+        autocommit=False,
+        pandas_sql_params=None,
+        csv_params=None,
+        *args,
+        **kwargs
+    ):
         super(PgDownloadOperator, self).__init__(*args, **kwargs)
         self.sql = sql
         self.postgres_conn_id = postgres_conn_id
@@ -53,8 +57,8 @@ class PgDownloadOperator(BaseOperator):
         self.csv_params = csv_params
 
     def execute(self, context):
-        logging.info('Executing: ' + str(self.sql))
+        logging.info("Executing: " + str(self.sql))
         self.hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         pandas_df = self.hook.get_pandas_df(self.sql, parameters=self.pandas_sql_params)
-        logging.info('Saving to: ' + str(self.csv_path))
+        logging.info("Saving to: " + str(self.csv_path))
         pandas_df.to_csv(self.csv_path, **self.csv_params)

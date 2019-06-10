@@ -19,8 +19,8 @@ class BaseDropper(object):
         self.conf = self.parse_configuration()
 
     def for_table(self, table):
-        if not re.match(r'^[a-z_]+$', table):
-            template = 'Table `{table}` does not match regex ^[a-z_]+$'
+        if not re.match(r"^[a-z_]+$", table):
+            template = "Table `{table}` does not match regex ^[a-z_]+$"
             raise ValueError(template.format(table=table))
         return self.conf[table]
 
@@ -32,14 +32,14 @@ class ColumnDropper(BaseDropper):
     def parse_configuration(self):
         with open(self.configuration_filepath) as f:
             data = json.load(f)
-        return data['columns']
+        return data["columns"]
 
 
 class TableDropper(BaseDropper):
     def parse_configuration(self):
         with open(self.configuration_filepath) as f:
             data = json.load(f)
-        return data['models']
+        return data["models"]
 
     def for_table(self, table):
         return table in self.conf

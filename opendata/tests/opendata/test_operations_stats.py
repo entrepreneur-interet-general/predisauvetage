@@ -6,7 +6,7 @@ from opendata.base import BaseTest
 class TestOperationsStatsTransformer(BaseTest):
     def test_columns(self):
         self.assertEquals(
-            OperationsStatsTransformer('/tmp/fake').columns_to_drop(),
+            OperationsStatsTransformer("/tmp/fake").columns_to_drop(),
             [
                 "nombre_navires_mas_omi",
                 "concerne_snosan",
@@ -19,11 +19,11 @@ class TestOperationsStatsTransformer(BaseTest):
                 "duree_engagement_moyens_nautiques_heures",
                 "duree_engagement_moyens_terrestres_heures",
                 "duree_engagement_moyens_aeriens_heures",
-            ]
+            ],
         )
 
     def transformers(self):
         return [None, OperationsStatsTransformer]
 
     def test_model(self):
-        self.model_is('OperationStats')
+        self.model_is("OperationStats")

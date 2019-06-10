@@ -26,50 +26,44 @@ import helpers
 from secmar_dags import SECMAR_TABLES, opendata_transformer, out_path
 from secmar_dags import secmar_transform, opendata_path
 
-default_args = helpers.default_args({
-    'start_date': datetime(2018, 5, 22, 5, 40),
-})
+default_args = helpers.default_args({"start_date": datetime(2018, 5, 22, 5, 40)})
 
 dag = DAG(
-    'opendata_secmar',
+    "opendata_secmar",
     default_args=default_args,
     max_active_runs=1,
     concurrency=2,
     catchup=False,
-    schedule_interval=None
+    schedule_interval=None,
 )
 dag.doc_md = __doc__
 
 
 def filter_operations_fn(**kwargs):
-    operations = pd.read_csv(out_path('operations'))
-    operations_stats = pd.read_csv(out_path('operations_stats'))
-    df = operations.loc[operations['operation_id'].isin(
-        operations_stats['operation_id']
-    ), :]
-    df.to_csv(out_path('operations'), index=False)
+    operations = pd.read_csv(out_path("operations"))
+    operations_stats = pd.read_csv(out_path("operations_stats"))
+    df = operations.loc[
+        operations["operation_id"].isin(operations_stats["operation_id"]), :
+    ]
+    df.to_csv(out_path("operations"), index=False)
 
-start = DummyOperator(task_id='start', dag=dag)
-end_transform = DummyOperator(task_id='end_transform', dag=dag)
+
+start = DummyOperator(task_id="start", dag=dag)
+end_transform = DummyOperator(task_id="end_transform", dag=dag)
 
 download_operations_stats = PgDownloadOperator(
-    task_id='download_operations_stats',
-    postgres_conn_id='postgresql_local',
-    sql='select * from operations_stats',
-    pandas_sql_params={
-        'chunksize': 10000,
-    },
-    csv_path=out_path('operations_stats'),
-    csv_params={
-        'sep': ',',
-        'index': False,
-    },
-    dag=dag
+    task_id="download_operations_stats",
+    postgres_conn_id="postgresql_local",
+    sql="select * from operations_stats",
+    pandas_sql_params={"chunksize": 10000},
+    csv_path=out_path("operations_stats"),
+    csv_params={"sep": ",", "index": False},
+    dag=dag,
 )
 download_operations_stats.set_downstream(start)
 
 filter_operations = PythonOperator(
-    task_id='filter_operations',
+    task_id="filter_operations",
     python_callable=filter_operations_fn,
     provide_context=True,
     dag=dag,
@@ -78,33 +72,31 @@ filter_operations.set_upstream(download_operations_stats)
 filter_operations.set_downstream(start)
 
 
-for table in SECMAR_TABLES + ['operations_stats']:
+for table in SECMAR_TABLES + ["operations_stats"]:
     t = PythonOperator(
-        task_id='transform_' + table,
+        task_id="transform_" + table,
         python_callable=secmar_transform,
         provide_context=True,
         dag=dag,
-        pool='transform',
+        pool="transform",
         op_kwargs={
-            'in_path': out_path(table),
-            'out_path': opendata_path(table),
-            'transformer': opendata_transformer(table)
-        }
+            "in_path": out_path(table),
+            "out_path": opendata_path(table),
+            "transformer": opendata_transformer(table),
+        },
     )
     t.set_upstream(start)
     t.set_downstream(end_transform)
 
-scp_command = 'scp *.csv root@{host}:/var/www/secmar-data/'.format(
-    host=Variable.get('REMOTE_SERVER_CSV_HOST')
+scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(
+    host=Variable.get("REMOTE_SERVER_CSV_HOST")
 )
 
 publish_csv_files = BashOperator(
-    task_id='publish_csv_files',
-    bash_command=' && '.join([
-        'cd ' + helpers.opendata_folder_path(),
-        'rm -f moyens.csv',
-        scp_command
-    ]),
+    task_id="publish_csv_files",
+    bash_command=" && ".join(
+        ["cd " + helpers.opendata_folder_path(), "rm -f moyens.csv", scp_command]
+    ),
     dag=dag,
 )
 publish_csv_files.set_upstream(end_transform)
