@@ -1,7 +1,6 @@
 <?php
 
 use Cms\Classes\CmsException;
-use Cms\Classes\CodeParser;
 use Cms\Classes\Router;
 use Cms\Classes\Theme;
 use October\Rain\Exception\SystemException;

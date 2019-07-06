@@ -16,7 +16,6 @@ use Lang;
 use RainLab\Pages\Classes\Content;
 use RainLab\Pages\Classes\MenuItem;
 use RainLab\Pages\Classes\Page as StaticPage;
-use RainLab\Pages\Classes\Snippet;
 use RainLab\Pages\Classes\SnippetManager;
 use RainLab\Pages\Plugin as PagesPlugin;
 use RainLab\Pages\Widgets\MenuList;

@@ -3,7 +3,6 @@
 namespace RainLab\Pages\Classes;
 
 use Cms\Classes\CmsException;
-use Cms\Classes\Layout;
 use Cms\Classes\Page as CmsPage;
 use Cms\Classes\Theme;
 use Exception;

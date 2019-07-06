@@ -5,7 +5,6 @@ namespace RainLab\Pages\Widgets;
 use Backend\Classes\WidgetBase;
 use Cms\Classes\Theme;
 use Input;
-use Lang;
 use RainLab\Pages\Classes\Menu;
 use Str;
 

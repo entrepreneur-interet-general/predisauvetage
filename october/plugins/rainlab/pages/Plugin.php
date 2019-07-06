@@ -183,7 +183,7 @@ class Plugin extends PluginBase
         });
 
         Event::listen('cms.template.save', function ($controller, $template, $type) {
-            Plugin::clearCache();
+            self::clearCache();
         });
 
         Event::listen('cms.template.processSettingsBeforeSave', function ($controller, $dataHolder) {

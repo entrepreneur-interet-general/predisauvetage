@@ -4,7 +4,6 @@ namespace RainLab\Pages\FormWidgets;
 
 use Backend\Classes\FormWidgetBase;
 use Input;
-use Lang;
 use RainLab\Pages\Classes\MenuItem;
 use Str;
 
