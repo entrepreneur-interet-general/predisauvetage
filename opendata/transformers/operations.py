@@ -57,6 +57,7 @@ class OperationsTransformer(BaseTransformer):
         return pd.cut(series, bins=bins, labels=labels).replace("nord2", "nord")
 
     def numero_sitrep(self, row):
+        year = row["date_heure_reception_alerte"].year
         if pd.isna(row["numero_sitrep"]):
             # If operation_id: 2120050002
             # 21: CROSS code
@@ -67,6 +68,10 @@ class OperationsTransformer(BaseTransformer):
                 msg = "Unexpected length for operation_id " + operation_id
                 raise ValueError(msg)
             return int(operation_id[6:10])
+        if str(row["numero_sitrep"]).startswith(str(year)):
+            # numero_sitrep: 20191115
+            # output: 1115
+            return int(float(str(row["numero_sitrep"])[4:]))
         return row["numero_sitrep"]
 
     def cross_sitrep(self, row):
