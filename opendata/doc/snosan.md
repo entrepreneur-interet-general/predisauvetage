@@ -41,8 +41,8 @@ Le SNOSAN s'intéresse aux opérations relevant de la plaisance ou des loisirs n
 
 - **Plaisance uniquement** : `concerne_snosan` à vrai, `nombre_flotteurs_plaisance_impliques` >= 1, `nombre_flotteurs_loisirs_nautiques_impliques` = 0, `sans_flotteur_implique` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_plaisance`
 - **Loisirs nautiques uniquement** : `concerne_snosan` à vrai, `nombre_flotteurs_plaisance_impliques` = 0, `nombre_flotteurs_loisirs_nautiques_impliques` >= 1, `sans_flotteur_implique` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_loisirs_nautiques`
-- **Plaisance et loisirs nautiques (avec plongée)** : `concerne_snosan` à vrai, `sans_flotteur_implique` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_snosan_plaisance_loisirs_nautiques_plongee`
-- **Plaisance et loisirs nautiques (sans plongée)** : `concerne_snosan` à vrai, `sans_flotteur_implique` à faux, `concerne_plongee` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_snosan_plaisance_loisirs_nautiques`
+- **Plaisance et loisirs nautiques (avec plongée)** : `concerne_snosan` à vrai, `sans_flotteur_implique` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_plaisance_loisirs_nautiques_plongee`
+- **Plaisance et loisirs nautiques (sans plongée)** : `concerne_snosan` à vrai, `sans_flotteur_implique` à faux, `concerne_plongee` à faux. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_plaisance_loisirs_nautiques`
 - **Uniquement la plongée** : `concerne_plongee` à vrai. Ceci est disponible dans une requête prédéfinie dans Redash par le mot clé `snosan_plongee`
 
 ## Contact
