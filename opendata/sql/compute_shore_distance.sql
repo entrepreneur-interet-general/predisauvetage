@@ -14,11 +14,12 @@ from (
     from (
       select
         o.operation_id,
-        ST_Distance(go.geography, o.point) dst
+        min(ST_Distance(go.geography, o.point)) dst
       from operations_points o
-      join geography_objects go on go.name = 'frontieres-terrestres-france'
+      join geography_objects go on go.name in ('frontieres-terrestres-france', 'regions-20140306-100m')
       where o.point is not null
         and o.distance_cote_metres is null
+      group by o.operation_id
     ) _
   ) _
 ) t
