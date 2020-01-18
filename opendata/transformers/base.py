@@ -27,6 +27,9 @@ class BaseTransformer(object):
         # Cast dates columns
         for date_col in [c for c in self.DATE_COLUMNS if c in df.columns]:
             df[date_col] = df[date_col].astype("datetime64[ns]")
+            df[date_col] = (
+                df[date_col].dt.tz_localize("UTC").dt.tz_convert("Europe/Paris")
+            )
 
         # Sort by operation_id
         df.sort_values(by=["operation_id"], inplace=True)
