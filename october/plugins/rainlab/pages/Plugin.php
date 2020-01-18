@@ -47,7 +47,7 @@ class Plugin extends PluginBase
                 'tab'   => 'rainlab.pages::lang.page.tab',
                 'order' => 200,
                 'label' => 'rainlab.pages::lang.page.manage_menus',
-                ],
+            ],
             'rainlab.pages.manage_content' => [
                 'tab'   => 'rainlab.pages::lang.page.tab',
                 'order' => 200,

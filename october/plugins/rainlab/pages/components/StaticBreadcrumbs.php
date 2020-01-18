@@ -7,7 +7,6 @@ use Cms\Classes\Theme;
 use RainLab\Pages\Classes\MenuItemReference;
 use RainLab\Pages\Classes\Page as StaticPageClass;
 use RainLab\Pages\Classes\Router;
-use Url;
 
 /**
  * The static breadcrumbs component.

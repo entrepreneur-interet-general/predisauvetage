@@ -124,7 +124,7 @@ class Post extends Model
     {
         if ($this->published && !$this->published_at) {
             throw new ValidationException([
-               'published_at' => Lang::get('rainlab.blog::lang.post.published_validation'),
+                'published_at' => Lang::get('rainlab.blog::lang.post.published_validation'),
             ]);
         }
     }
