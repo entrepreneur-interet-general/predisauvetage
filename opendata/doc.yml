@@ -454,6 +454,12 @@ components:
           description: Si l'opération se déroule dans une zone d'un dispositif de séparation du trafic, le nom de cette zone.
           example: dst-dover
           nullable: true
+        prefecture_maritime:
+          type: string
+          description: Indique le nom de la Préfecture maritime de rattachement de l'opération. Concerne uniquement le découpage actuel et non historique.
+          example: manche
+          enum: ['manche', 'atlantique', 'mediterranee']
+          nullable: true
         maree_port:
           type: string
           description: Le nom du port utilisé comme référence pour connaitre le coefficient moyen de marée de la journée de l'opération. Les marées sont renseignées pour les opérations coordonnées par les CROSS en Atlantique et Manche, lorsque l'opération est géolocalisée et que celle-ci se trouve à moins de 20 kilomètres de la plus proche côte.
