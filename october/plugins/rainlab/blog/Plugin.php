@@ -116,14 +116,16 @@ class Plugin extends PluginBase
                 return $input;
             }
 
-            return preg_replace('|\<img src="image" alt="([0-9]+)"([^>]*)\/>|m',
+            return preg_replace(
+                '|\<img src="image" alt="([0-9]+)"([^>]*)\/>|m',
                 '<span class="image-placeholder" data-index="$1">
                     <span class="upload-dropzone">
                         <span class="label">Click or drop an image...</span>
                         <span class="indicator"></span>
                     </span>
                 </span>',
-            $input);
+                $input
+            );
         });
     }
 
