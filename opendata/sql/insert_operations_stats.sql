@@ -24,8 +24,8 @@ select
   op.est_dans_dst est_dans_dst,
   op.nom_dst nom_dst,
   case
-    when o."cross" in ('Gris-Nez', 'Jobourg', 'Corsen') then 'manche'
-    when o."cross" in ('Étel') then 'atlantique'
+    when o."cross" in ('Gris-Nez', 'Jobourg') then 'manche'
+    when o."cross" in ('Étel', 'Corsen') then 'atlantique'
     when o."cross" in ('La Garde', 'Corse') then 'mediterranee'
     else null
   end prefecture_maritime,
