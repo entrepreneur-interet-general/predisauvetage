@@ -1,7 +1,8 @@
 <?php namespace Backend\FormWidgets;
 
-use System\Classes\MediaLibrary;
+use BackendAuth;
 use Backend\Classes\FormField;
+use System\Classes\MediaLibrary;
 use Backend\Classes\FormWidgetBase;
 
 /**
@@ -63,7 +64,9 @@ class MediaFinder extends FormWidgetBase
             'imageHeight'
         ]);
 
-        if ($this->formField->disabled) {
+        $user = BackendAuth::getUser();
+
+        if ($this->formField->disabled || !$user || !$user->hasAccess('media.manage_media')) {
             $this->previewMode = true;
         }
     }
@@ -84,8 +87,11 @@ class MediaFinder extends FormWidgetBase
     public function prepareVars()
     {
         $value = $this->getLoadValue();
+        $isImage = $this->mode === 'image';
+
         $this->vars['value'] = $value;
-        $this->vars['imageUrl'] = $value ? MediaLibrary::url($value) : '';
+        $this->vars['imageUrl'] = $isImage && $value ? MediaLibrary::url($value) : '';
+        $this->vars['imageExists'] = $isImage && $value ? MediaLibrary::instance()->exists($value) : '';
         $this->vars['field'] = $this->formField;
         $this->vars['prompt'] = str_replace('%s', '<i class="icon-folder"></i>', trans($this->prompt));
         $this->vars['mode'] = $this->mode;

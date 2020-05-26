@@ -6,6 +6,7 @@ use Cache;
 use Config;
 use Storage;
 use Request;
+use Url;
 use October\Rain\Filesystem\Definitions as FileDefinitions;
 use ApplicationException;
 use SystemException;
@@ -71,10 +72,6 @@ class MediaLibrary
     {
         $this->storageFolder = self::validatePath(Config::get('cms.storage.media.folder', 'media'), true);
         $this->storagePath = rtrim(Config::get('cms.storage.media.path', '/storage/app/media'), '/');
-
-        if (!starts_with($this->storagePath, ['//', 'http://', 'https://'])) {
-            $this->storagePath = Request::getBasePath() . $this->storagePath;
-        }
 
         $this->ignoreNames = Config::get('cms.storage.media.ignore', FileDefinitions::get('ignoreFiles'));
 
@@ -489,6 +486,8 @@ class MediaLibrary
             preg_quote(']', '/'),
             preg_quote(',', '/'),
             preg_quote('=', '/'),
+            preg_quote("'", '/'),
+            preg_quote('&', '/'),
         ];
 
         if (!preg_match('/^[' . implode('', $regexWhitelist) . ']+$/iu', $path)) {
@@ -538,7 +537,9 @@ class MediaLibrary
     {
         $path = $this->validatePath($path);
 
-        return $this->storagePath.$path;
+        $fullPath = $this->storagePath.implode("/", array_map("rawurlencode", explode("/", $path)));
+
+        return Url::to($fullPath);
     }
 
     /**
@@ -736,8 +737,9 @@ class MediaLibrary
      */
     protected function filterItemList(&$itemList, $filter)
     {
-        if (!$filter)
+        if (!$filter) {
             return;
+        }
 
         $result = [];
         foreach ($itemList as $item) {

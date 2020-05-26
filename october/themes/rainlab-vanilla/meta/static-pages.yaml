@@ -1,9 +1,20 @@
 static-pages:
     mentions-legales: {  }
     laccidentologie-en-direct: {  }
+    saison-estivale-2019: {  }
     liens-utiles: {  }
     nos-conseils:
-        nos-conseils-conseils-de-nos-partenaires: {  }
+        nos-conseils-ministere-des-sports: {  }
         quizz: {  }
-        regles-de-navigation: {  }
+        documentation-ministere-de-linterieur: {  }
+        documentation-ministere-de-la-transition-ecologique-et-solidaire: {  }
+        documentations-la-snsm: {  }
+        documentation-envsn: {  }
+        documentation-kite-surf: {  }
+        documentation-surf: {  }
+        documentation-kayak: {  }
     contact-us: {  }
+    archives:
+        archives-2018: {  }
+        archives-saison-estivale-2018: {  }
+        archives-2019: {  }

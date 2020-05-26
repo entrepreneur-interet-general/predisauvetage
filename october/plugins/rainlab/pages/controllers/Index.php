@@ -1,32 +1,37 @@
-<?php
+<?php namespace RainLab\Pages\Controllers;
 
-namespace RainLab\Pages\Controllers;
-
-use ApplicationException;
-use Backend\Classes\Controller;
-use BackendMenu;
-use Cms\Classes\CmsCompoundObject;
-use Cms\Classes\Theme;
-use Cms\Widgets\TemplateList;
-use Config;
-use Event;
-use Exception;
-use Flash;
+use Url;
 use Lang;
+use Flash;
+use Event;
+use Config;
+use Request;
+use Response;
+use BackendMenu;
+use Cms\Classes\Layout;
+use Cms\Classes\Theme;
+use Cms\Classes\CmsObject;
+use Cms\Classes\CmsCompoundObject;
+use Cms\Widgets\TemplateList;
+use System\Helpers\DateTime;
+use Backend\Classes\Controller;
+use RainLab\Pages\Widgets\PageList;
+use RainLab\Pages\Widgets\MenuList;
+use RainLab\Pages\Widgets\SnippetList;
+use RainLab\Pages\Classes\Snippet;
+use RainLab\Pages\Classes\Page as StaticPage;
+use RainLab\Pages\Classes\Router;
 use RainLab\Pages\Classes\Content;
 use RainLab\Pages\Classes\MenuItem;
-use RainLab\Pages\Classes\Page as StaticPage;
-use RainLab\Pages\Classes\SnippetManager;
 use RainLab\Pages\Plugin as PagesPlugin;
-use RainLab\Pages\Widgets\MenuList;
-use RainLab\Pages\Widgets\PageList;
-use RainLab\Pages\Widgets\SnippetList;
-use Request;
-use Url;
+use RainLab\Pages\Classes\SnippetManager;
+use ApplicationException;
+use Exception;
 
 /**
- * Pages and Menus index.
+ * Pages and Menus index
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Index extends Controller
@@ -44,23 +49,45 @@ class Index extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('RainLab.Pages', 'pages', 'pages');
-
         try {
             if (!($this->theme = Theme::getEditTheme())) {
                 throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
             }
 
-            new PageList($this, 'pageList');
-            new MenuList($this, 'menuList');
-            new SnippetList($this, 'snippetList');
+            if ($this->user->hasAccess('rainlab.pages.manage_pages')) {
+                new PageList($this, 'pageList');
+                $this->vars['activeWidgets'][] = 'pageList';
+            }
 
-            new TemplateList($this, 'contentList', function () {
-                return $this->getContentTemplateList();
-            });
-        } catch (Exception $ex) {
+            if ($this->user->hasAccess('rainlab.pages.manage_menus')) {
+                new MenuList($this, 'menuList');
+                $this->vars['activeWidgets'][] = 'menuList';
+            }
+
+            if ($this->user->hasAccess('rainlab.pages.manage_content')) {
+                new TemplateList($this, 'contentList', function() {
+                    return $this->getContentTemplateList();
+                });
+                $this->vars['activeWidgets'][] = 'contentList';
+            }
+
+            if ($this->user->hasAccess('rainlab.pages.access_snippets')) {
+                new SnippetList($this, 'snippetList');
+                $this->vars['activeWidgets'][] = 'snippetList';
+            }
+        }
+        catch (Exception $ex) {
             $this->handleError($ex);
         }
+
+        $context = [
+            'pageList' => 'pages',
+            'menuList' => 'menus',
+            'contentList' => 'content',
+            'snippetList' => 'snippets',
+        ];
+
+        BackendMenu::setContext('RainLab.Pages', 'pages', @$context[$this->vars['activeWidgets'][0]]);
     }
 
     //
@@ -80,7 +107,7 @@ class Index extends Controller
 
         $this->bodyClass = 'compact-container';
         $this->pageTitle = 'rainlab.pages::lang.plugin.name';
-        $this->pageTitleTemplate = '%s Pages';
+        $this->pageTitleTemplate = Lang::get('rainlab.pages::lang.page.template_title');
 
         if (Request::ajax() && Request::input('formWidgetAlias')) {
             $this->bindFormWidgetToController();
@@ -111,21 +138,12 @@ class Index extends Controller
         Event::fire('pages.object.save', [$this, $object, $type]);
         $this->fireEvent('object.save', [$object, $type]);
 
-        $result = [
-            'objectPath'  => $type != 'content' ? $object->getBaseFileName() : $object->fileName,
-            'objectMtime' => $object->mtime,
-            'tabTitle'    => $this->getTabTitle($type, $object),
-        ];
-
-        if ($type == 'page') {
-            $result['pageUrl'] = Url::to($object->getViewBag()->property('url'));
-
-            PagesPlugin::clearCache();
-        }
+        $result = $this->getUpdateResponse($object, $type);
 
         $successMessages = [
             'page' => 'rainlab.pages::lang.page.saved',
             'menu' => 'rainlab.pages::lang.menu.saved',
+            'content' => 'rainlab.pages::lang.content.saved',
         ];
 
         $successMessage = isset($successMessages[$type])
@@ -156,6 +174,8 @@ class Index extends Controller
 
         $widget = $this->makeObjectFormWidget($type, $object);
         $this->vars['objectPath'] = '';
+        $this->vars['canCommit'] = $this->canCommitObject($object);
+        $this->vars['canReset'] = $this->canResetObject($object);
 
         $result = [
             'tabTitle' => $this->getTabTitle($type, $object),
@@ -165,8 +185,8 @@ class Index extends Controller
                 'objectTheme'  => $this->theme->getDirName(),
                 'objectMtime'  => null,
                 'objectParent' => $parent,
-                'parentPage'   => $parentPage,
-            ]),
+                'parentPage'   => $parentPage
+            ])
         ];
 
         return $result;
@@ -182,7 +202,7 @@ class Index extends Controller
 
         $result = [
             'deletedObjects' => $deletedObjects,
-            'theme'          => $this->theme->getDirName(),
+            'theme' => $this->theme->getDirName()
         ];
 
         return $result;
@@ -215,18 +235,20 @@ class Index extends Controller
                 $deletedObjects = $object->delete();
                 if (is_array($deletedObjects)) {
                     $deleted = array_merge($deleted, $deletedObjects);
-                } else {
+                }
+                else {
                     $deleted[] = $path;
                 }
             }
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             $error = $ex->getMessage();
         }
 
         return [
             'deleted' => $deleted,
             'error'   => $error,
-            'theme'   => Request::input('theme'),
+            'theme'   => Request::input('theme')
         ];
     }
 
@@ -240,7 +262,7 @@ class Index extends Controller
         $type = Request::input('type');
 
         return [
-            'menuItemTypeInfo' => MenuItem::getTypeInfo($type),
+            'menuItemTypeInfo' => MenuItem::getTypeInfo($type)
         ];
     }
 
@@ -252,7 +274,7 @@ class Index extends Controller
 
         $object = $this->fillObjectFromPost($type);
 
-        return $this->pushObjectForm($type, $object);
+        return $this->pushObjectForm($type, $object, Request::input('formWidgetAlias'));
     }
 
     public function onGetInspectorConfiguration()
@@ -275,8 +297,8 @@ class Index extends Controller
             'configuration' => [
                 'properties'  => $configuration,
                 'title'       => $snippet->getName(),
-                'description' => $snippet->getDescription(),
-            ],
+                'description' => $snippet->getDescription()
+            ]
         ];
     }
 
@@ -298,13 +320,14 @@ class Index extends Controller
 
             if (!$snippet) {
                 $result[$snippetCode] = trans('rainlab.pages::lang.snippet.not_found', ['code' => $snippetCode]);
-            } else {
-                $result[$snippetCode] = $snippet->getName();
+            }
+            else {
+                $result[$snippetCode] =$snippet->getName();
             }
         }
 
         return [
-            'names' => $result,
+            'names' => $result
         ];
     }
 
@@ -321,9 +344,130 @@ class Index extends Controller
         return $widget->onSearch();
     }
 
+    /**
+     * Commits the DB changes of a object to the filesystem
+     *
+     * @return array $response
+     */
+    public function onCommit()
+    {
+        $this->validateRequestTheme();
+        $type = Request::input('objectType');
+        $object = $this->loadObject($type, trim(Request::input('objectPath')));
+
+        if ($this->canCommitObject($object)) {
+            // Populate the filesystem with the object and then remove it from the db
+            $datasource = $this->getThemeDatasource();
+            $datasource->pushToSource($object, 'filesystem');
+            $datasource->removeFromSource($object, 'database');
+
+            Flash::success(Lang::get('cms::lang.editor.commit_success', ['type' => $type]));
+        }
+
+        return array_merge($this->getUpdateResponse($object, $type), ['forceReload' => true]);
+    }
+
+    /**
+     * Resets a object to the version on the filesystem
+     *
+     * @return array $response
+     */
+    public function onReset()
+    {
+        $this->validateRequestTheme();
+        $type = Request::input('objectType');
+        $object = $this->loadObject($type, trim(Request::input('objectPath')));
+
+        if ($this->canResetObject($object)) {
+            // Remove the object from the DB
+            $datasource = $this->getThemeDatasource();
+            $datasource->removeFromSource($object, 'database');
+
+            Flash::success(Lang::get('cms::lang.editor.reset_success', ['type' => $type]));
+        }
+
+        return array_merge($this->getUpdateResponse($object, $type), ['forceReload' => true]);
+    }
+
     //
-    // Methods for the internal use
+    // Methods for internal use
     //
+
+    /**
+     * Get the response to return in an AJAX request that updates an object
+     *
+     * @param CmsObject $object The object that has been affected
+     * @param string $type The type of object being affected
+     * @return array $result;
+     */
+    protected function getUpdateResponse(CmsObject $object, string $type)
+    {
+        $result = [
+            'objectPath'  => $type != 'content' ? $object->getBaseFileName() : $object->fileName,
+            'objectMtime' => $object->mtime,
+            'tabTitle'    => $this->getTabTitle($type, $object)
+        ];
+
+        if ($type == 'page') {
+            $result['pageUrl'] = Url::to($object->getViewBag()->property('url'));
+            PagesPlugin::clearCache();
+        }
+
+        $result['canCommit'] = $this->canCommitObject($object);
+        $result['canReset'] = $this->canResetObject($object);
+
+        return $result;
+    }
+
+    /**
+     * Get the active theme's datasource
+     *
+     * @return \October\Rain\Halcyon\Datasource\DatasourceInterface
+     */
+    protected function getThemeDatasource()
+    {
+        return $this->theme->getDatasource();
+    }
+
+    /**
+     * Check to see if the provided object can be committed
+     * Only available in debug mode, the DB layer must be enabled, and the object must exist in the database
+     *
+     * @param CmsObject $object
+     * @return boolean
+     */
+    protected function canCommitObject(CmsObject $object)
+    {
+        $result = false;
+
+        if (Config::get('app.debug', false) &&
+            Theme::databaseLayerEnabled() &&
+            $this->getThemeDatasource()->sourceHasModel('database', $object)
+        ) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check to see if the provided object can be reset
+     * Only available when the DB layer is enabled and the object exists in both the DB & Filesystem
+     *
+     * @param CmsObject $object
+     * @return boolean
+     */
+    protected function canResetObject(CmsObject $object)
+    {
+        $result = false;
+
+        if (Theme::databaseLayerEnabled()) {
+            $datasource = $this->getThemeDatasource();
+            $result = $datasource->sourceHasModel('database', $object) && $datasource->sourceHasModel('filesystem', $object);
+        }
+
+        return $result;
+    }
 
     protected function validateRequestTheme()
     {
@@ -336,12 +480,12 @@ class Index extends Controller
     {
         $class = $this->resolveTypeClassName($type);
 
-        if (!($object = call_user_func([$class, 'load'], $this->theme, $path))) {
+        if (!($object = call_user_func(array($class, 'load'), $this->theme, $path))) {
             if (!$ignoreNotFound) {
                 throw new ApplicationException(trans('rainlab.pages::lang.object.not_found'));
             }
 
-            return;
+            return null;
         }
 
         return $object;
@@ -363,11 +507,22 @@ class Index extends Controller
         $types = [
             'page'    => 'RainLab\Pages\Classes\Page',
             'menu'    => 'RainLab\Pages\Classes\Menu',
-            'content' => 'RainLab\Pages\Classes\Content',
+            'content' => 'RainLab\Pages\Classes\Content'
         ];
 
         if (!array_key_exists($type, $types)) {
-            throw new ApplicationException(trans('rainlab.pages::lang.object.invalid_type'));
+            throw new ApplicationException(Lang::get('rainlab.pages::lang.object.invalid_type') . ' - type - ' . $type);
+        }
+
+        $allowed = false;
+        if ($type === 'content') {
+            $allowed = $this->user->hasAccess('rainlab.pages.manage_content');
+        } else {
+            $allowed = $this->user->hasAccess("rainlab.pages.manage_{$type}s");
+        }
+
+        if (!$allowed) {
+            throw new ApplicationException(Lang::get('rainlab.pages::lang.object.unauthorized_type', ['type' => $type]));
         }
 
         return $types[$type];
@@ -378,22 +533,22 @@ class Index extends Controller
         $formConfigs = [
             'page'    => '~/plugins/rainlab/pages/classes/page/fields.yaml',
             'menu'    => '~/plugins/rainlab/pages/classes/menu/fields.yaml',
-            'content' => '~/plugins/rainlab/pages/classes/content/fields.yaml',
+            'content' => '~/plugins/rainlab/pages/classes/content/fields.yaml'
         ];
 
         if (!array_key_exists($type, $formConfigs)) {
-            throw new ApplicationException(trans('rainlab.pages::lang.object.not_found'));
+            throw new ApplicationException(Lang::get('rainlab.pages::lang.object.not_found'));
         }
 
         $widgetConfig = $this->makeConfig($formConfigs[$type]);
         $widgetConfig->model = $object;
-        $widgetConfig->alias = $alias ?: 'form'.studly_case($type).md5($object->getFileName()).uniqid();
+        $widgetConfig->alias = $alias ?: 'form' . studly_case($type) . md5($object->exists ? $object->getFileName() : uniqid());
         $widgetConfig->context = !$object->exists ? 'create' : 'update';
 
         $widget = $this->makeWidget('Backend\Widgets\Form', $widgetConfig);
 
         if ($type == 'page') {
-            $widget->bindEvent('form.extendFieldsBefore', function () use ($widget, $object) {
+            $widget->bindEvent('form.extendFieldsBefore', function() use ($widget, $object) {
                 $this->checkContentField($widget, $object);
                 $this->addPagePlaceholders($widget, $object);
                 $this->addPageSyntaxFields($widget, $object);
@@ -410,6 +565,11 @@ class Index extends Controller
         }
 
         $component = $layout->getComponent('staticPage');
+
+        if (!$component) {
+            return;
+        }
+
         if (!$component->property('useContent', true)) {
             unset($formWidget->secondaryTabs['fields']['markup']);
         }
@@ -420,28 +580,28 @@ class Index extends Controller
         $fields = $page->listLayoutSyntaxFields();
 
         foreach ($fields as $fieldCode => $fieldConfig) {
-            if ($fieldConfig['type'] == 'fileupload') {
-                continue;
-            }
+            if ($fieldConfig['type'] == 'fileupload') continue;
 
             if ($fieldConfig['type'] == 'repeater') {
-                $fieldConfig['form']['fields'] = array_get($fieldConfig, 'fields', []);
-                unset($fieldConfig['fields']);
+                if (empty($fieldConfig['form']) || !is_string($fieldConfig['form'])) {
+                    $fieldConfig['form']['fields'] = array_get($fieldConfig, 'fields', []);
+                    unset($fieldConfig['fields']);
+                }
             }
 
             /*
             * Custom fields placement
             */
-            $placement = (!empty($fieldConfig['placement']) ? $fieldConfig['placement'] : null);
+            $placement = (!empty($fieldConfig['placement']) ? $fieldConfig['placement'] : NULL);
 
             switch ($placement) {
                 case 'primary':
-                    $formWidget->tabs['fields']['viewBag['.$fieldCode.']'] = $fieldConfig;
+                    $formWidget->tabs['fields']['viewBag[' . $fieldCode . ']'] = $fieldConfig;
                     break;
 
                 default:
-                    $fieldConfig['cssClass'] = 'secondary-tab '.array_get($fieldConfig, 'cssClass', '');
-                    $formWidget->secondaryTabs['fields']['viewBag['.$fieldCode.']'] = $fieldConfig;
+                    $fieldConfig['cssClass'] = 'secondary-tab ' . array_get($fieldConfig, 'cssClass', '');
+                    $formWidget->secondaryTabs['fields']['viewBag[' . $fieldCode . ']'] = $fieldConfig;
                     break;
             }
 
@@ -468,12 +628,13 @@ class Index extends Controller
             $fieldConfig = [
                 'tab'     => $placeholderTitle,
                 'stretch' => '1',
-                'size'    => 'huge',
+                'size'    => 'huge'
             ];
 
             if ($info['type'] != 'text') {
                 $fieldConfig['type'] = 'richeditor';
-            } else {
+            }
+            else {
                 $fieldConfig['type'] = 'codeeditor';
                 $fieldConfig['language'] = 'text';
                 $fieldConfig['theme'] = 'chrome';
@@ -504,14 +665,16 @@ class Index extends Controller
             }
 
             return $result;
-        } elseif ($type == 'menu') {
+        }
+        elseif ($type == 'menu') {
             $result = $object->name;
             if (!strlen($result)) {
                 $result = trans('rainlab.pages::lang.menu.new');
             }
 
             return $result;
-        } elseif ($type == 'content') {
+        }
+        elseif ($type == 'content') {
             $result = in_array($type, ['asset', 'content'])
                 ? $object->getFileName()
                 : $object->getBaseFileName();
@@ -530,7 +693,7 @@ class Index extends Controller
     {
         $objectPath = trim(Request::input('objectPath'));
         $object = $objectPath ? $this->loadObject($type, $objectPath) : $this->createObject($type);
-        $formWidget = $this->makeObjectFormWidget($type, $object);
+        $formWidget = $this->makeObjectFormWidget($type, $object, Request::input('formWidgetAlias'));
 
         $saveData = $formWidget->getSaveData();
         $postData = post();
@@ -549,7 +712,8 @@ class Index extends Controller
         foreach ($fields as $field) {
             if (array_key_exists($field, $saveData)) {
                 $objectData[$field] = $saveData[$field];
-            } elseif (array_key_exists($field, $postData)) {
+            }
+            elseif (array_key_exists($field, $postData)) {
                 $objectData[$field] = $postData[$field];
             }
         }
@@ -578,6 +742,13 @@ class Index extends Controller
             }
         }
 
+        if ($type == 'menu') {
+            // If no item data is sent through POST, this means the menu is empty
+            if (!isset($objectData['itemData'])) {
+                $objectData['itemData'] = [];
+            }
+        }
+
         if (!empty($objectData['markup']) && Config::get('cms.convertLineEndings', false) === true) {
             $objectData['markup'] = $this->convertLineEndings($objectData['markup']);
         }
@@ -600,11 +771,14 @@ class Index extends Controller
         return $object;
     }
 
-    protected function pushObjectForm($type, $object)
+    protected function pushObjectForm($type, $object, $alias = null)
     {
-        $widget = $this->makeObjectFormWidget($type, $object);
+        $widget = $this->makeObjectFormWidget($type, $object, $alias);
 
+        $this->vars['canCommit'] = $this->canCommitObject($object);
+        $this->vars['canReset'] = $this->canResetObject($object);
         $this->vars['objectPath'] = Request::input('path');
+        $this->vars['lastModified'] = DateTime::makeCarbon($object->mtime);
 
         if ($type == 'page') {
             $this->vars['pageUrl'] = Url::to($object->getViewBag()->property('url'));
@@ -617,8 +791,8 @@ class Index extends Controller
                 'objectType'   => $type,
                 'objectTheme'  => $this->theme->getDirName(),
                 'objectMtime'  => $object->mtime,
-                'objectParent' => Request::input('parentFileName'),
-            ]),
+                'objectParent' => Request::input('parentFileName')
+            ])
         ];
     }
 
@@ -636,9 +810,7 @@ class Index extends Controller
     /**
      * Replaces Windows style (/r/n) line endings with unix style (/n)
      * line endings.
-     *
      * @param string $markup The markup to convert to unix style endings
-     *
      * @return string
      */
     protected function convertLineEndings($markup)
@@ -650,8 +822,7 @@ class Index extends Controller
     }
 
     /**
-     * Returns a list of content files.
-     *
+     * Returns a list of content files
      * @return \October\Rain\Database\Collection
      */
     protected function getContentTemplateList()

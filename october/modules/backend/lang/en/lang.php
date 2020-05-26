@@ -3,38 +3,51 @@
 return [
     'auth' => [
         'title' => 'Administration Area',
-        'invalid_login' => 'The details you entered did not match our records. Please double-check and try again.'
+        'invalid_login' => 'The details you entered did not match our records. Please double-check and try again.',
     ],
     'field' => [
         'invalid_type' => 'Invalid field type used :type.',
         'options_method_invalid_model' => "The attribute ':field' does not resolve to a valid model. Try specifying the options method for model class :model explicitly.",
         'options_method_not_exists' => "The model class :model must define a method :method() returning options for the ':field' form field.",
-        'colors_method_not_exists' => "The model class :model must define a method :method() returning html color HEX codes for the ':field' form field."
+        'colors_method_not_exists' => "The model class :model must define a method :method() returning html color HEX codes for the ':field' form field.",
     ],
     'widget' => [
         'not_registered' => "A widget class name ':name' has not been registered",
-        'not_bound' => "A widget with class name ':name' has not been bound to the controller"
+        'not_bound' => "A widget with class name ':name' has not been bound to the controller",
     ],
     'page' => [
         'untitled' => 'Untitled',
+        '404' => [
+            'label' => 'Page Not Found',
+            'help' => "We searched and searched but the requested URL just couldn't be found. Perhaps you were looking for something else?",
+            'back_link' => 'Go back to the previous page',
+        ],
         'access_denied' => [
             'label' => 'Access denied',
             'help' => "You don't have the required permissions to view this page.",
-            'cms_link' => 'Return to the back-end'
+            'cms_link' => 'Return to the back-end',
         ],
         'no_database' => [
             'label' => 'Database missing',
             'help' => "A database is required to access the back-end. Check the database is configured and migrated before trying again.",
-            'cms_link' => 'Return to the homepage'
+            'cms_link' => 'Return to the homepage',
         ],
-        'invalid_token' => [
-            'label' => 'Invalid security token'
-        ]
     ],
     'partial' => [
-        'not_found_name' => "The partial ':name' is not found."
+        'not_found_name' => "The partial ':name' is not found.",
+        'invalid_name' => 'Invalid partial name: :name.',
+    ],
+    'ajax_handler' => [
+        'invalid_name' => 'Invalid AJAX handler name: :name.',
+        'not_found' => "AJAX handler ':name' was not found.",
     ],
     'account' => [
+        'impersonate' => 'Impersonate user',
+        'impersonate_confirm' => 'Are you sure you want to impersonate this user? You can revert to your original state by logging out.',
+        'impersonate_success' => 'You are now impersonating this user',
+        'impersonate_working' => 'Impersonating...',
+        'impersonating' => 'Impersonating :full_name',
+        'stop_impersonating' => 'Stop impersonating',
         'signed_in_as' => 'Signed in as :full_name',
         'sign_out' => 'Sign out',
         'login' => 'Login',
@@ -57,7 +70,7 @@ return [
         'apply' => 'Apply',
         'cancel' => 'Cancel',
         'delete' => 'Delete',
-        'ok' => 'OK'
+        'ok' => 'OK',
     ],
     'dashboard' => [
         'menu_label' => 'Dashboard',
@@ -106,7 +119,7 @@ return [
             'last_sign_in' => 'Your last sign in was',
             'view_access_logs' => 'View access logs',
             'nice_message' => 'Have a great day!',
-        ]
+        ],
     ],
     'user' => [
         'name' => 'Administrator',
@@ -141,6 +154,8 @@ return [
         'last_login' => 'Last login',
         'created_at' => 'Created at',
         'updated_at' => 'Updated at',
+        'deleted_at' => 'Deleted at',
+        'show_deleted' => 'Show deleted',
         'group' => [
             'name' => 'Group',
             'name_field' => 'Name',
@@ -155,7 +170,7 @@ return [
             'new' => 'New Group',
             'delete_confirm' => 'Delete this administrator group?',
             'return' => 'Return to group list',
-            'users_count' => 'Users'
+            'users_count' => 'Users',
         ],
         'role' => [
             'name' => 'Role',
@@ -169,11 +184,13 @@ return [
             'new' => 'New Role',
             'delete_confirm' => 'Delete this administrator role?',
             'return' => 'Return to role list',
-            'users_count' => 'Users'
+            'users_count' => 'Users',
         ],
         'preferences' => [
-            'not_authenticated' => 'There is no an authenticated user to load or save preferences for.'
-        ]
+            'not_authenticated' => 'There is no an authenticated user to load or save preferences for.',
+        ],
+        'trashed_hint_title' => 'This account has been deleted',
+        'trashed_hint_desc' => 'This account has been deleted and will be unable to be signed in under. To restore it, click the restore user icon in the bottom right',
     ],
     'list' => [
         'default_title' => 'List',
@@ -204,7 +221,7 @@ return [
         'delete_selected_confirm' => 'Delete the selected records?',
         'delete_selected_success' => 'Deleted selected records.',
         'column_switch_true' => 'Yes',
-        'column_switch_false' => 'No'
+        'column_switch_false' => 'No',
     ],
     'fileupload' => [
         'attachment' => 'Attachment',
@@ -216,9 +233,10 @@ return [
         'upload_file' => 'Upload file',
         'upload_error' => 'Upload error',
         'remove_confirm' => 'Are you sure?',
-        'remove_file' => 'Remove file'
+        'remove_file' => 'Remove file',
     ],
     'repeater' => [
+        'add_new_item' => 'Add new item',
         'min_items_failed' => ':name requires a minimum of :min items, only :items were provided',
         'max_items_failed' => ':name only allows up to :max items, :items were provided',
     ],
@@ -229,6 +247,7 @@ return [
         'create_success' => ':name created',
         'update_success' => ':name updated',
         'delete_success' => ':name deleted',
+        'restore_success' => ':name restored',
         'reset_success' => 'Reset complete',
         'missing_id' => 'Form record ID has not been specified.',
         'missing_model' => 'Form behavior used in :class does not have a model defined.',
@@ -248,6 +267,9 @@ return [
         'confirm_delete' => 'Delete record?',
         'confirm_delete_multiple' => 'Delete selected records?',
         'deleting_name' => 'Deleting :name...',
+        'restore' => 'Restore',
+        'restoring' => 'Restoring',
+        'confirm_restore' => 'Are you sure you want to restore this record?',
         'reset_default' => 'Reset to default',
         'resetting' => 'Resetting',
         'resetting_name' => 'Resetting :name',
@@ -269,23 +291,24 @@ return [
         'preview_no_media_message' => 'There is no media selected.',
         'preview_no_record_message' => 'There is no record selected.',
         'select' => 'Select',
-        'select_all' => 'all',
-        'select_none' => 'none',
+        'select_all' => 'Select all',
+        'select_none' => 'Select none',
         'select_placeholder' => 'please select',
         'insert_row' => 'Insert Row',
         'insert_row_below' => 'Insert Row Below',
         'delete_row' => 'Delete Row',
         'concurrency_file_changed_title' => 'File was changed',
         'concurrency_file_changed_description' => "The file you're editing has been changed on disk by another user. You can either reload the file and lose your changes or override the file on the disk.",
-        'return_to_list' => 'Return to the list'
+        'return_to_list' => 'Return to the list',
     ],
     'recordfinder' => [
         'find_record' => 'Find Record',
+        'invalid_model_class' => 'The provided model class ":modelClass" for the recordfinder is invalid',
         'cancel' => 'Cancel',
     ],
     'pagelist' => [
         'page_link' => 'Page link',
-        'select_page' => 'Select a page...'
+        'select_page' => 'Select a page...',
     ],
     'relation' => [
         'missing_config' => "Relation behavior does not have any configuration for ':config'.",
@@ -318,11 +341,11 @@ return [
         'link_name' => 'Link :name',
         'unlink' => 'Unlink',
         'unlink_name' => 'Unlink :name',
-        'unlink_confirm' => 'Are you sure?'
+        'unlink_confirm' => 'Are you sure?',
     ],
     'reorder' => [
         'default_title' => 'Reorder records',
-        'no_records' => 'There are no records available to sort.'
+        'no_records' => 'There are no records available to sort.',
     ],
     'model' => [
         'name' => 'Model',
@@ -331,14 +354,16 @@ return [
         'missing_relation' => "Model ':class' does not contain a definition for ':relation'.",
         'missing_method' => "Model ':class' does not contain a method ':method'.",
         'invalid_class' => "Model :model used in :class is not valid, it must inherit the \Model class.",
-        'mass_assignment_failed' => "Mass assignment failed for Model attribute ':attribute'."
+        'mass_assignment_failed' => "Mass assignment failed for Model attribute ':attribute'.",
     ],
     'warnings' => [
         'tips' => 'System configuration tips',
         'tips_description' => 'There are issues you need to pay attention to in order to configure the system properly.',
-        'permissions'  => 'Directory :name or its subdirectories is not writable for PHP. Please set corresponding permissions for the webserver on this directory.',
+        'permissions' => 'Directory :name or its subdirectories is not writable for PHP. Please set corresponding permissions for the webserver on this directory.',
         'extension' => 'The PHP extension :name is not installed. Please install this library and activate the extension.',
         'plugin_missing' => 'The plugin :name is a dependency but is not installed. Please install this plugin.',
+        'debug' => 'Debug mode is enabled. This is not recommended for production installations.',
+        'decompileBackendAssets' => 'Assets in the Backend are currently decompiled. This is not recommended for production installations.',
     ],
     'editor' => [
         'menu_label' => 'Editor settings',
@@ -355,11 +380,11 @@ return [
         'auto_closing' => 'Automatically close tags',
         'show_invisibles' => 'Show invisible characters',
         'show_gutter' => 'Show gutter',
-        'basic_autocompletion'=> 'Basic Autocompletion (Ctrl + Space)',
-        'live_autocompletion'=> 'Live Autocompletion',
-        'enable_snippets'=> 'Enable code snippets (Tab)',
-        'display_indent_guides'=> 'Show indent guides',
-        'show_print_margin'=> 'Show print margin',
+        'basic_autocompletion' => 'Basic Autocompletion (Ctrl + Space)',
+        'live_autocompletion' => 'Live Autocompletion',
+        'enable_snippets' => 'Enable code snippets (Tab)',
+        'display_indent_guides' => 'Show indent guides',
+        'show_print_margin' => 'Show print margin',
         'mode_off' => 'Off',
         'mode_fluid' => 'Fluid',
         '40_characters' => '40 Characters',
@@ -391,16 +416,16 @@ return [
         'toolbar_buttons_comment' => 'The Toolbar Buttons to be displayed in the Rich Editor by default. [fullscreen, bold, italic, underline, strikeThrough, subscript, superscript, fontFamily, fontSize, |, color, emoticons, inlineStyle, paragraphStyle, |, paragraphFormat, align, formatOL, formatUL, outdent, indent, quote, insertHR, -, insertLink, insertImage, insertVideo, insertAudio, insertFile, insertTable, undo, redo, clearFormatting, selectAll, html]',
     ],
     'tooltips' => [
-        'preview_website' => 'Preview the website'
+        'preview_website' => 'Preview the website',
     ],
     'mysettings' => [
         'menu_label' => 'My Settings',
-        'menu_description' => 'Settings related to your administration account'
+        'menu_description' => 'Settings related to your administration account',
     ],
     'myaccount' => [
         'menu_label' => 'My account',
         'menu_description' => 'Update your account details such as name, email address and password.',
-        'menu_keywords' => 'security login'
+        'menu_keywords' => 'security login',
     ],
     'branding' => [
         'menu_label' => 'Customize back-end',
@@ -408,6 +433,8 @@ return [
         'brand' => 'Brand',
         'logo' => 'Logo',
         'logo_description' => 'Upload a custom logo to use in the back-end.',
+        'favicon' => 'Favicon',
+        'favicon_description' => 'Upload a custom favicon to use in the back-end',
         'app_name' => 'App Name',
         'app_name_description' => 'This name is shown in the title area of the back-end.',
         'app_tagline' => 'App Tagline',
@@ -421,8 +448,9 @@ return [
         'navigation' => 'Navigation',
         'menu_mode' => 'Menu style',
         'menu_mode_inline' => 'Inline',
+        'menu_mode_inline_no_icons' => 'Inline (no icons)',
         'menu_mode_tile' => 'Tiles',
-        'menu_mode_collapsed' => 'Collapsed'
+        'menu_mode_collapsed' => 'Collapsed',
     ],
     'backend_preferences' => [
         'menu_label' => 'Back-end preferences',
@@ -432,18 +460,20 @@ return [
         'timezone' => 'Timezone',
         'timezone_comment' => 'Adjust displayed dates to this timezone.',
         'locale' => 'Locale',
-        'locale_comment' => 'Select your desired locale for language use.'
+        'locale_comment' => 'Select your desired locale for language use.',
     ],
     'access_log' => [
         'hint' => 'This log displays a list of successful sign in attempts by administrators. Records are kept for a total of :days days.',
         'menu_label' => 'Access log',
         'menu_description' => 'View a list of successful back-end user sign ins.',
+        'id' => 'ID',
         'created_at' => 'Date & Time',
+        'type' => 'Type',
         'login' => 'Login',
         'ip_address' => 'IP address',
         'first_name' => 'First name',
         'last_name' => 'Last name',
-        'email' => 'Email'
+        'email' => 'Email',
     ],
     'filter' => [
         'all' => 'all',
@@ -521,15 +551,16 @@ return [
             'iso_8859_14' => 'ISO-8859-14 (Latin-8, Celtic)',
             'iso_8859_15' => 'ISO-8859-15 (Latin-9, Western European revision with euro sign)',
             'windows_1251' => 'Windows-1251 (CP1251)',
-            'windows_1252' => 'Windows-1252 (CP1252)'
-        ]
+            'windows_1252' => 'Windows-1252 (CP1252)',
+        ],
     ],
     'permissions' => [
-        'manage_media' => 'Upload and manage media contents - images, videos, sounds, documents'
+        'manage_media' => 'Upload and manage media contents - images, videos, sounds, documents',
     ],
     'mediafinder' => [
         'label' => 'Media Finder',
-        'default_prompt' => 'Click the %s button to find a media item'
+        'default_prompt' => 'Click the %s button to find a media item',
+        'no_image' => 'The image could not be found',
     ],
     'media' => [
         'menu_label' => 'Media',
@@ -592,6 +623,6 @@ return [
         'selection_mode' => 'Selection mode',
         'resize_image' => 'Resize image',
         'image_size' => 'Image size:',
-        'selected_size' => 'Selected:'
+        'selected_size' => 'Selected:',
     ],
 ];

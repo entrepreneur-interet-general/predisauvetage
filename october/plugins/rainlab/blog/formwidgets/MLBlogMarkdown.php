@@ -1,6 +1,4 @@
-<?php
-
-namespace RainLab\Blog\FormWidgets;
+<?php namespace RainLab\Blog\FormWidgets;
 
 use RainLab\Blog\Models\Post;
 use RainLab\Translate\Models\Locale;
@@ -9,6 +7,7 @@ use RainLab\Translate\Models\Locale;
  * A multi-lingual version of the blog markdown editor.
  * This class should never be invoked without the RainLab.Translate plugin.
  *
+ * @package rainlab\blog
  * @author Alexey Bobkov, Samuel Georges
  */
 class MLBlogMarkdown extends BlogMarkdown
@@ -16,7 +15,7 @@ class MLBlogMarkdown extends BlogMarkdown
     use \RainLab\Translate\Traits\MLControl;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected $defaultAlias = 'mlmarkdowneditor';
 
@@ -24,7 +23,7 @@ class MLBlogMarkdown extends BlogMarkdown
     public $originalViewPath;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function init()
     {
@@ -33,7 +32,7 @@ class MLBlogMarkdown extends BlogMarkdown
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function render()
     {
@@ -59,10 +58,8 @@ class MLBlogMarkdown extends BlogMarkdown
     }
 
     /**
-     * Returns an array of translated values for this field.
-     *
+     * Returns an array of translated values for this field
      * @param $value
-     *
      * @return array
      */
     public function getSaveValue($value)
@@ -88,7 +85,7 @@ class MLBlogMarkdown extends BlogMarkdown
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function loadAssets()
     {
@@ -112,7 +109,8 @@ class MLBlogMarkdown extends BlogMarkdown
             $this->originalViewPath = $this->viewPath;
             $this->assetPath = '/modules/backend/formwidgets/markdowneditor/assets';
             $this->viewPath = base_path('/modules/backend/formwidgets/markdowneditor/partials');
-        } else {
+        }
+        else {
             $this->assetPath = $this->originalAssetPath;
             $this->viewPath = $this->originalViewPath;
         }
@@ -125,7 +123,8 @@ class MLBlogMarkdown extends BlogMarkdown
             $this->originalViewPath = $this->viewPath;
             $this->assetPath = '/plugins/rainlab/translate/formwidgets/mlmarkdowneditor/assets';
             $this->viewPath = base_path('/plugins/rainlab/translate/formwidgets/mlmarkdowneditor/partials');
-        } else {
+        }
+        else {
             $this->assetPath = $this->originalAssetPath;
             $this->viewPath = $this->originalViewPath;
         }

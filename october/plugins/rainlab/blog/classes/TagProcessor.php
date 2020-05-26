@@ -1,10 +1,9 @@
-<?php
-
-namespace RainLab\Blog\Classes;
+<?php namespace RainLab\Blog\Classes;
 
 /**
  * Blog Markdown tag processor.
  *
+ * @package rainlab\blog
  * @author Alexey Bobkov, Samuel Georges
  */
 class TagProcessor
@@ -22,7 +21,6 @@ class TagProcessor
      * generated from Markdown contents and the preview flag determining whether
      * the function should return a markup for the blog post preview form or for the
      * front-end.
-     *
      * @param callable $callback A callable function.
      */
     public function registerCallback(callable $callback)

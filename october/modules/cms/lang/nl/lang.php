@@ -186,6 +186,14 @@ return [
         'close_searchbox' => 'Sluit zoekveld',
         'open_replacebox' => 'Open vervang veld',
         'close_replacebox' => 'Sluit vervang veld',
+        'commit' => 'Commit',
+        'reset' => 'Reset',
+        'commit_confirm' => 'Weet je zeker dat je je wijzigingen wilt opslaan op het bestandssysteem? Deze actie zal het huidige bestand overschrijven.',
+        'reset_confirm' => 'Weet je zeker dat je wilt terugkeren naar de vorige versie? Deze actie zal de vorige versie terugzetten en je wijzigingen zullen verloren gaan.',
+        'committing' => 'Committen',
+        'resetting' => 'Resetten',
+        'commit_success' => ':type is ge-commit naar het bestandssysteem',
+        'reset_success' => ':type is ge-reset op het bestandssysteem',
     ],
     'asset' => [
         'menu_label' => 'Middelen',
@@ -259,6 +267,7 @@ return [
         'manage_layouts' => 'Beheer layouts',
         'manage_partials' => 'Beheer sjablonen',
         'manage_themes' => 'Beheer thema\'s',
+        'manage_theme_options' => 'Beheer maatwerk instellingen voor het huidige thema',
     ],
     'theme_log' => [
         'hint' => 'Dit logboek laat alle wijzigingen in het thema zien die aangebracht zijn door de beheerders in de back-end omgeving.',

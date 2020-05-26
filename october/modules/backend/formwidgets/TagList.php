@@ -1,6 +1,7 @@
 <?php namespace Backend\FormWidgets;
 
 use Backend\Classes\FormWidgetBase;
+use October\Rain\Database\Relations\Relation as RelationBase;
 
 /**
  * Tag List Form Widget
@@ -47,6 +48,11 @@ class TagList extends FormWidgetBase
      */
     public $useKey = false;
 
+    /**
+     * @var string Placeholder for empty TagList widget
+     */
+    public $placeholder = '';
+
     //
     // Object properties
     //
@@ -68,6 +74,7 @@ class TagList extends FormWidgetBase
             'mode',
             'nameFrom',
             'useKey',
+            'placeholder'
         ]);
     }
 
@@ -86,6 +93,7 @@ class TagList extends FormWidgetBase
      */
     public function prepareVars()
     {
+        $this->vars['placeholder'] = $this->placeholder;
         $this->vars['useKey'] = $this->useKey;
         $this->vars['field'] = $this->formField;
         $this->vars['fieldOptions'] = $this->getFieldOptions();
@@ -161,7 +169,15 @@ class TagList extends FormWidgetBase
         $options = $this->formField->options();
 
         if (!$options && $this->mode === static::MODE_RELATION) {
-            $options = $this->getRelationModel()->lists($this->nameFrom);
+            $options = RelationBase::noConstraints(function () {
+                $query = $this->getRelationObject()->newQuery();
+
+                // Even though "no constraints" is applied, belongsToMany constrains the query
+                // by joining its pivot table. Remove all joins from the query.
+                $query->getQuery()->getQuery()->joins = [];
+
+                return $query->lists($this->nameFrom);
+            });
         }
 
         return $options;
@@ -191,9 +207,10 @@ class TagList extends FormWidgetBase
     protected function getSeparatorCharacter()
     {
         switch (strtolower($this->separator)) {
-            case 'comma': return ',';
-            case 'space': return ' ';
+            case 'comma':
+                return ',';
+            case 'space':
+                return ' ';
         }
     }
-
 }

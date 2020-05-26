@@ -1,10 +1,9 @@
-<?php
+<?php namespace RainLab\Blog\Controllers;
 
-namespace RainLab\Blog\Controllers;
-
-use Backend\Classes\Controller;
 use BackendMenu;
 use Flash;
+use Lang;
+use Backend\Classes\Controller;
 use RainLab\Blog\Models\Post;
 
 class Posts extends Controller
@@ -12,13 +11,12 @@ class Posts extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-        'Backend.Behaviors.ImportExportController',
+        'Backend.Behaviors.ImportExportController'
     ];
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
     public $importExportConfig = 'config_import_export.yaml';
-    public $relationConfig;
 
     public $requiredPermissions = ['rainlab.blog.access_other_posts', 'rainlab.blog.access_posts'];
 
@@ -58,6 +56,13 @@ class Posts extends Controller
         return $this->asExtension('FormController')->update($recordId);
     }
 
+    public function export()
+    {
+        $this->addCss('/plugins/rainlab/blog/assets/css/rainlab.blog-export.css');
+
+        return $this->asExtension('ImportExportController')->export();
+    }
+
     public function listExtendQuery($query)
     {
         if (!$this->user->hasAnyAccess(['rainlab.blog.access_other_posts'])) {
@@ -86,6 +91,7 @@ class Posts extends Controller
     public function index_onDelete()
     {
         if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+
             foreach ($checkedIds as $postId) {
                 if ((!$post = Post::find($postId)) || !$post->canEdit($this->user)) {
                     continue;
@@ -94,14 +100,14 @@ class Posts extends Controller
                 $post->delete();
             }
 
-            Flash::success('Successfully deleted those posts.');
+            Flash::success(Lang::get('rainlab.blog::lang.post.delete_success'));
         }
 
         return $this->listRefresh();
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function listInjectRowClass($record, $definition = null)
     {
@@ -122,7 +128,7 @@ class Posts extends Controller
         $previewHtml = Post::formatHtml($data['content'], true);
 
         return [
-            'preview' => $previewHtml,
+            'preview' => $previewHtml
         ];
     }
 }

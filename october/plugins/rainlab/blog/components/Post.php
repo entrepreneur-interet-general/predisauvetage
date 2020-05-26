@@ -1,11 +1,11 @@
-<?php
+<?php namespace RainLab\Blog\Components;
 
-namespace RainLab\Blog\Components;
-
+use Event;
 use BackendAuth;
-use Cms\Classes\ComponentBase;
 use Cms\Classes\Page;
+use Cms\Classes\ComponentBase;
 use RainLab\Blog\Models\Post as BlogPost;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Post extends ComponentBase
 {
@@ -23,7 +23,7 @@ class Post extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.post_title',
-            'description' => 'rainlab.blog::lang.settings.post_description',
+            'description' => 'rainlab.blog::lang.settings.post_description'
         ];
     }
 
@@ -50,6 +50,23 @@ class Post extends ComponentBase
         return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
+    public function init()
+    {
+        Event::listen('translate.localePicker.translateParams', function ($page, $params, $oldLocale, $newLocale) {
+            $newParams = $params;
+
+            foreach ($params as $paramName => $paramValue) {
+                $records = BlogPost::transWhere($paramName, $paramValue, $oldLocale)->first();
+
+                if ($records) {
+                    $records->translateContext($newLocale);
+                    $newParams[$paramName] = $records[$paramName];
+                }
+            }
+            return $newParams;
+        });
+    }
+
     public function onRun()
     {
         $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
@@ -67,7 +84,7 @@ class Post extends ComponentBase
     {
         $slug = $this->property('slug');
 
-        $post = new BlogPost();
+        $post = new BlogPost;
 
         $post = $post->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
             ? $post->transWhere('slug', $slug)
@@ -77,13 +94,18 @@ class Post extends ComponentBase
             $post = $post->isPublished();
         }
 
-        $post = $post->first();
+        try {
+            $post = $post->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            $this->setStatusCode(404);
+            return $this->controller->run('404');
+        }
 
         /*
          * Add a "url" helper attribute for linking to each category
          */
         if ($post && $post->categories->count()) {
-            $post->categories->each(function ($category) {
+            $post->categories->each(function($category) {
                 $category->setUrl($this->categoryPage, $this->controller);
             });
         }
@@ -117,7 +139,7 @@ class Post extends ComponentBase
 
         $post->setUrl($postPage, $this->controller);
 
-        $post->categories->each(function ($category) {
+        $post->categories->each(function($category) {
             $category->setUrl($this->categoryPage, $this->controller);
         });
 

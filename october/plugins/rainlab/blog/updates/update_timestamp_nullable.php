@@ -1,11 +1,9 @@
-<?php
+<?php namespace RainLab\Blog\Updates;
 
-namespace RainLab\Blog\Updates;
-
-use DbDongle;
 use October\Rain\Database\Updates\Migration;
+use DbDongle;
 
-class update_timestamp_nullable extends Migration
+class UpdateTimestampsNullable extends Migration
 {
     public function up()
     {

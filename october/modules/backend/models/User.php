@@ -13,6 +13,8 @@ use October\Rain\Auth\Models\User as UserBase;
  */
 class User extends UserBase
 {
+    use \October\Rain\Database\Traits\SoftDelete;
+
     /**
      * @var string The database table used by the model.
      */
@@ -26,6 +28,17 @@ class User extends UserBase
         'login' => 'required|between:2,255|unique:backend_users',
         'password' => 'required:create|between:4,255|confirmed',
         'password_confirmation' => 'required_with:password|between:4,255'
+    ];
+
+    /**
+     * @var array Attributes that should be cast to dates
+     */
+    protected $dates = [
+        'activated_at',
+        'last_login',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     /**
@@ -123,6 +136,18 @@ class User extends UserBase
     public function afterLogin()
     {
         parent::afterLogin();
+
+        /**
+         * @event backend.user.login
+         * Provides an opportunity to interact with the Backend User model after the user has logged in
+         *
+         * Example usage:
+         *
+         *     Event::listen('backend.user.login', function ((\Backend\Models\User) $user) {
+         *         Flash::success(sprintf('Welcome %s!', $user->getFullNameAttribute()));
+         *     });
+         *
+         */
         Event::fire('backend.user.login', [$this]);
     }
 

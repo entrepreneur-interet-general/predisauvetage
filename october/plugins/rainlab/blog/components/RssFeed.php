@@ -1,39 +1,34 @@
-<?php
+<?php namespace RainLab\Blog\Components;
 
-namespace RainLab\Blog\Components;
-
-use Cms\Classes\ComponentBase;
-use Cms\Classes\Page;
-use RainLab\Blog\Models\Category as BlogCategory;
-use RainLab\Blog\Models\Post as BlogPost;
+use Lang;
 use Response;
+use Cms\Classes\Page;
+use Cms\Classes\ComponentBase;
+use RainLab\Blog\Models\Post as BlogPost;
+use RainLab\Blog\Models\Category as BlogCategory;
 
 class RssFeed extends ComponentBase
 {
     /**
-     * A collection of posts to display.
-     *
+     * A collection of posts to display
      * @var Collection
      */
     public $posts;
 
     /**
      * If the post list should be filtered by a category, the model to use.
-     *
      * @var Model
      */
     public $category;
 
     /**
      * Reference to the page name for the main blog page.
-     *
      * @var string
      */
     public $blogPage;
 
     /**
      * Reference to the page name for linking to posts.
-     *
      * @var string
      */
     public $postPage;
@@ -42,7 +37,7 @@ class RssFeed extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.rssfeed_title',
-            'description' => 'rainlab.blog::lang.settings.rssfeed_description',
+            'description' => 'rainlab.blog::lang.settings.rssfeed_description'
         ];
     }
 
@@ -73,14 +68,14 @@ class RssFeed extends ComponentBase
                 'description' => 'rainlab.blog::lang.settings.rssfeed_blog_description',
                 'type'        => 'dropdown',
                 'default'     => 'blog/post',
-                'group'       => 'Links',
+                'group'       => 'rainlab.blog::lang.settings.group_links',
             ],
             'postPage' => [
                 'title'       => 'rainlab.blog::lang.settings.posts_post',
                 'description' => 'rainlab.blog::lang.settings.posts_post_description',
                 'type'        => 'dropdown',
                 'default'     => 'blog/post',
-                'group'       => 'Links',
+                'group'       => 'rainlab.blog::lang.settings.group_links',
             ],
         ];
     }
@@ -97,7 +92,13 @@ class RssFeed extends ComponentBase
 
     public function getSortOrderOptions()
     {
-        return BlogPost::$allowedSortingOptions;
+        $options = BlogPost::$allowedSortingOptions;
+
+        foreach ($options as $key => $value) {
+            $options[$key] = Lang::get($value);
+        }
+
+        return $options;
     }
 
     public function onRun()
@@ -128,15 +129,15 @@ class RssFeed extends ComponentBase
          * List all the posts, eager load their categories
          */
         $posts = BlogPost::with('categories')->listFrontEnd([
-            'sort'       => $this->property('sortOrder'),
-            'perPage'    => $this->property('postsPerPage'),
-            'category'   => $category,
+            'sort'     => $this->property('sortOrder'),
+            'perPage'  => $this->property('postsPerPage'),
+            'category' => $category
         ]);
 
         /*
          * Add a "url" helper attribute for linking to each post and category
          */
-        $posts->each(function ($post) {
+        $posts->each(function($post) {
             $post->setUrl($this->postPage, $this->controller);
         });
 
@@ -146,11 +147,11 @@ class RssFeed extends ComponentBase
     protected function loadCategory()
     {
         if (!$categoryId = $this->property('categoryFilter')) {
-            return;
+            return null;
         }
 
         if (!$category = BlogCategory::whereSlug($categoryId)->first()) {
-            return;
+            return null;
         }
 
         return $category;

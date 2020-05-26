@@ -1,13 +1,13 @@
-<?php
+<?php namespace RainLab\Pages\FormWidgets;
 
-namespace RainLab\Pages\FormWidgets;
-
+use Request;
 use Backend\Classes\FormWidgetBase;
 use RainLab\Pages\Classes\MenuItem;
 
 /**
  * Menu items widget.
  *
+ * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  */
 class MenuItems extends FormWidgetBase
@@ -16,7 +16,7 @@ class MenuItems extends FormWidgetBase
     protected $typeInfoCache = [];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected $defaultAlias = 'menuitems';
 
@@ -31,18 +31,18 @@ class MenuItems extends FormWidgetBase
     public $urlRequiredMessage = 'rainlab.pages::lang.menuitem.url_required';
 
     public $cmsPageRequiredMessage = 'rainlab.pages::lang.menuitem.cms_page_required';
-
+    
     public $newItemTitle = 'rainlab.pages::lang.menuitem.new_item';
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function init()
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function render()
     {
@@ -52,16 +52,16 @@ class MenuItems extends FormWidgetBase
     }
 
     /**
-     * Prepares the list data.
+     * Prepares the list data
      */
     public function prepareVars()
     {
-        $menuItem = new MenuItem();
+        $menuItem = new MenuItem;
 
         $this->vars['itemProperties'] = json_encode($menuItem->fillable);
         $this->vars['items'] = $this->model->items;
 
-        $emptyItem = new MenuItem();
+        $emptyItem = new MenuItem;
         $emptyItem->title = trans($this->newItemTitle);
         $emptyItem->type = 'url';
         $emptyItem->url = '/';
@@ -76,7 +76,7 @@ class MenuItems extends FormWidgetBase
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function loadAssets()
     {
@@ -84,7 +84,7 @@ class MenuItems extends FormWidgetBase
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getSaveValue($value)
     {
@@ -97,10 +97,8 @@ class MenuItems extends FormWidgetBase
 
     /**
      * Returns the item reference description.
-     *
      * @param \RainLab\Pages\Classes\MenuItem $item Specifies the menu item
-     *
-     * @return string
+     * @return string 
      */
     protected function getReferenceDescription($item)
     {
@@ -119,10 +117,13 @@ class MenuItems extends FormWidgetBase
                 if (isset($this->typeInfoCache[$item->type]['references'])) {
                     $result .= ': '.$this->findReferenceName($item->reference, $this->typeInfoCache[$item->type]['references']);
                 }
-            } else {
+            }
+            else {
                 $result .= ': '.$item->url;
             }
-        } else {
+
+        }
+        else {
             $result = trans('rainlab.pages::lang.menuitem.unknown_type');
         }
 
@@ -131,12 +132,12 @@ class MenuItems extends FormWidgetBase
 
     protected function findReferenceName($search, $typeOptionList)
     {
-        $iterator = function ($optionList, $path) use ($search, &$iterator) {
+        $iterator = function($optionList, $path) use ($search, &$iterator) {
             foreach ($optionList as $reference => $info) {
                 if ($reference == $search) {
                     $result = $this->getMenuItemTitle($info);
 
-                    return strlen($path) ? $path.' / '.$result : $result;
+                    return strlen($path) ? $path.' / ' .$result : $result;
                 }
 
                 if (is_array($info) && isset($info['items'])) {

@@ -1,15 +1,15 @@
-<?php
+<?php namespace RainLab\Blog\Updates;
 
-namespace RainLab\Blog\Updates;
-
-use October\Rain\Database\Updates\Migration;
 use Schema;
+use October\Rain\Database\Updates\Migration;
 
-class create_posts_table extends Migration
+class CreatePostsTable extends Migration
 {
+
     public function up()
     {
-        Schema::create('rainlab_blog_posts', function ($table) {
+        Schema::create('rainlab_blog_posts', function($table)
+        {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable()->index();
@@ -26,6 +26,7 @@ class create_posts_table extends Migration
 
     public function down()
     {
-        Schema::drop('rainlab_blog_posts');
+        Schema::dropIfExists('rainlab_blog_posts');
     }
+
 }

@@ -79,6 +79,17 @@ class Router
         $this->url = $url;
         $url = RouterHelper::normalizeUrl($url);
 
+        /**
+         * @event cms.router.beforeRoute
+         * Fires before the CMS Router handles a route
+         *
+         * Example usage:
+         *
+         *     Event::listen('cms.router.beforeRoute', function ((string) $url, (\Cms\Classes\Router) $thisRouterInstance) {
+         *         return \Cms\Classes\Page::loadCached('trick-theme-code', 'page-file-name');
+         *     });
+         *
+         */
         $apiResult = Event::fire('cms.router.beforeRoute', [$url, $this], true);
         if ($apiResult !== null) {
             return $apiResult;
@@ -293,7 +304,7 @@ class Router
      */
     public function getParameter($name, $default = null)
     {
-        if (isset($this->parameters[$name]) && !empty($this->parameters[$name])) {
+        if (isset($this->parameters[$name]) && ($this->parameters[$name] === '0' || !empty($this->parameters[$name]))) {
             return $this->parameters[$name];
         }
 

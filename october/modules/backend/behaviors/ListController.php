@@ -69,6 +69,11 @@ class ListController extends ControllerBehavior
     protected $requiredConfig = ['modelClass', 'list'];
 
     /**
+     * @var array Visible actions in context of the controller
+     */
+    protected $actions = ['index'];
+
+    /**
      * Behavior constructor
      * @param \Backend\Classes\Controller $controller
      */
@@ -207,7 +212,7 @@ class ListController extends ControllerBehavior
              */
             if ($searchWidget = $toolbarWidget->getSearchWidget()) {
                 $searchWidget->bindEvent('search.submit', function () use ($widget, $searchWidget) {
-                    $widget->setSearchTerm($searchWidget->getActiveTerm());
+                    $widget->setSearchTerm($searchWidget->getActiveTerm(), true);
                     return $widget->onRefresh();
                 });
 

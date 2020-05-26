@@ -1,17 +1,18 @@
-<?php
+<?php namespace RainLab\Pages\Classes;
 
-namespace RainLab\Pages\Classes;
-
+use Lang;
 use Cache;
-use Cms\Classes\Theme;
-use Config;
 use Event;
-use October\Rain\Router\Helper as RouterHelper;
+use Config;
+use Cms\Classes\Theme;
+use RainLab\Pages\Classes\Page;
 use October\Rain\Support\Str;
+use October\Rain\Router\Helper as RouterHelper;
 
 /**
  * A router for static pages.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Router
@@ -33,7 +34,6 @@ class Router
 
     /**
      * Creates the router instance.
-     *
      * @param \Cms\Classes\Theme $theme Specifies the theme being processed.
      */
     public function __construct(Theme $theme)
@@ -43,9 +43,7 @@ class Router
 
     /**
      * Finds a static page by its URL.
-     *
      * @param string $url The requested URL string.
-     *
      * @return \RainLab\Pages\Classes\Page Returns \RainLab\Pages\Classes\Page object or null if the page cannot be found.
      */
     public function findByUrl($url)
@@ -60,7 +58,7 @@ class Router
         $urlMap = array_key_exists('urls', $urlMap) ? $urlMap['urls'] : [];
 
         if (!array_key_exists($url, $urlMap)) {
-            return;
+            return null;
         }
 
         $fileName = $urlMap[$url];
@@ -80,7 +78,6 @@ class Router
 
     /**
      * Autoloads the URL map only allowing a single execution.
-     *
      * @return array Returns the URL map.
      */
     protected function getUrlMap()
@@ -97,8 +94,7 @@ class Router
      * The URL map can is cached. The clearUrlMap() method resets the cache. By default
      * the map is updated every time when a page is saved in the back-end, or
      * when the interval defined with the cms.urlCacheTtl expires.
-     *
-     * @return bool Returns true if the URL map was loaded from the cache. Otherwise returns false.
+     * @return boolean Returns true if the URL map was loaded from the cache. Otherwise returns false.
      */
     protected function loadUrlMap()
     {
@@ -117,7 +113,7 @@ class Router
             $map = [
                 'urls'   => [],
                 'files'  => [],
-                'titles' => [],
+                'titles' => []
             ];
             foreach ($pages as $page) {
                 $url = $page->getViewBag()->property('url');
@@ -136,7 +132,8 @@ class Router
             self::$urlMap = $map;
 
             if ($cacheable) {
-                Cache::put($key, serialize($map), Config::get('cms.urlCacheTtl', 1));
+                $expiresAt = now()->addMinutes(Config::get('cms.urlCacheTtl', 1));
+                Cache::put($key, serialize($map), $expiresAt);
             }
 
             return false;
@@ -149,16 +146,13 @@ class Router
 
     /**
      * Returns the caching URL key depending on the theme.
-     *
      * @param string $keyName Specifies the base key name.
-     *
      * @return string Returns the theme-specific key name.
      */
     protected function getCacheKey($keyName)
     {
         $key = crc32($this->theme->getPath()).$keyName;
         Event::fire('pages.router.getCacheKey', [&$key]);
-
         return $key;
     }
 

@@ -34,7 +34,10 @@ class EditorSetting extends Model
      */
     public $settingsFields = 'fields.yaml';
 
-    const CACHE_KEY = 'backend::editor.custom_css';
+    /**
+     * @var string The key to store rendered CSS in the cache under
+     */
+    public $cacheKey = 'backend::editor.custom_css';
 
     protected $defaultHtmlAllowEmptyTags = 'textarea, a, iframe, object, video, style, script';
 
@@ -100,7 +103,7 @@ class EditorSetting extends Model
 
     public function afterSave()
     {
-        Cache::forget(self::CACHE_KEY);
+        Cache::forget(self::instance()->cacheKey);
     }
 
     protected function makeStylesForTable($arr)
@@ -125,9 +128,14 @@ class EditorSetting extends Model
         $defaultValue = $instance->getDefaultValue($key);
 
         if (is_array($value)) {
-            $value = array_build($value, function ($key, $value) {
-                return [array_get($value, 'class_name'), array_get($value, 'class_label')];
-            });
+            $value = array_filter(array_build($value, function ($key, $value) {
+                if (array_has($value, ['class_name', 'class_label'])) {
+                    return [
+                        array_get($value, 'class_name'),
+                        array_get($value, 'class_label')
+                    ];
+                }
+            }));
         }
 
         return $value != $defaultValue ? $value : $default;
@@ -157,13 +165,14 @@ class EditorSetting extends Model
 
     public static function renderCss()
     {
-        if (Cache::has(self::CACHE_KEY)) {
-            return Cache::get(self::CACHE_KEY);
+        $cacheKey = self::instance()->cacheKey;
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
         }
 
         try {
             $customCss = self::compileCss();
-            Cache::forever(self::CACHE_KEY, $customCss);
+            Cache::forever($cacheKey, $customCss);
         }
         catch (Exception $ex) {
             $customCss = '/* ' . $ex->getMessage() . ' */';

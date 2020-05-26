@@ -1,16 +1,17 @@
-<?php
-
-namespace RainLab\Pages\Components;
+<?php namespace RainLab\Pages\Components;
 
 use Cms\Classes\ComponentBase;
-use Cms\Classes\Theme;
+use RainLab\Pages\Classes\Router;
 use RainLab\Pages\Classes\MenuItemReference;
 use RainLab\Pages\Classes\Page as StaticPageClass;
-use RainLab\Pages\Classes\Router;
+use Cms\Classes\Theme;
+use Request;
+use Url;
 
 /**
  * The static breadcrumbs component.
  *
+ * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class StaticBreadcrumbs extends ComponentBase
@@ -24,7 +25,7 @@ class StaticBreadcrumbs extends ComponentBase
     {
         return [
             'name'        => 'rainlab.pages::lang.component.static_breadcrumbs_name',
-            'description' => 'rainlab.pages::lang.component.static_breadcrumbs_description',
+            'description' => 'rainlab.pages::lang.component.static_breadcrumbs_description'
         ];
     }
 
