@@ -1,62 +1,64 @@
-<?php namespace RainLab\Blog\Components;
+<?php
 
-use Lang;
-use Redirect;
+namespace RainLab\Blog\Components;
+
 use BackendAuth;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
-use October\Rain\Database\Model;
+use Cms\Classes\Page;
+use Lang;
 use October\Rain\Database\Collection;
-use RainLab\Blog\Models\Post as BlogPost;
+use October\Rain\Database\Model;
 use RainLab\Blog\Models\Category as BlogCategory;
+use RainLab\Blog\Models\Post as BlogPost;
 use RainLab\Blog\Models\Settings as BlogSettings;
+use Redirect;
 
 class Posts extends ComponentBase
 {
     /**
-     * A collection of posts to display
+     * A collection of posts to display.
      *
      * @var Collection
      */
     public $posts;
 
     /**
-     * Parameter to use for the page number
+     * Parameter to use for the page number.
      *
      * @var string
      */
     public $pageParam;
 
     /**
-     * If the post list should be filtered by a category, the model to use
+     * If the post list should be filtered by a category, the model to use.
      *
      * @var Model
      */
     public $category;
 
     /**
-     * Message to display when there are no messages
+     * Message to display when there are no messages.
      *
      * @var string
      */
     public $noPostsMessage;
 
     /**
-     * Reference to the page name for linking to posts
+     * Reference to the page name for linking to posts.
      *
      * @var string
      */
     public $postPage;
 
     /**
-     * Reference to the page name for linking to categories
+     * Reference to the page name for linking to categories.
      *
      * @var string
      */
     public $categoryPage;
 
     /**
-     * If the post list should be ordered by another attribute
+     * If the post list should be ordered by another attribute.
      *
      * @var string
      */
@@ -66,7 +68,7 @@ class Posts extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.posts_title',
-            'description' => 'rainlab.blog::lang.settings.posts_description'
+            'description' => 'rainlab.blog::lang.settings.posts_description',
         ];
     }
 
@@ -219,10 +221,10 @@ class Posts extends ComponentBase
         /*
          * Add a "url" helper attribute for linking to each post and category
          */
-        $posts->each(function($post) {
+        $posts->each(function ($post) {
             $post->setUrl($this->postPage, $this->controller);
 
-            $post->categories->each(function($category) {
+            $post->categories->each(function ($category) {
                 $category->setUrl($this->categoryPage, $this->controller);
             });
         });
@@ -236,7 +238,7 @@ class Posts extends ComponentBase
             return null;
         }
 
-        $category = new BlogCategory;
+        $category = new BlogCategory();
 
         $category = $category->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
             ? $category->transWhere('slug', $slug)

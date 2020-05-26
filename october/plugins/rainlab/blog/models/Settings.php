@@ -1,4 +1,6 @@
-<?php namespace RainLab\Blog\Models;
+<?php
+
+namespace RainLab\Blog\Models;
 
 use October\Rain\Database\Model;
 

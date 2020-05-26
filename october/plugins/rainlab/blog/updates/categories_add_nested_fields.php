@@ -1,20 +1,20 @@
-<?php namespace RainLab\Blog\Updates;
+<?php
 
-use Schema;
+namespace RainLab\Blog\Updates;
+
 use October\Rain\Database\Updates\Migration;
 use RainLab\Blog\Models\Category as CategoryModel;
+use Schema;
 
-class CategoriesAddNestedFields extends Migration
+class categories_add_nested_fields extends Migration
 {
-
     public function up()
     {
         if (Schema::hasColumn('rainlab_blog_categories', 'parent_id')) {
             return;
         }
 
-        Schema::table('rainlab_blog_categories', function($table)
-        {
+        Schema::table('rainlab_blog_categories', function ($table) {
             $table->integer('parent_id')->unsigned()->index()->nullable();
             $table->integer('nest_left')->nullable();
             $table->integer('nest_right')->nullable();
@@ -30,5 +30,4 @@ class CategoriesAddNestedFields extends Migration
     public function down()
     {
     }
-
 }

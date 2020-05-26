@@ -1,20 +1,20 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
-use Event;
-use Lang;
-use Cache;
-use Config;
+namespace RainLab\Pages\Classes;
+
 use ApplicationException;
-use Cms\Classes\Partial;
+use Cache;
 use Cms\Classes\ComponentHelpers;
 use Cms\Classes\Controller as CmsController;
+use Cms\Classes\Partial;
+use Config;
+use Event;
+use Lang;
 use ValidationException;
-use DOMDocument;
 
 /**
  * Represents a static page snippet.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Snippet
@@ -60,6 +60,7 @@ class Snippet
 
     /**
      * Initializes the snippet from a CMS partial.
+     *
      * @param \Cms\Classes\Partial $parital A partial to load the configuration from.
      */
     public function initFromPartial($partial)
@@ -74,8 +75,9 @@ class Snippet
 
     /**
      * Initializes the snippet from a CMS component information.
+     *
      * @param string $componentClass Specifies the component class.
-     * @param string $componentCode Specifies the component code.
+     * @param string $componentCode  Specifies the component code.
      */
     public function initFromComponentInfo($componentClass, $componentCode)
     {
@@ -86,6 +88,7 @@ class Snippet
     /**
      * Returns the snippet name.
      * This method should not be used in the front-end request handling.
+     *
      * @return string
      */
     public function getName()
@@ -106,6 +109,7 @@ class Snippet
     /**
      * Returns the snippet description.
      * This method should not be used in the front-end request handling.
+     *
      * @return string
      */
     public function getDescription()
@@ -126,6 +130,7 @@ class Snippet
     /**
      * Returns the snippet component class name.
      * If the snippet is a partial snippet, returns NULL.
+     *
      * @return string Returns the snippet component class name
      */
     public function getComponentClass()
@@ -140,16 +145,17 @@ class Snippet
     {
         if (!$this->componentClass) {
             return self::parseIniProperties($this->properties);
-        }
-        else {
+        } else {
             return ComponentHelpers::getComponentsPropertyConfig($this->getComponent(), false, true);
         }
     }
 
     /**
      * Returns a list of component definitions declared on the page.
-     * @param string $pageName Specifies the static page file name (the name of the corresponding content block file).
-     * @param \Cms\Classes\Theme $theme Specifies a parent theme.
+     *
+     * @param string             $pageName Specifies the static page file name (the name of the corresponding content block file).
+     * @param \Cms\Classes\Theme $theme    Specifies a parent theme.
+     *
      * @return array Returns an array of component definitions
      */
     public static function listPageComponents($pageName, $theme, $markup)
@@ -166,7 +172,7 @@ class Snippet
             $result[] = [
                 'class'      => $snippetInfo['component'],
                 'alias'      => $snippetInfo['code'],
-                'properties' => $snippetInfo['properties']
+                'properties' => $snippetInfo['properties'],
             ];
         }
 
@@ -187,7 +193,7 @@ class Snippet
             'type'    => 'text',
             'label'   => 'rainlab.pages::lang.snippet.code',
             'comment' => 'rainlab.pages::lang.snippet.code_comment',
-            'span'    => 'left'
+            'span'    => 'left',
         ];
 
         $formWidget->tabs['fields']['viewBag[snippetCode]'] = $fieldConfig;
@@ -201,7 +207,7 @@ class Snippet
             'type'    => 'text',
             'label'   => 'rainlab.pages::lang.snippet.name',
             'comment' => 'rainlab.pages::lang.snippet.name_comment',
-            'span'    => 'right'
+            'span'    => 'right',
         ];
 
         $formWidget->tabs['fields']['viewBag[snippetName]'] = $fieldConfig;
@@ -211,33 +217,33 @@ class Snippet
          */
 
         $fieldConfig = [
-            'tab'    => 'rainlab.pages::lang.snippet.partialtab',
-            'type'   => 'datatable',
-            'height' => '150',
+            'tab'           => 'rainlab.pages::lang.snippet.partialtab',
+            'type'          => 'datatable',
+            'height'        => '150',
             'dynamicHeight' => true,
-            'columns' => [
+            'columns'       => [
                 'title' => [
-                    'title' => 'rainlab.pages::lang.snippet.column_property',
+                    'title'      => 'rainlab.pages::lang.snippet.column_property',
                     'validation' => [
                         'required' => [
-                            'message' => 'Please provide the property title',
-                            'requiredWith' => 'property'
-                        ]
-                    ]
+                            'message'      => 'Please provide the property title',
+                            'requiredWith' => 'property',
+                        ],
+                    ],
                 ],
                 'property' => [
-                    'title' => 'rainlab.pages::lang.snippet.column_code',
+                    'title'      => 'rainlab.pages::lang.snippet.column_code',
                     'validation' => [
                         'required' => [
-                            'message' => 'Please provide the property code',
-                            'requiredWith' => 'title'
+                            'message'      => 'Please provide the property code',
+                            'requiredWith' => 'title',
                         ],
                         'regex' => [
                             'pattern'   => '^[a-z][a-z0-9]*$',
                             'modifiers' => 'i',
-                            'message'   => Lang::get('rainlab.pages::lang.snippet.property_format_error')
-                        ]
-                    ]
+                            'message'   => Lang::get('rainlab.pages::lang.snippet.property_format_error'),
+                        ],
+                    ],
                 ],
                 'type' => [
                     'title'   => 'rainlab.pages::lang.snippet.column_type',
@@ -245,29 +251,30 @@ class Snippet
                     'options' => [
                         'string'   => 'rainlab.pages::lang.snippet.column_type_string',
                         'checkbox' => 'rainlab.pages::lang.snippet.column_type_checkbox',
-                        'dropdown' => 'rainlab.pages::lang.snippet.column_type_dropdown'
+                        'dropdown' => 'rainlab.pages::lang.snippet.column_type_dropdown',
                     ],
                     'validation' => [
                         'required' => [
-                            'requiredWith' => 'title'
-                        ]
-                    ]
+                            'requiredWith' => 'title',
+                        ],
+                    ],
                 ],
                 'default' => [
-                    'title' => 'rainlab.pages::lang.snippet.column_default'
+                    'title' => 'rainlab.pages::lang.snippet.column_default',
                 ],
                 'options' => [
-                    'title' => 'rainlab.pages::lang.snippet.column_options'
-                ]
-            ]
+                    'title' => 'rainlab.pages::lang.snippet.column_options',
+                ],
+            ],
         ];
 
-       $formWidget->tabs['fields']['viewBag[snippetProperties]'] = $fieldConfig;
+        $formWidget->tabs['fields']['viewBag[snippetProperties]'] = $fieldConfig;
     }
 
     /**
      * Returns a component corresponding to the snippet.
      * This method should not be used in the front-end request handling code.
+     *
      * @return \Cms\Classes\ComponentBase
      */
     protected function getComponent()
@@ -291,9 +298,11 @@ class Snippet
 
     /**
      * Parses the static page markup and renders snippets defined on the page.
-     * @param string $pageName Specifies the static page file name (the name of the corresponding content block file).
-     * @param \Cms\Classes\Theme $theme Specifies a parent theme.
-     * @param string $markup Specifies the markup string to process.
+     *
+     * @param string             $pageName Specifies the static page file name (the name of the corresponding content block file).
+     * @param \Cms\Classes\Theme $theme    Specifies a parent theme.
+     * @param string             $markup   Specifies the markup string to process.
+     *
      * @return string Returns the processed string.
      */
     public static function processPageMarkup($pageName, $theme, $markup)
@@ -313,8 +322,7 @@ class Snippet
 
                 $partialName = $partialSnippetMap[$snippetCode];
                 $generatedMarkup = $controller->renderPartial($partialName, $snippetInfo['properties']);
-            }
-            else {
+            } else {
                 $generatedMarkup = $controller->renderComponent($snippetCode);
             }
 
@@ -398,8 +406,7 @@ class Snippet
                 if (array_key_exists('default', $propertyInfo)) {
                     $properties[$propertyCode] = $propertyInfo['default'];
                 }
-            }
-            else {
+            } else {
                 $markupPropertyInfo = $properties[$lowercaseCode];
                 unset($properties[$lowercaseCode]);
                 $properties[$propertyCode] = $markupPropertyInfo;
@@ -411,6 +418,7 @@ class Snippet
 
     /**
      * Converts a keyed object to an array, converting the index to the "property" value.
+     *
      * @return array
      */
     protected static function parseIniProperties($properties)
@@ -430,7 +438,7 @@ class Snippet
         foreach ($options as $index => $optionStr) {
             $parts = explode(':', $optionStr, 2);
 
-            if (count($parts) > 1 ) {
+            if (count($parts) > 1) {
                 $key = trim($parts[0]);
 
                 if (strlen($key)) {
@@ -439,12 +447,10 @@ class Snippet
                     }
 
                     $result[$key] = trim($parts[1]);
-                }
-                else {
+                } else {
                     $result[$index] = trim($optionStr);
                 }
-            }
-            else {
+            } else {
                 $result[$index] = trim($optionStr);
             }
         }
@@ -504,7 +510,7 @@ class Snippet
                 $map[$snippetDeclaration] = [
                     'code'       => $snippetCode,
                     'component'  => $componentClass,
-                    'properties' => $properties
+                    'properties' => $properties,
                 ];
             }
         }
@@ -553,11 +559,13 @@ class Snippet
     {
         $key = crc32($theme->getPath()).'snippet-map';
         Event::fire('pages.snippet.getMapCacheKey', [&$key]);
+
         return $key;
     }
 
     /**
-     * Clears the snippet map item cache
+     * Clears the snippet map item cache.
+     *
      * @param \Cms\Classes\Theme $theme Specifies the current theme.
      */
     public static function clearMapCache($theme)

@@ -1,4 +1,6 @@
-<?php namespace RainLab\Pages\Components;
+<?php
+
+namespace RainLab\Pages\Components;
 
 use Cms\Classes\ComponentBase;
 
@@ -16,14 +18,14 @@ class ChildPages extends ComponentBase
 
     /**
      * @var array Child pages data
-     * [
-     *      'url' => '',
-     *      'title' => '',
-     *      'page' => \RainLab\Pages\Classes\Page,
-     *      'viewBag' => array,
-     *      'is_hidden' => bool,
-     *      'navigation_hidden' => bool,
-     * ]
+     *            [
+     *            'url' => '',
+     *            'title' => '',
+     *            'page' => \RainLab\Pages\Classes\Page,
+     *            'viewBag' => array,
+     *            'is_hidden' => bool,
+     *            'navigation_hidden' => bool,
+     *            ]
      */
     public $pages = [];
 
@@ -31,7 +33,7 @@ class ChildPages extends ComponentBase
     {
         return [
             'name'        => 'rainlab.pages::lang.component.child_pages_name',
-            'description' => 'rainlab.pages::lang.component.child_pages_description'
+            'description' => 'rainlab.pages::lang.component.child_pages_description',
         ];
     }
 

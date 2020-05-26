@@ -1,16 +1,17 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
-use Url;
+namespace RainLab\Pages\Classes;
+
+use Cms\Classes\Meta;
 use Event;
+use October\Rain\Support\Str;
 use Request;
 use SystemException;
-use Cms\Classes\Meta;
-use October\Rain\Support\Str;
+use Url;
 
 /**
  * Represents a front-end menu.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Menu extends Meta
@@ -54,6 +55,7 @@ class Menu extends Meta
 
     /**
      * Returns the menu code.
+     *
      * @return string
      */
     public function getCodeAttribute()
@@ -63,7 +65,9 @@ class Menu extends Meta
 
     /**
      * Sets the menu code.
+     *
      * @param string $code Specifies the file code.
+     *
      * @return \Cms\Classes\CmsObject Returns the object instance.
      */
     public function setCodeAttribute($code)
@@ -81,6 +85,7 @@ class Menu extends Meta
     /**
      * Returns a default value for items attribute.
      * Items are objects of the \RainLab\Pages\Classes\MenuItem class.
+     *
      * @return array
      */
     public function getItemsAttribute()
@@ -94,19 +99,22 @@ class Menu extends Meta
     }
 
     /**
-     * Store the itemData in the items attribute
+     * Store the itemData in the items attribute.
      *
      * @param array $data
+     *
      * @return void
      */
     public function setItemDataAttribute($data)
     {
         $this->items = $data;
+
         return $this;
     }
 
     /**
      * Processes the content attribute to an array of menu data.
+     *
      * @return array|null
      */
     protected function parseContent()
@@ -122,6 +130,7 @@ class Menu extends Meta
 
     /**
      * Initializes a cache item.
+     *
      * @param array &$item The cached item array.
      */
     public static function initCacheItem(&$item)
@@ -134,7 +143,9 @@ class Menu extends Meta
     /**
      * Returns the menu item references.
      * This function is used on the front-end.
+     *
      * @param Cms\Classes\Page $page The current page object.
+     *
      * @return array Returns an array of the \RainLab\Pages\Classes\MenuItemReference objects.
      */
     public function generateReferences($page)
@@ -148,11 +159,11 @@ class Menu extends Meta
         $currentUrl = Str::lower(Url::to($currentUrl));
 
         $activeMenuItem = $page->activeMenuItem ?: false;
-        $iterator = function($items) use ($currentUrl, &$iterator, $activeMenuItem) {
+        $iterator = function ($items) use ($currentUrl, &$iterator, $activeMenuItem) {
             $result = [];
 
             foreach ($items as $item) {
-                $parentReference = new MenuItemReference;
+                $parentReference = new MenuItemReference();
                 $parentReference->title = $item->title;
                 $parentReference->code = $item->code;
                 $parentReference->viewBag = $item->viewBag;
@@ -164,8 +175,7 @@ class Menu extends Meta
                 if ($item->type == 'url') {
                     $parentReference->url = $item->url;
                     $parentReference->isActive = $currentUrl == Str::lower(Url::to($item->url)) || $activeMenuItem === $item->code;
-                }
-                else {
+                } else {
                     /*
                      * If the item type is not URL, use the API to request the item type's provider to
                      * return the item URL, subitems and determine whether the item is active.
@@ -183,11 +193,11 @@ class Menu extends Meta
                             }
 
                             if (isset($itemInfo['items'])) {
-                                $itemIterator = function($items) use (&$itemIterator, $parentReference) {
+                                $itemIterator = function ($items) use (&$itemIterator, $parentReference) {
                                     $result = [];
 
                                     foreach ($items as $item) {
-                                        $reference = new MenuItemReference;
+                                        $reference = new MenuItemReference();
                                         $reference->title = isset($item['title']) ? $item['title'] : '--no title--';
                                         $reference->url = isset($item['url']) ? $item['url'] : '#';
                                         $reference->isActive = isset($item['isActive']) ? $item['isActive'] : false;
@@ -221,8 +231,7 @@ class Menu extends Meta
 
                 if (!$item->replace) {
                     $result[] = $parentReference;
-                }
-                else {
+                } else {
                     foreach ($parentReference->items as $subItem) {
                         $result[] = $subItem;
                     }
@@ -237,7 +246,7 @@ class Menu extends Meta
         /*
          * Populate the isChildActive property
          */
-        $hasActiveChild = function($items) use (&$hasActiveChild) {
+        $hasActiveChild = function ($items) use (&$hasActiveChild) {
             foreach ($items as $item) {
                 if ($item->isActive) {
                     return true;
@@ -250,7 +259,7 @@ class Menu extends Meta
             }
         };
 
-        $iterator = function($items) use (&$iterator, &$hasActiveChild) {
+        $iterator = function ($items) use (&$iterator, &$hasActiveChild) {
             foreach ($items as $item) {
                 $item->isChildActive = $hasActiveChild($item->items);
 

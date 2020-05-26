@@ -1,9 +1,11 @@
-<?php namespace RainLab\Blog\Controllers;
+<?php
 
+namespace RainLab\Blog\Controllers;
+
+use Backend\Classes\Controller;
 use BackendMenu;
 use Flash;
 use Lang;
-use Backend\Classes\Controller;
 use RainLab\Blog\Models\Category;
 
 class Categories extends Controller
@@ -11,7 +13,7 @@ class Categories extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-        'Backend.Behaviors.ReorderController'
+        'Backend.Behaviors.ReorderController',
     ];
 
     public $formConfig = 'config_form.yaml';
@@ -30,7 +32,6 @@ class Categories extends Controller
     public function index_onDelete()
     {
         if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
-
             foreach ($checkedIds as $categoryId) {
                 if ((!$category = Category::find($categoryId))) {
                     continue;

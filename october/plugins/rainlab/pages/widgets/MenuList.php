@@ -1,18 +1,16 @@
-<?php namespace RainLab\Pages\Widgets;
+<?php
 
-use Str;
-use Lang;
-use Input;
-use Request;
-use Response;
-use RainLab\Pages\Classes\Menu;
+namespace RainLab\Pages\Widgets;
+
 use Backend\Classes\WidgetBase;
 use Cms\Classes\Theme;
+use Input;
+use RainLab\Pages\Classes\Menu;
+use Str;
 
 /**
  * Menu list widget.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class MenuList extends WidgetBase
@@ -43,12 +41,13 @@ class MenuList extends WidgetBase
 
     /**
      * Renders the widget.
+     *
      * @return string
      */
     public function render()
     {
         return $this->makePartial('body', [
-            'data' => $this->getData()
+            'data' => $this->getData(),
         ]);
     }
 
@@ -100,12 +99,13 @@ class MenuList extends WidgetBase
     protected function updateList()
     {
         $vars = ['items' => $this->getData()];
+
         return ['#'.$this->getId('menu-list') => $this->makePartial('items', $vars)];
     }
 
     protected function getThemeSessionKey($prefix)
     {
-        return $prefix . $this->theme->getDirName();
+        return $prefix.$this->theme->getDirName();
     }
 
     protected function getSession($key = null, $default = null)
@@ -115,7 +115,7 @@ class MenuList extends WidgetBase
         return parent::getSession($key, $default);
     }
 
-    protected function putSession($key, $value) 
+    protected function putSession($key, $value)
     {
         return parent::putSession($this->getThemeSessionKey($key), $value);
     }

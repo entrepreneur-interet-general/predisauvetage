@@ -1,9 +1,9 @@
-<?php namespace RainLab\Blog\Components;
+<?php
 
-use Db;
-use Carbon\Carbon;
-use Cms\Classes\Page;
+namespace RainLab\Blog\Components;
+
 use Cms\Classes\ComponentBase;
+use Cms\Classes\Page;
 use RainLab\Blog\Models\Category as BlogCategory;
 
 class Categories extends ComponentBase
@@ -27,7 +27,7 @@ class Categories extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.category_title',
-            'description' => 'rainlab.blog::lang.settings.category_description'
+            'description' => 'rainlab.blog::lang.settings.category_description',
         ];
     }
 
@@ -69,7 +69,8 @@ class Categories extends ComponentBase
     }
 
     /**
-     * Load all categories or, depending on the <displayEmpty> option, only those that have blog posts
+     * Load all categories or, depending on the <displayEmpty> option, only those that have blog posts.
+     *
      * @return mixed
      */
     protected function loadCategories()
@@ -84,6 +85,7 @@ class Categories extends ComponentBase
                     if ($category->children) {
                         $category->children = $iterator($category->children);
                     }
+
                     return false;
                 });
             };
@@ -97,7 +99,8 @@ class Categories extends ComponentBase
     }
 
     /**
-     * Sets the URL on each category according to the defined category page
+     * Sets the URL on each category according to the defined category page.
+     *
      * @return void
      */
     protected function linkCategories($categories)

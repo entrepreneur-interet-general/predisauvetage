@@ -1,24 +1,23 @@
-<?php namespace RainLab\Blog\Models;
+<?php
 
-use Db;
-use Url;
-use App;
-use Str;
-use Html;
-use Lang;
-use Model;
-use Markdown;
+namespace RainLab\Blog\Models;
+
+use Backend\Models\User;
 use BackendAuth;
 use Carbon\Carbon;
-use Backend\Models\User;
+use Cms\Classes\Controller;
 use Cms\Classes\Page as CmsPage;
 use Cms\Classes\Theme;
-use Cms\Classes\Controller;
+use Html;
+use Lang;
+use Markdown;
+use Model;
 use RainLab\Blog\Classes\TagProcessor;
+use Url;
 use ValidationException;
 
 /**
- * Class Post
+ * Class Post.
  */
 class Post extends Model
 {
@@ -34,7 +33,7 @@ class Post extends Model
         'title'   => 'required',
         'slug'    => ['required', 'regex:/^[a-z0-9\/\:_\-\*\[\]\+\?\|]*$/i', 'unique:rainlab_blog_posts'],
         'content' => 'required',
-        'excerpt' => ''
+        'excerpt' => '',
     ];
 
     /**
@@ -46,7 +45,7 @@ class Post extends Model
         'content_html',
         'excerpt',
         'metadata',
-        ['slug', 'index' => true]
+        ['slug', 'index' => true],
     ];
 
     /**
@@ -56,12 +55,14 @@ class Post extends Model
 
     /**
      * The attributes that should be mutated to dates.
+     *
      * @var array
      */
     protected $dates = ['published_at'];
 
     /**
      * The attributes on which the post list can be ordered.
+     *
      * @var array
      */
     public static $allowedSortingOptions = [
@@ -73,27 +74,27 @@ class Post extends Model
         'updated_at desc'   => 'rainlab.blog::lang.sorting.updated_desc',
         'published_at asc'  => 'rainlab.blog::lang.sorting.published_asc',
         'published_at desc' => 'rainlab.blog::lang.sorting.published_desc',
-        'random'            => 'rainlab.blog::lang.sorting.random'
+        'random'            => 'rainlab.blog::lang.sorting.random',
     ];
 
     /*
      * Relations
      */
     public $belongsTo = [
-        'user' => ['Backend\Models\User']
+        'user' => ['Backend\Models\User'],
     ];
 
     public $belongsToMany = [
         'categories' => [
             'RainLab\Blog\Models\Category',
             'table' => 'rainlab_blog_posts_categories',
-            'order' => 'name'
-        ]
+            'order' => 'name',
+        ],
     ];
 
     public $attachMany = [
         'featured_images' => ['System\Models\File', 'order' => 'sort_order'],
-        'content_images'  => ['System\Models\File']
+        'content_images'  => ['System\Models\File'],
     ];
 
     /**
@@ -104,10 +105,11 @@ class Post extends Model
     public $preview = null;
 
     /**
-     * Limit visibility of the published-button
+     * Limit visibility of the published-button.
      *
-     * @param       $fields
-     * @param  null $context
+     * @param      $fields
+     * @param null $context
+     *
      * @return void
      */
     public function filterFields($fields, $context = null)
@@ -121,8 +123,7 @@ class Post extends Model
         if (!$user->hasAnyAccess(['rainlab.blog.access_publish'])) {
             $fields->published->hidden = true;
             $fields->published_at->hidden = true;
-        }
-        else {
+        } else {
             $fields->published->hidden = false;
             $fields->published_at->hidden = false;
         }
@@ -132,7 +133,7 @@ class Post extends Model
     {
         if ($this->published && !$this->published_at) {
             throw new ValidationException([
-               'published_at' => Lang::get('rainlab.blog::lang.post.published_validation')
+                'published_at' => Lang::get('rainlab.blog::lang.post.published_validation'),
             ]);
         }
     }
@@ -150,7 +151,8 @@ class Post extends Model
 
     /**
      * Sets the "url" attribute with a URL to this object.
-     * @param string $pageName
+     *
+     * @param string     $pageName
      * @param Controller $controller
      *
      * @return string
@@ -159,16 +161,16 @@ class Post extends Model
     {
         $params = [
             'id'   => $this->id,
-            'slug' => $this->slug
+            'slug' => $this->slug,
         ];
 
         $params['category'] = $this->categories->count() ? $this->categories->first()->slug : null;
 
         // Expose published year, month and day as URL parameters.
         if ($this->published) {
-            $params['year']  = $this->published_at->format('Y');
+            $params['year'] = $this->published_at->format('Y');
             $params['month'] = $this->published_at->format('m');
-            $params['day']   = $this->published_at->format('d');
+            $params['day'] = $this->published_at->format('d');
         }
 
         return $this->url = $controller->pageUrl($pageName, $params);
@@ -177,7 +179,9 @@ class Post extends Model
     /**
      * Used to test if a certain user has permission to edit post,
      * returns TRUE if the user is the owner or has other posts access.
-     * @param  User $user
+     *
+     * @param User $user
+     *
      * @return bool
      */
     public function canEdit(User $user)
@@ -208,15 +212,15 @@ class Post extends Model
             ->whereNotNull('published')
             ->where('published', true)
             ->whereNotNull('published_at')
-            ->where('published_at', '<', Carbon::now())
-        ;
+            ->where('published_at', '<', Carbon::now());
     }
 
     /**
-     * Lists posts for the frontend
+     * Lists posts for the frontend.
      *
-     * @param        $query
-     * @param  array $options Display options
+     * @param       $query
+     * @param array $options Display options
+     *
      * @return Post
      */
     public function scopeListFrontEnd($query, $options)
@@ -233,7 +237,7 @@ class Post extends Model
             'category'         => null,
             'search'           => '',
             'published'        => true,
-            'exceptPost'       => null
+            'exceptPost'       => null,
         ], $options));
 
         $searchableFields = ['title', 'slug', 'excerpt', 'content'];
@@ -278,7 +282,7 @@ class Post extends Model
                 @list($sortField, $sortDirection) = explode(' ', $sort);
 
                 if (is_null($sortDirection)) {
-                    $sortDirection = "desc";
+                    $sortDirection = 'desc';
                 }
 
                 $query->orderBy($sortField, $sortDirection);
@@ -298,7 +302,7 @@ class Post extends Model
          */
         if ($categories !== null) {
             $categories = is_array($categories) ? $categories : [$categories];
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('id', $categories);
             });
         }
@@ -322,7 +326,7 @@ class Post extends Model
             $category = Category::find($category);
 
             $categories = $category->getAllChildrenAndSelf()->lists('id');
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('id', $categories);
             });
         }
@@ -332,13 +336,15 @@ class Post extends Model
 
     /**
      * Allows filtering for specifc categories.
-     * @param  Illuminate\Query\Builder  $query      QueryBuilder
-     * @param  array                     $categories List of category ids
-     * @return Illuminate\Query\Builder              QueryBuilder
+     *
+     * @param Illuminate\Query\Builder $query      QueryBuilder
+     * @param array                    $categories List of category ids
+     *
+     * @return Illuminate\Query\Builder QueryBuilder
      */
     public function scopeFilterCategories($query, $categories)
     {
-        return $query->whereHas('categories', function($q) use ($categories) {
+        return $query->whereHas('categories', function ($q) use ($categories) {
             $q->whereIn('id', $categories);
         });
     }
@@ -349,17 +355,17 @@ class Post extends Model
 
     /**
      * Used by "has_summary", returns true if this post uses a summary (more tag).
-     * @return boolean
+     *
+     * @return bool
      */
     public function getHasSummaryAttribute()
     {
         $more = '<!-- more -->';
 
-        return (
-            !!strlen(trim($this->excerpt)) ||
+        return
+            (bool) strlen(trim($this->excerpt)) ||
             strpos($this->content_html, $more) !== false ||
-            strlen(Html::strip($this->content_html)) > 600
-        );
+            strlen(Html::strip($this->content_html)) > 600;
     }
 
     /**
@@ -391,7 +397,7 @@ class Post extends Model
     //
 
     /**
-     * Apply a constraint to the query to find the nearest sibling
+     * Apply a constraint to the query to find the nearest sibling.
      *
      *     // Get the next post
      *     Post::applySibling()->first();
@@ -404,6 +410,7 @@ class Post extends Model
      *
      * @param       $query
      * @param array $options
+     *
      * @return
      */
     public function scopeApplySibling($query, $options = [])
@@ -414,7 +421,7 @@ class Post extends Model
 
         extract(array_merge([
             'direction' => 'next',
-            'attribute' => 'published_at'
+            'attribute' => 'published_at',
         ], $options));
 
         $isPrevious = in_array($direction, ['previous', -1]);
@@ -432,6 +439,7 @@ class Post extends Model
 
     /**
      * Returns the next post, if available.
+     *
      * @return self
      */
     public function nextPost()
@@ -441,6 +449,7 @@ class Post extends Model
 
     /**
      * Returns the previous post, if available.
+     *
      * @return self
      */
     public function previousPost()
@@ -468,6 +477,7 @@ class Post extends Model
      *   resolve the item URL.
      *
      * @param string $type Specifies the menu item type
+     *
      * @return array Returns an array
      */
     public static function getMenuTypeInfo($type)
@@ -485,13 +495,13 @@ class Post extends Model
             $result = [
                 'references'   => $references,
                 'nesting'      => false,
-                'dynamicItems' => false
+                'dynamicItems' => false,
             ];
         }
 
         if ($type == 'all-blog-posts') {
             $result = [
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
 
@@ -505,7 +515,7 @@ class Post extends Model
 
             $result = [
                 'references'   => $references,
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
 
@@ -550,10 +560,11 @@ class Post extends Model
      * - items - an array of arrays with the same keys (url, isActive, items) + the title key.
      *   The items array should be added only if the $item's $nesting property value is TRUE.
      *
-     * @param \RainLab\Pages\Classes\MenuItem $item Specifies the menu item.
-     * @param \Cms\Classes\Theme $theme Specifies the current theme.
-     * @param string $url Specifies the current page URL, normalized, in lower case
-     * The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     * @param \RainLab\Pages\Classes\MenuItem $item  Specifies the menu item.
+     * @param \Cms\Classes\Theme              $theme Specifies the current theme.
+     * @param string                          $url   Specifies the current page URL, normalized, in lower case
+     *                                               The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     *
      * @return mixed Returns an array. Returns null if the item cannot be resolved.
      */
     public static function resolveMenuItem($item, $url, $theme)
@@ -581,10 +592,9 @@ class Post extends Model
             $result['url'] = $pageUrl;
             $result['isActive'] = $pageUrl == $url;
             $result['mtime'] = $category->updated_at;
-        }
-        elseif ($item->type == 'all-blog-posts') {
+        } elseif ($item->type == 'all-blog-posts') {
             $result = [
-                'items' => []
+                'items' => [],
             ];
 
             $posts = self::isPublished()
@@ -595,15 +605,14 @@ class Post extends Model
                 $postItem = [
                     'title' => $post->title,
                     'url'   => self::getPostPageUrl($item->cmsPage, $post, $theme),
-                    'mtime' => $post->updated_at
+                    'mtime' => $post->updated_at,
                 ];
 
                 $postItem['isActive'] = $postItem['url'] == $url;
 
                 $result['items'][] = $postItem;
             }
-        }
-        elseif ($item->type == 'category-blog-posts') {
+        } elseif ($item->type == 'category-blog-posts') {
             if (!$item->reference || !$item->cmsPage) {
                 return;
             }
@@ -614,14 +623,14 @@ class Post extends Model
             }
 
             $result = [
-                'items' => []
+                'items' => [],
             ];
 
             $query = self::isPublished()
             ->orderBy('title');
 
             $categories = $category->getAllChildrenAndSelf()->lists('id');
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('id', $categories);
             });
 
@@ -631,7 +640,7 @@ class Post extends Model
                 $postItem = [
                     'title' => $post->title,
                     'url'   => self::getPostPageUrl($item->cmsPage, $post, $theme),
-                    'mtime' => $post->updated_at
+                    'mtime' => $post->updated_at,
                 ];
 
                 $postItem['isActive'] = $postItem['url'] == $url;
@@ -673,9 +682,9 @@ class Post extends Model
         $paramName = substr(trim($matches[1]), 1);
         $params = [
             $paramName => $category->slug,
-            'year'  => $category->published_at->format('Y'),
-            'month' => $category->published_at->format('m'),
-            'day'   => $category->published_at->format('d')
+            'year'     => $category->published_at->format('Y'),
+            'month'    => $category->published_at->format('m'),
+            'day'      => $category->published_at->format('d'),
         ];
         $url = CmsPage::url($page->getBaseFileName(), $params);
 

@@ -1,12 +1,12 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
+
+namespace RainLab\Pages\Classes;
 
 use Cms\Classes\Meta;
-use RainLab\Pages\Classes\Page;
 
 /**
  * The page list class reads and manages the static page hierarchy.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class PageList
@@ -17,6 +17,7 @@ class PageList
 
     /**
      * Creates the page list object.
+     *
      * @param \Cms\Classes\Theme $theme Specifies a parent theme.
      */
     public function __construct($theme)
@@ -27,7 +28,9 @@ class PageList
     /**
      * Returns a list of static pages in the specified theme.
      * This method is used internally by the system.
-     * @param boolean $skipCache Indicates if objects should be reloaded from the disk bypassing the cache.
+     *
+     * @param bool $skipCache Indicates if objects should be reloaded from the disk bypassing the cache.
+     *
      * @return array Returns an array of static pages.
      */
     public function listPages($skipCache = false)
@@ -40,7 +43,9 @@ class PageList
      * The method uses the theme's meta/static-pages.yaml file to build the hierarchy. The pages are returned
      * in the order defined in the YAML file. The result of the method is used for building the back-end UI
      * and for generating the menus.
-     * @param boolean $skipCache Indicates if objects should be reloaded from the disk bypassing the cache.
+     *
+     * @param bool $skipCache Indicates if objects should be reloaded from the disk bypassing the cache.
+     *
      * @return array Returns a nested array of objects: object('page': $pageObj, 'subpages'=>[...])
      */
     public function getPageTree($skipCache = false)
@@ -48,7 +53,7 @@ class PageList
         $pages = $this->listPages($skipCache);
         $config = $this->getPagesConfig();
 
-        $iterator = function($configPages) use (&$iterator, &$pages) {
+        $iterator = function ($configPages) use (&$iterator, &$pages) {
             $result = [];
 
             foreach ($configPages as $fileName => $subpages) {
@@ -64,9 +69,9 @@ class PageList
                     continue;
                 }
 
-                $result[] = (object)[
+                $result[] = (object) [
                     'page'     => $pageObject,
-                    'subpages' => $iterator($subpages)
+                    'subpages' => $iterator($subpages),
                 ];
             }
 
@@ -78,6 +83,7 @@ class PageList
 
     /**
      * Returns the parent name of the specified page.
+     *
      * @param \Cms\Classes\Page $page Specifies a page object.
      * @param string Returns the parent page name.
      */
@@ -88,14 +94,13 @@ class PageList
 
         $parent = null;
 
-        $iterator = function($configPages) use (&$iterator, &$parent, $requestedFileName) {
+        $iterator = function ($configPages) use (&$iterator, &$parent, $requestedFileName) {
             foreach ($configPages as $fileName => $subpages) {
                 if ($fileName == $requestedFileName) {
                     return true;
                 }
 
                 if ($iterator($subpages) == true && is_null($parent)) {
-
                     $parent = $fileName;
 
                     return true;
@@ -110,6 +115,7 @@ class PageList
 
     /**
      * Returns a part of the page hierarchy starting from the specified page.
+     *
      * @param \Cms\Classes\Page $page Specifies a page object.
      * @param array Returns a nested array of page names.
      */
@@ -120,7 +126,7 @@ class PageList
 
         $subTree = [];
 
-        $iterator = function($configPages) use (&$iterator, &$subTree, $requestedFileName) {
+        $iterator = function ($configPages) use (&$iterator, &$subTree, $requestedFileName) {
             if (is_array($configPages)) {
                 foreach ($configPages as $fileName => $subpages) {
                     if ($fileName == $requestedFileName) {
@@ -154,9 +160,8 @@ class PageList
 
         if (!strlen($parent)) {
             $structure[$page->getBaseFileName()] = [];
-        }
-        else {
-            $iterator = function(&$configPages) use (&$iterator, $parent, $page) {
+        } else {
+            $iterator = function (&$configPages) use (&$iterator, $parent, $page) {
                 foreach ($configPages as $fileName => &$subpages) {
                     if ($fileName == $parent) {
                         $subpages[$page->getBaseFileName()] = [];
@@ -164,8 +169,9 @@ class PageList
                         return true;
                     }
 
-                    if ($iterator($subpages) == true)
+                    if ($iterator($subpages) == true) {
                         return true;
+                    }
                 }
             };
 
@@ -177,6 +183,7 @@ class PageList
 
     /**
      * Removes a part of the page hierarchy starting from the specified page.
+     *
      * @param \Cms\Classes\Page $page Specifies a page object.
      */
     public function removeSubtree($page)
@@ -186,7 +193,7 @@ class PageList
 
         $tree = [];
 
-        $iterator = function($configPages) use (&$iterator, &$pages, $requestedFileName) {
+        $iterator = function ($configPages) use (&$iterator, &$pages, $requestedFileName) {
             $result = [];
 
             foreach ($configPages as $fileName => $subpages) {
@@ -204,6 +211,7 @@ class PageList
 
     /**
      * Returns the parsed meta/static-pages.yaml file contents.
+     *
      * @return mixed
      */
     protected function getPagesConfig()
@@ -230,6 +238,7 @@ class PageList
 
     /**
      * Updates the page hierarchy structure in the theme's meta/static-pages.yaml file.
+     *
      * @param array $structure A nested associative array representing the page structure
      */
     public function updateStructure($structure)

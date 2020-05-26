@@ -1,39 +1,35 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
+namespace RainLab\Pages\Classes;
+
+use Cache;
 use Cms;
+use Cms\Classes\ComponentManager;
+use Cms\Classes\Content as ContentBase;
+use Cms\Classes\Layout;
+use Cms\Classes\Theme;
+use Config;
+use Event;
 use File;
 use Lang;
-use Cache;
-use Event;
-use Route;
-use Config;
-use Validator;
-use RainLab\Pages\Classes\Router;
-use RainLab\Pages\Classes\Snippet;
-use RainLab\Pages\Classes\PageList;
-use Cms\Classes\Theme;
-use Cms\Classes\Layout;
-use Cms\Classes\Content as ContentBase;
-use Cms\Classes\ComponentManager;
-use System\Helpers\View as ViewHelper;
-use October\Rain\Support\Str;
-use October\Rain\Router\Helper as RouterHelper;
 use October\Rain\Parse\Bracket as TextParser;
 use October\Rain\Parse\Syntax\Parser as SyntaxParser;
-use ApplicationException;
+use October\Rain\Router\Helper as RouterHelper;
+use October\Rain\Support\Str;
+use System\Helpers\View as ViewHelper;
 use Twig\Node\Node as TwigNode;
+use Validator;
 
 /**
  * Represents a static page.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class Page extends ContentBase
 {
     public $implement = [
         '@RainLab.Translate.Behaviors.TranslatablePageUrl',
-        '@RainLab.Translate.Behaviors.TranslatableCmsObject'
+        '@RainLab.Translate.Behaviors.TranslatableCmsObject',
     ];
 
     /**
@@ -65,7 +61,7 @@ class Page extends ContentBase
      */
     public $rules = [
         'title' => 'required',
-        'url'   => ['required', 'regex:/^\/[a-z0-9\/_\-\.]*$/i', 'uniqueUrl']
+        'url'   => ['required', 'regex:/^\/[a-z0-9\/_\-\.]*$/i', 'uniqueUrl'],
     ];
 
     /**
@@ -73,7 +69,7 @@ class Page extends ContentBase
      */
     public $attributeNames = [
         'title' => 'title',
-        'url' => 'url',
+        'url'   => 'url',
     ];
 
     /**
@@ -94,7 +90,7 @@ class Page extends ContentBase
 
     /**
      * @var string Contains the page parent file name.
-     * This property is used by the page editor internally.
+     *             This property is used by the page editor internally.
      */
     public $parentFileName;
 
@@ -110,6 +106,7 @@ class Page extends ContentBase
 
     /**
      * Creates an instance of the object and associates it with a CMS theme.
+     *
      * @param array $attributes
      */
     public function __construct(array $attributes = [])
@@ -128,6 +125,7 @@ class Page extends ContentBase
 
     /**
      * Sets the object attributes.
+     *
      * @param array $attributes A list of attributes to set.
      */
     public function fill(array $attributes)
@@ -146,6 +144,7 @@ class Page extends ContentBase
 
     /**
      * Returns the attributes used for validation.
+     *
      * @return array
      */
     protected function getValidationAttributes()
@@ -159,9 +158,9 @@ class Page extends ContentBase
      */
     public function beforeValidate()
     {
-        $pages = Page::listInTheme($this->theme, true);
+        $pages = self::listInTheme($this->theme, true);
 
-        Validator::extend('uniqueUrl', function($attribute, $value, $parameters) use ($pages) {
+        Validator::extend('uniqueUrl', function ($attribute, $value, $parameters) use ($pages) {
             $value = trim(strtolower($value));
 
             foreach ($pages as $existingPage) {
@@ -232,6 +231,7 @@ class Page extends ContentBase
     /**
      * Deletes the object from the disk.
      * Recursively deletes subpages. Returns a list of file names of deleted pages.
+     *
      * @return array
      */
     public function delete()
@@ -280,6 +280,7 @@ class Page extends ContentBase
      * - chairs -> content/static-pages/chairs.htm
      *
      * @param mixed $page Specifies the Content file name.
+     *
      * @return string
      */
     public static function url($name)
@@ -294,7 +295,8 @@ class Page extends ContentBase
     }
 
     /**
-     * Determine the default layout for a new page
+     * Determine the default layout for a new page.
+     *
      * @param \RainLab\Pages\Classes\Page $parentPage
      */
     public function setDefaultLayout($parentPage)
@@ -307,6 +309,7 @@ class Page extends ContentBase
             if ($childLayoutName) {
                 $this->getViewBag()->setProperty('layout', $childLayoutName);
                 $this->fillViewBagArray();
+
                 return;
             }
         }
@@ -317,6 +320,7 @@ class Page extends ContentBase
             if ($component && $component->property('default', false)) {
                 $this->getViewBag()->setProperty('layout', $layout->getBaseFileName());
                 $this->fillViewBagArray();
+
                 return;
             }
         }
@@ -328,6 +332,7 @@ class Page extends ContentBase
 
     /**
      * Returns the parent page that belongs to this one, or null.
+     *
      * @return mixed
      */
     public function getParent()
@@ -348,6 +353,7 @@ class Page extends ContentBase
 
     /**
      * Returns all the child pages that belong to this one.
+     *
      * @return array
      */
     public function getChildren()
@@ -374,6 +380,7 @@ class Page extends ContentBase
     /**
      * Returns a list of layouts available in the theme.
      * This method is used by the form widget.
+     *
      * @return array Returns an array of strings.
      */
     public function getLayoutOptions()
@@ -399,6 +406,7 @@ class Page extends ContentBase
 
     /**
      * Looks up the Layout Cms object for this page.
+     *
      * @return Cms\Classes\Layout
      */
     public function getLayoutObject()
@@ -424,7 +432,7 @@ class Page extends ContentBase
     }
 
     /**
-     * Returns the Twig content string
+     * Returns the Twig content string.
      */
     public function getTwigContent()
     {
@@ -453,6 +461,7 @@ class Page extends ContentBase
 
     /**
      * Returns information about placeholders defined in the page layout.
+     *
      * @return array Returns an associative array of the placeholder name and codes.
      */
     public function listLayoutPlaceholders()
@@ -481,7 +490,7 @@ class Page extends ContentBase
             $placeholderInfo = [
                 'title'  => $title,
                 'type'   => $type ?: 'html',
-                'ignore' => $ignore
+                'ignore' => $ignore,
             ];
 
             $result[$node->getAttribute('name')] = $placeholderInfo;
@@ -491,8 +500,10 @@ class Page extends ContentBase
     }
 
     /**
-     * Recursively flattens a twig node and children
+     * Recursively flattens a twig node and children.
+     *
      * @param $node
+     *
      * @return array A flat array of twig nodes
      */
     protected function flattenTwigNode($node)
@@ -512,6 +523,7 @@ class Page extends ContentBase
 
     /**
      * Parses the page placeholder {% put %} tags and extracts the placeholder values.
+     *
      * @return array Returns an associative array of the placeholder names and values.
      */
     public function getPlaceholdersAttribute()
@@ -547,7 +559,9 @@ class Page extends ContentBase
     /**
      * Takes an array of placeholder data (key: code, value: content) and renders
      * it as a single string of Twig markup against the "code" attribute.
-     * @param array  $value
+     *
+     * @param array $value
+     *
      * @return void
      */
     public function setPlaceholdersAttribute($value)
@@ -674,6 +688,7 @@ class Page extends ContentBase
     {
         $key = crc32($theme->getPath()).'static-page-menu';
         Event::fire('pages.page.getMenuCacheKey', [&$key]);
+
         return $key;
     }
 
@@ -686,7 +701,8 @@ class Page extends ContentBase
     }
 
     /**
-     * Clears the menu item cache
+     * Clears the menu item cache.
+     *
      * @param \Cms\Classes\Theme $theme Specifies the current theme.
      */
     public static function clearMenuCache($theme)
@@ -708,14 +724,16 @@ class Page extends ContentBase
      *   Optional, false if omitted.
      * - cmsPages - a list of CMS pages (objects of the Cms\Classes\Page class), if the item type requires a CMS page reference to
      *   resolve the item URL.
+     *
      * @param string $type Specifies the menu item type
+     *
      * @return array Returns an array
      */
     public static function getMenuTypeInfo($type)
     {
         if ($type == 'all-static-pages') {
             return [
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
 
@@ -723,7 +741,7 @@ class Page extends ContentBase
             return [
                 'references'   => self::listStaticPageMenuOptions(),
                 'nesting'      => true,
-                'dynamicItems' => true
+                'dynamicItems' => true,
             ];
         }
     }
@@ -739,10 +757,12 @@ class Page extends ContentBase
      *   return all available records.
      * - items - an array of arrays with the same keys (url, isActive, items) + the title key.
      *   The items array should be added only if the $item's $nesting property value is TRUE.
-     * @param \RainLab\Pages\Classes\MenuItem $item Specifies the menu item.
-     * @param \Cms\Classes\Theme $theme Specifies the current theme.
-     * @param string $url Specifies the current page URL, normalized, in lower case
-     * The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     *
+     * @param \RainLab\Pages\Classes\MenuItem $item  Specifies the menu item.
+     * @param \Cms\Classes\Theme              $theme Specifies the current theme.
+     * @param string                          $url   Specifies the current page URL, normalized, in lower case
+     *                                               The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     *
      * @return mixed Returns an array. Returns null if the item cannot be resolved.
      */
     public static function resolveMenuItem($item, $url, $theme)
@@ -763,7 +783,7 @@ class Page extends ContentBase
         }
 
         if ($item->nesting || $item->type == 'all-static-pages') {
-            $iterator = function($items) use (&$iterator, &$tree, $url) {
+            $iterator = function ($items) use (&$iterator, &$tree, $url) {
                 $branch = [];
 
                 foreach ($items as $itemName) {
@@ -801,17 +821,18 @@ class Page extends ContentBase
 
     /**
      * Handler for the backend.richeditor.getTypeInfo event.
-     * Returns a menu item type information. The type information is returned as array
+     * Returns a menu item type information. The type information is returned as array.
+     *
      * @param string $type Specifies the page link type
+     *
      * @return array
      */
     public static function getRichEditorTypeInfo($type)
     {
         if ($type == 'static-page') {
-
             $pages = self::listStaticPageMenuOptions();
 
-            $iterator = function($pages) use (&$iterator) {
+            $iterator = function ($pages) use (&$iterator) {
                 $result = [];
                 foreach ($pages as $pageFile => $page) {
                     $url = self::url($pageFile);
@@ -819,10 +840,9 @@ class Page extends ContentBase
                     if (is_array($page)) {
                         $result[$url] = [
                             'title' => array_get($page, 'title', []),
-                            'links' => $iterator(array_get($page, 'items', []))
+                            'links' => $iterator(array_get($page, 'items', [])),
                         ];
-                    }
-                    else {
+                    } else {
                         $result[$url] = $page;
                     }
                 }
@@ -839,7 +859,9 @@ class Page extends ContentBase
     /**
      * Builds and caches a menu item tree.
      * This method is used internally for menu items and breadcrumbs.
+     *
      * @param \Cms\Classes\Theme $theme Specifies the current theme.
+     *
      * @return array Returns an array containing the page information
      */
     public static function buildMenuTree($theme)
@@ -858,10 +880,10 @@ class Page extends ContentBase
         }
 
         $menuTree = [
-            '--root-pages--' => []
+            '--root-pages--' => [],
         ];
 
-        $iterator = function($items, $parent, $level) use (&$menuTree, &$iterator) {
+        $iterator = function ($items, $parent, $level) use (&$menuTree, &$iterator) {
             $result = [];
 
             foreach ($items as $item) {
@@ -870,12 +892,12 @@ class Page extends ContentBase
                 $pageUrl = Str::lower(RouterHelper::normalizeUrl(array_get($viewBag, 'url')));
 
                 $itemData = [
-                    'url'    => $pageUrl,
-                    'title'  => array_get($viewBag, 'title'),
-                    'mtime'  => $item->page->mtime,
-                    'items'  => $iterator($item->subpages, $pageCode, $level+1),
-                    'parent' => $parent,
-                    'navigation_hidden' => array_get($viewBag, 'navigation_hidden')
+                    'url'               => $pageUrl,
+                    'title'             => array_get($viewBag, 'title'),
+                    'mtime'             => $item->page->mtime,
+                    'items'             => $iterator($item->subpages, $pageCode, $level + 1),
+                    'parent'            => $parent,
+                    'navigation_hidden' => array_get($viewBag, 'navigation_hidden'),
                 ];
 
                 if ($level == 0) {
@@ -902,6 +924,7 @@ class Page extends ContentBase
     /**
      * Returns a list of options for the Reference drop-down menu in the
      * menu item configuration form, when the Static Page item type is selected.
+     *
      * @return array Returns an array
      */
     protected static function listStaticPageMenuOptions()
@@ -911,7 +934,7 @@ class Page extends ContentBase
         $pageList = new PageList($theme);
         $pageTree = $pageList->getPageTree(true);
 
-        $iterator = function($pages) use (&$iterator) {
+        $iterator = function ($pages) use (&$iterator) {
             $result = [];
 
             foreach ($pages as $pageInfo) {
@@ -920,11 +943,10 @@ class Page extends ContentBase
 
                 if (!$pageInfo->subpages) {
                     $result[$fileName] = $pageName;
-                }
-                else {
+                } else {
                     $result[$fileName] = [
                         'title' => $pageName,
-                        'items' => $iterator($pageInfo->subpages)
+                        'items' => $iterator($pageInfo->subpages),
                     ];
                 }
             }

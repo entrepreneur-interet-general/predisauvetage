@@ -1,19 +1,17 @@
-<?php namespace RainLab\Pages\Widgets;
+<?php
+
+namespace RainLab\Pages\Widgets;
 
 use Backend\Classes\WidgetBase;
-use RainLab\Pages\Classes\Snippet;
-use RainLab\Pages\Classes\SnippetManager;
 use Cms\Classes\Theme;
 use Input;
-use Response;
-use Request;
+use RainLab\Pages\Classes\Snippet;
+use RainLab\Pages\Classes\SnippetManager;
 use Str;
-use Lang;
 
 /**
  * Snippet list widget.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class SnippetList extends WidgetBase
@@ -38,12 +36,13 @@ class SnippetList extends WidgetBase
 
     /**
      * Renders the widget.
+     *
      * @return string
      */
     public function render()
     {
         return $this->makePartial('body', [
-            'data' => $this->getData()
+            'data' => $this->getData(),
         ]);
     }
 
@@ -82,7 +81,7 @@ class SnippetList extends WidgetBase
             $snippets = $filteredSnippets;
         }
 
-        usort($snippets, function($a, $b) {
+        usort($snippets, function ($a, $b) {
             return strcmp($a->getName(), $b->getName());
         });
 
@@ -97,7 +96,7 @@ class SnippetList extends WidgetBase
     protected function getThemeSessionKey($prefix)
     {
         return $prefix.$this->theme->getDirName();
-    }    
+    }
 
     protected function getSession($key = null, $default = null)
     {
@@ -106,7 +105,7 @@ class SnippetList extends WidgetBase
         return parent::getSession($key, $default);
     }
 
-    protected function putSession($key, $value) 
+    protected function putSession($key, $value)
     {
         return parent::putSession($this->getThemeSessionKey($key), $value);
     }

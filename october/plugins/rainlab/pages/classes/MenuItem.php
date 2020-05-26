@@ -1,8 +1,7 @@
-<?php namespace RainLab\Pages\Classes;
+<?php
 
-use ApplicationException;
-use Validator;
-use Lang;
+namespace RainLab\Pages\Classes;
+
 use Event;
 
 /**
@@ -11,7 +10,6 @@ use Event;
  * On the front-end items are represented with the
  * \RainLab\Pages\Classes\MenuItemReference objects.
  *
- * @package rainlab\pages
  * @author Alexey Bobkov, Samuel Georges
  */
 class MenuItem
@@ -28,12 +26,12 @@ class MenuItem
 
     /**
      * @var string Specifies the parent menu item.
-     * An object of the RainLab\Pages\Classes\MenuItem class or null.
+     *             An object of the RainLab\Pages\Classes\MenuItem class or null.
      */
     public $parent;
 
     /**
-     * @var boolean Determines whether the auto-generated menu items could have subitems.
+     * @var bool Determines whether the auto-generated menu items could have subitems.
      */
     public $nesting;
 
@@ -54,12 +52,12 @@ class MenuItem
 
     /**
      * @var string Specifies the object identifier the item refers to.
-     * The identifier could be the database identifier or an object code.
+     *             The identifier could be the database identifier or an object code.
      */
     public $reference;
 
     /**
-     * @var boolean Indicates that generated items should replace this item.
+     * @var bool Indicates that generated items should replace this item.
      */
     public $replace;
 
@@ -69,7 +67,7 @@ class MenuItem
     public $cmsPage;
 
     /**
-     * @var boolean Used by the system internally.
+     * @var bool Used by the system internally.
      */
     public $exists = false;
 
@@ -82,18 +80,20 @@ class MenuItem
         'reference',
         'cmsPage',
         'replace',
-        'viewBag'
+        'viewBag',
     ];
 
     /**
      * @var array Contains the view bag properties.
-     * This property is used by the menu editor internally.
+     *            This property is used by the menu editor internally.
      */
     public $viewBag = [];
 
     /**
      * Initializes a menu item from a data array.
+     *
      * @param array $items Specifies the menu item data.
+     *
      * @return Returns an array of the MenuItem objects.
      */
     public static function initFromArray($items)
@@ -101,15 +101,14 @@ class MenuItem
         $result = [];
 
         foreach ($items as $itemData) {
-            $obj = new self;
+            $obj = new self();
 
             foreach ($itemData as $name => $value) {
                 if ($name != 'items') {
                     if (property_exists($obj, $name)) {
                         $obj->$name = $value;
                     }
-                }
-                else {
+                } else {
                     $obj->items = self::initFromArray($value);
                 }
             }
@@ -121,7 +120,8 @@ class MenuItem
     }
 
     /**
-     * Returns a list of registered menu item types
+     * Returns a list of registered menu item types.
+     *
      * @return array Returns an array of registered item types
      */
     public function getTypeOptions($keyValue = null)
@@ -130,7 +130,7 @@ class MenuItem
          * Baked in types
          */
         $result = [
-            'url' => 'URL',
+            'url'    => 'URL',
             'header' => 'Header',
         ];
 
@@ -198,7 +198,8 @@ class MenuItem
     }
 
     /**
-     * Converts the menu item data to an array
+     * Converts the menu item data to an array.
+     *
      * @return array Returns the menu item data as array
      */
     public function toArray()

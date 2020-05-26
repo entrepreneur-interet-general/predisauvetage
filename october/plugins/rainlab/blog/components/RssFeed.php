@@ -1,34 +1,40 @@
-<?php namespace RainLab\Blog\Components;
+<?php
 
-use Lang;
-use Response;
-use Cms\Classes\Page;
+namespace RainLab\Blog\Components;
+
 use Cms\Classes\ComponentBase;
-use RainLab\Blog\Models\Post as BlogPost;
+use Cms\Classes\Page;
+use Lang;
 use RainLab\Blog\Models\Category as BlogCategory;
+use RainLab\Blog\Models\Post as BlogPost;
+use Response;
 
 class RssFeed extends ComponentBase
 {
     /**
-     * A collection of posts to display
+     * A collection of posts to display.
+     *
      * @var Collection
      */
     public $posts;
 
     /**
      * If the post list should be filtered by a category, the model to use.
+     *
      * @var Model
      */
     public $category;
 
     /**
      * Reference to the page name for the main blog page.
+     *
      * @var string
      */
     public $blogPage;
 
     /**
      * Reference to the page name for linking to posts.
+     *
      * @var string
      */
     public $postPage;
@@ -37,7 +43,7 @@ class RssFeed extends ComponentBase
     {
         return [
             'name'        => 'rainlab.blog::lang.settings.rssfeed_title',
-            'description' => 'rainlab.blog::lang.settings.rssfeed_description'
+            'description' => 'rainlab.blog::lang.settings.rssfeed_description',
         ];
     }
 
@@ -131,13 +137,13 @@ class RssFeed extends ComponentBase
         $posts = BlogPost::with('categories')->listFrontEnd([
             'sort'     => $this->property('sortOrder'),
             'perPage'  => $this->property('postsPerPage'),
-            'category' => $category
+            'category' => $category,
         ]);
 
         /*
          * Add a "url" helper attribute for linking to each post and category
          */
-        $posts->each(function($post) {
+        $posts->each(function ($post) {
             $post->setUrl($this->postPage, $this->controller);
         });
 
