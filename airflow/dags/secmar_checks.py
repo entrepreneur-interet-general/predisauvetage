@@ -133,4 +133,10 @@ def checks():
             ) t on t.cross_sitrep = op.cross_sitrep and op.date_heure_reception_alerte::text = t.expected_time
         ) t
         """,
+        "clandestins_snosan": """
+        select
+            count(1) = 0
+        from operations_stats
+        where concerne_snosan and avec_clandestins
+        """,
     }
