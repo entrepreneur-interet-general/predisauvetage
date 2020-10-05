@@ -128,6 +128,7 @@ CREATE TABLE public.operations_stats (
     "phase_journee" phase_journee,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
+    "avec_clandestins" boolean not null,
     "distance_cote_metres" int,
     "distance_cote_milles_nautiques" numeric(6, 2),
     "est_dans_stm" boolean not null,

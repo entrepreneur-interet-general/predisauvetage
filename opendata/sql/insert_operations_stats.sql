@@ -17,6 +17,7 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
+  nombre_personnes_impliquees > nombre_personnes_impliquees_sans_clandestins avec_clandestins,
   op.distance_cote_metres distance_cote_metres,
   op.distance_cote_milles_nautiques distance_cote_milles_nautiques,
   op.est_dans_stm est_dans_stm,
@@ -206,7 +207,8 @@ where operation_id in (
 );
 
 update operations_stats set concerne_snosan = true
-where nombre_flotteurs_plaisance_impliques > 0
+where not avec_clandestins and (
+   nombre_flotteurs_plaisance_impliques > 0
    or nombre_flotteurs_loisirs_nautiques_impliques > 0
    or nombre_flotteurs_annexe_impliques > 0
    or operation_id in (
@@ -224,7 +226,7 @@ where nombre_flotteurs_plaisance_impliques > 0
       'Blessé projection d''une équipe médicale',
       'Absence d''un moyen de communication'
     )
-   );
+   ));
 
 update operations_stats set concerne_plongee = true
 where operation_id in (
