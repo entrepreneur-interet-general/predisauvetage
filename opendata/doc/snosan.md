@@ -9,6 +9,7 @@ Le SNOSAN dispose d'un [site web](https://www.snosan.fr) et d'[un portail listan
 Le SNOSAN s'intéresse aux opérations relevant de la plaisance ou des loisirs nautiques. Une colonne est dédiée au SNOSAN (`operations_stats.concerne_snosan`), permettant de savoir immédiatement si une opération rentre dans le cadre d'étude du SNOSAN ou non.
 
 On définit qu'une opération rentre dans le cadre d'étude du SNOSAN dès lors que :
+- aucun clandestin n'est impliqué dans l'opération
 - un flotteur de plaisance est impliqué dans l'opération
 - un flotteur de loisirs nautiques est impliqué dans l'opération
 - aucun flotteur n'est impliqué dans l'opération et le motif de déclenchement de l'opération est l'un des suivants :
