@@ -311,6 +311,7 @@ class CodeParserTest extends TestCase
     {
         $content = file_get_contents($path);
         $content = preg_replace('~\R~u', PHP_EOL, $content); // Normalize EOL
+
         return $content;
     }
 }
