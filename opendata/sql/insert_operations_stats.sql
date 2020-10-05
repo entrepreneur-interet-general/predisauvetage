@@ -17,7 +17,7 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
-  nombre_personnes_impliquees > nombre_personnes_impliquees_sans_clandestins avec_clandestins,
+  coalesce(rh.nombre_personnes_impliquees, 0) > coalesce(rh.nombre_personnes_impliquees_sans_clandestins, 0) avec_clandestins,
   op.distance_cote_metres distance_cote_metres,
   op.distance_cote_milles_nautiques distance_cote_milles_nautiques,
   op.est_dans_stm est_dans_stm,
