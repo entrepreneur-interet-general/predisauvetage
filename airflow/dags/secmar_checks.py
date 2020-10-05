@@ -34,7 +34,7 @@ def checks():
                 select count(1) nb_operations_snosan
                 from operations op
                 join operations_stats stats on stats.operation_id = op.operation_id
-                where nombre_flotteurs_plaisance_impliques > 0
+                where not avec_clandestins and (nombre_flotteurs_plaisance_impliques > 0
                    or nombre_flotteurs_loisirs_nautiques_impliques > 0
                    or nombre_flotteurs_annexe_impliques > 0
                    or op.operation_id in (
@@ -50,7 +50,7 @@ def checks():
                          'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique',
                          'Chute falaise / Emporté par une lame', 'Malade EvaSan',
                          'Blessé projection d''une équipe médicale',
-                         'Absence d''un moyen de communication'))) snosan
+                         'Absence d''un moyen de communication')))) snosan
              join (
                 select count(1) nb_operations_concerne_snosan
                 from operations_stats
