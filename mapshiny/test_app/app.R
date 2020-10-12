@@ -350,6 +350,11 @@ ui <- dashboardPage(
    downloadButton("downloadDataCSV", "Télécharger les données dans la zone (CSV)",
                   style='padding:7px; font-size:80%; margin-left:1.5em; margin-top: -1em')
 
+   ),
+   br(),
+   div(style="margin-left:1.5em; color: #b8c7ce; font-size:80%;",
+    textOutput("bornes"),
+    textOutput("zoom")
    )),
 
   #Body content
@@ -683,6 +688,14 @@ server <- function(input, output, session) {
 
  output$operation <- renderText({
      paste(nrow(zipsInBounds()), " interventions géolocalisées au CROSS sur la période selectionnée et sur la zone affichée")
+ })
+
+ output$bornes <- renderText({
+     paste("Bornes : ", format(input$mymap_bounds$north, digits=6), "N ", format(input$mymap_bounds$east, digits=6), "E ", format(input$mymap_bounds$south, digits=6), "S ",format(input$mymap_bounds$west, digits=6), "O")
+ })
+
+ output$zoom <- renderText({
+    paste("Zoom : ", input$mymap_zoom)
  })
 
 #Create 3 different barplots with ggplot style
