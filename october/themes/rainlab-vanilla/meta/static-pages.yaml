@@ -4,15 +4,18 @@ static-pages:
     saison-estivale-2019: {  }
     liens-utiles: {  }
     nos-conseils:
-        nos-conseils-ministere-des-sports: {  }
-        quizz: {  }
         documentation-ministere-de-linterieur: {  }
         documentation-ministere-de-la-transition-ecologique-et-solidaire: {  }
+        nos-conseils-ministere-des-sports: {  }
+        quizz: {  }
         documentations-la-snsm: {  }
         documentation-envsn: {  }
         documentation-kite-surf: {  }
         documentation-surf: {  }
         documentation-kayak: {  }
+        documentation-snsm: {  }
+        documentation-plongee: {  }
+        documentation-federation-francaise-de-voile: {  }
     contact-us: {  }
     archives:
         archives-2018: {  }

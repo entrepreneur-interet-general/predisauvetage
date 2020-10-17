@@ -9,13 +9,33 @@ is_hidden = 0
     <div class="alert alert-danger annonce-accueil">
         {% content 'annonce-accueil' %}
     </div>
-    <div class="row justify-content-center align-items-center">
-        <div class="col-md-4">
-            <img src="{{ '/assets/images/plaisance.jpg'|theme }}" alt="Navires de plaisance" class="img-thumbnail">
-        </div>
 
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        {% content 'accueil-bloc-1' %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        {% content 'accueil-bloc-2' %}
+      </div>
+    </div>
+  </div>
+</div>
+	
+    <div class="row justify-content-center align-items-center mt-5">
         <div class="col-md-8">
             {% content 'description-snosan' %}
+        </div>
+
+        <div class="col-md-4">
+            <a class="twitter-timeline" data-tweet-limit="2" data-lang="fr" href="https://twitter.com/snosan_fr?ref_src=twsrc%5Etfw">Tweets by snosan_fr</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a href="https://twitter.com/snosan_fr?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-lang="fr" data-show-count="false">Follow @snosan_fr</a>
         </div>
     </div>
 
