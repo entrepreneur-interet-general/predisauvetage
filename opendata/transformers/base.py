@@ -21,7 +21,7 @@ class BaseTransformer(object):
             true_values=["Y"],
             false_values=["N"],
             dtype=self.CSV_DTYPE,
-        )
+        ).drop_duplicates()
 
     def to_csv(self, df, output):
         # Cast dates columns
