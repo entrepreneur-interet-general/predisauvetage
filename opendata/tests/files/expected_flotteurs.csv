@@ -3,7 +3,7 @@ operation_id,numero_ordre,pavillon,resultat_flotteur,type_flotteur,categorie_flo
 -51138,1,Français,Remorqué,Plaisance à moteur < 8m,Plaisance,,,,,,,,,,,,,,,,,,
 -40995,1,Français,Assisté,Plaisance à moteur < 8m,Plaisance,b12ab00e47a8914f32bf7bacf87792a0acdf4f35,,,EDEL-5,True,5.4,0,2.33,0,,14.9,6.62,MONOCOQUE NON HABITABLE,POLYESTER / EPOXY,Voile,HORS-BORD,VOILIER,USAGE PERSONNEL
 -39436,2,Étranger,Assisté,Plaisance à voile,Plaisance,,,,,,,,,,,,,,,,,,
-2219940324,1,Français,Remorqué,Pêche,Pêche,,,,,,,,,,,,,,,,,,
+2219940324,1,Français,Remorqué,Pêche,Pêche,,,,,,,,,,,,,,,,,,USAGE PROFESSIONNEL
 2219940325,1,Français,Remorqué,Plaisance voile légère,Loisir nautique,,,,,,,,,,,,,,,,,,
 2220013242,1,Français,Assisté,Plaisance à voile,Plaisance,1b9161998ffaecec2285a66d583f7c1ece2d04d1,,,FIRST-29,True,8.75,0,7.37,0,,38,9.57,MONOCOQUE NON HABITABLE,POLYESTER / EPOXY,Voile,LIGNE D'ARBRE,INCONNU,USAGE PERSONNEL
 2220070718,1,Français,Remorqué,Plaisance à voile,Plaisance,c1f96c096b5c97acf04817ab6a94bf93581f96d5,,BENETEAU,OCEANIS CLIPPER 343,True,10.38,3.48,12.65,0,30,50.5,21.34,MONOCOQUE HABITABLE,POLYESTER / EPOXY,Voile,LIGNE D'ARBRE,VOILIER,USAGE PERSONNEL

@@ -8,6 +8,7 @@ class BaseTransformer(object):
     ISO_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
     DATE_COLUMNS = []
     CSV_DTYPE = None
+    DUPLICATES_SUBSET = None
 
     def __init__(self, filepath):
         super(BaseTransformer, self).__init__()
@@ -21,7 +22,7 @@ class BaseTransformer(object):
             true_values=["Y"],
             false_values=["N"],
             dtype=self.CSV_DTYPE,
-        ).drop_duplicates()
+        ).drop_duplicates(subset=self.DUPLICATES_SUBSET, keep="first")
 
     def to_csv(self, df, output):
         # Cast dates columns

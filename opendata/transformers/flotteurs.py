@@ -20,6 +20,7 @@ class FlotteursTransformer(BaseTransformer):
         "type_navire": str,
         "utilisation": str,
     }
+    DUPLICATES_SUBSET = ["operation_id", "numero_ordre"]
 
     def __init__(self, filepath):
         super(FlotteursTransformer, self).__init__(filepath)
