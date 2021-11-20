@@ -69,7 +69,8 @@ CREATE TABLE public.flotteurs (
     "propulsion" varchar(50),
     "type_moteur" varchar(50),
     "type_navire" varchar(50),
-    "utilisation" varchar(50)
+    "utilisation" varchar(50),
+    UNIQUE ("operation_id", "numero_ordre")
 );
 
 CREATE INDEX ON flotteurs(operation_id);
