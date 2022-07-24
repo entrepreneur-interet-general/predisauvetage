@@ -6,10 +6,12 @@ from io import TextIOWrapper
 from zipfile import ZipFile
 import sys
 from collections import defaultdict
+import pandas as pd
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 BASE_PATH = Path("/Users/antoineaugusti/Documents/predisauvetage/snosan_csv")
+AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])
 
 
@@ -112,15 +114,46 @@ def _headers_for_filename(filename):
 
 
 def process_all_days(skip_if_existing=True):
-    for day in filter(_should_process_day, BASE_PATH.iterdir()):
+    for day in filter(_should_process_day, list_of_days()):
         save_csv_for_day(day, extract_for_day(day))
 
 
-def _should_process_day(day):
-    is_dir = (BASE_PATH / day).is_dir()
-    return is_dir and any(
-        [not (BASE_PATH / day / f).exists() for f in EXPECTED_FILENAMES]
+def list_of_days():
+    return filter(
+        lambda x: x.is_dir() and x.name.isdigit(), sorted(BASE_PATH.iterdir())
     )
 
 
+def _should_process_day(day):
+    result = any([not (BASE_PATH / day / f).exists() for f in EXPECTED_FILENAMES])
+    if result:
+        logging.debug("Processing %s" % day)
+    else:
+        logging.debug("Skipping %s" % day)
+    return result
+
+
+def build_aggregate_files():
+    AGGREGATE_FOLDER.mkdir(parents=False, exist_ok=True)
+    for filename in EXPECTED_FILENAMES:
+        buff = []
+        for day in list_of_days():
+            with open(str(BASE_PATH / day / filename), "r") as f:
+                buff.extend(f.readlines()[1:])
+        with open(str(AGGREGATE_FOLDER / filename), "w") as f:
+            csv.writer(f).writerow(["operation_id"] + _headers_for_filename(filename))
+            f.writelines(buff)
+        logging.debug("Created aggregate for %s " % (filename))
+
+
+def describe_aggregate_files():
+    for filename in EXPECTED_FILENAMES:
+        df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+        for col in df.columns:
+            if df[col].nunique() < 50:
+                print(df[col].value_counts())
+
+
 process_all_days()
+build_aggregate_files()
+describe_aggregate_files()
