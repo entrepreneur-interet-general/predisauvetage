@@ -1,0 +1,23 @@
+code,libelle
+11,Navire public de moins de 40m
+12,Navire public de plus de 40m
+13,Commerce
+14,Pêche
+15,Plaisance
+16,Remorqueur
+18,Remorqueur d'intervention, d'assistance, sauvetage
+19,Autre embarcation légère (pneumat...)
+21,Canot tout-temps
+22,Vedette de 1re classe
+23,Vedette de 2e ou 3e classe
+25,Vedette de 4e classe
+31,Avion
+34,Hélicoptère
+41,Plongeur
+51,Patrouille
+52,Véhicule sanitaire
+53,Autre
+54,Véhicule médicalisé
+56,Sémaphore
+56,Tour de contrôle
+57,Poste de plage

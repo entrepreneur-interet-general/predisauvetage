@@ -1,0 +1,51 @@
+code,libelle
+A11,Abordage
+A12,Échouement
+A13,Heurt
+A21,Chavirement
+A31,Incendie
+A32,Explosion
+A41,Voie d'eau
+B12,Avarie de l'appareil à gouverner
+B13,Avarie du système de propulsion
+B14,Panne de carburant
+B15,Avarie des systèmes de communication
+B21,Démâtage
+B22,Perte de stabilité / Ripage de cargaison
+B31,Immobilisé dans engins / hélice engagée
+B33,Avarie électrique
+G11,Accident aéronautique
+G21,Encalminage
+G31,Incertitude
+G46,Acte de piraterie / terrorisme
+G47,Rupture de mouillage
+G43,Découverte d'explosif
+G41,Sans avarie en dérive
+B23,Désarrimage cargaison
+G22,Perte de pontée
+G42,Sans avarie inexpérience
+G44,Absence d'un moyen de communication
+A51,Autre accident
+I01,Homme à la mer
+I04,Blessé EvaMed
+I03,Blessé EvaSan
+I02,Blessé avec déroutement
+I10,Blessé avec soin sans déroutement
+I05,Blessé projection d'une équipe médicale
+I08,Malade EvaMed
+I07,Malade EvaSan
+I09,Malade avec déroutement
+I011,Malade avec soin sans déroutement
+I06,Malade projection d'une équipe médicale
+I12,Transport sanitaire île-continent
+I13,Plongée en apnée
+I14,Plongée avec bouteille
+I15,Baignade
+I16,Chute falaise / Emporté par une lame
+I17,Isolement par la marée / Envasé
+I18,Chasse sous-marine
+I19,Suicide
+I20,Découverte de corps
+G45,Incertitude
+G99,Autre événement
+H11,Toutes fausses alertes

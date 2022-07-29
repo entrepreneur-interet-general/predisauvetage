@@ -102,6 +102,7 @@ def _headers_for_filename(filename):
             "SEC_OPERATION_latitude",
             "SEC_OPERATION_longitude",
             "SEC_OPERATION_date_heure_recpt_alerte_id",
+            # Correspond à `type_operation` dans SECMAR
             "SEC_OPERATION_pourquoi_alerte_id",
             "EC_OPERATION_moyen_alerte_id",
             "SEC_C_QUI_ALERTE_cat_qui_alerte_id",
@@ -150,7 +151,7 @@ def describe_aggregate_files():
     for filename in EXPECTED_FILENAMES:
         df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
         for col in df.columns:
-            if df[col].nunique() < 50:
+            if df[col].nunique() < 60:
                 print(df[col].value_counts())
 
 
