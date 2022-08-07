@@ -155,6 +155,39 @@ def describe_aggregate_files():
                 print(df[col].value_counts())
 
 
+def _mapping_filepath(filename):
+    if not filename.endswith(".csv"):
+        raise ValueError("Unexpected mapping filename " + filename)
+    return Path("../codes/" + filename)
+
+
+def _mapping_file_exists(filename):
+    return _mapping_filepath(filename).exists()
+
+
+def read_mapping_file(filename):
+    logging.debug("Reading %s" % filename)
+    return pd.read_csv(_mapping_filepath(filename))
+
+
+def check_mapping_data():
+    for filename in EXPECTED_FILENAMES:
+        df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+        for col in _headers_for_filename(filename):
+            mapping_filename = col + ".csv"
+            if _mapping_file_exists(mapping_filename):
+                mapping_data = read_mapping_file(mapping_filename)
+                mapped_values = mapping_data["code"].unique()
+                for unique_value in df[col].unique():
+                    res = unique_value not in mapped_values
+                    if res:
+                        logging.error(
+                            "Value `%s` is not mapped for `%s` in `%s`"
+                            % (unique_value, col, filename)
+                        )
+
+
 process_all_days()
 build_aggregate_files()
-describe_aggregate_files()
+# describe_aggregate_files()
+check_mapping_data()
