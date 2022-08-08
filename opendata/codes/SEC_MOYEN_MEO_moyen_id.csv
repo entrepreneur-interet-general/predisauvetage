@@ -1,4 +1,5 @@
 "code","libelle"
+ABS,null
 11,"Navire public de moins de 40m"
 12,"Navire public de plus de 40m"
 13,"Commerce"
@@ -19,5 +20,4 @@
 53,"Autre"
 54,"Véhicule médicalisé"
 56,"Sémaphore"
-56,"Tour de contrôle"
 57,"Poste de plage"

@@ -1,8 +1,9 @@
-code,libelle
-1,Navire à la mer
-2,Autorité maritime française à terre
-​​3,Autorité militaire française à terre
-4,Autorité civile française à terre
-5,Organisme ou personne privée
-6,Autorité étrangère
-7,Aéronef
+"code","libelle"
+"nan","null"
+"1","Navire à la mer"
+"2","Autorité maritime française à terre"
+"3","Autorité militaire française à terre"
+"4","Autorité civile française à terre"
+"5","Organisme ou personne privée"
+"6","Autorité étrangère"
+"7","Aéronef"

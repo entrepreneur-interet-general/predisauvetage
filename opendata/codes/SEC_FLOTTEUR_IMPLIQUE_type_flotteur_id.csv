@@ -1,4 +1,5 @@
 code,libelle
+ABS,null
 2,Pêche
 3,Plaisance à voile
 6,Fluvial / Péniche
@@ -12,7 +13,6 @@ code,libelle
 16,Canoë / Kayak / Aviron
 17,Kitesurf
 18,Autre loisir nautique
-18,Paddle
 19,Annexe
 20,Plaisance à moteur < 8m
 21,Plaisance à moteur > 8m

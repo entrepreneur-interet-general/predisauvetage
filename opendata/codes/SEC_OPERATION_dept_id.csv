@@ -1,4 +1,5 @@
 code,libelle
+nan,null
 01,Ain
 02,Aisne
 03,Allier
@@ -106,5 +107,9 @@ code,libelle
 984,Terres australes et antarctiques françaises
 986,Wallis-et-Futuna
 987,Polynésie française
+987ssv,Polynésie française
+987mar,Polynésie française
+987sdv,Polynésie française
+987tua,Polynésie française
 988,Nouvelle-Calédonie
 989,Île de Clipperton

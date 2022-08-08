@@ -7,6 +7,7 @@ from zipfile import ZipFile
 import sys
 from collections import defaultdict
 import pandas as pd
+import numpy as np
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -149,7 +150,7 @@ def build_aggregate_files():
 
 def describe_aggregate_files():
     for filename in EXPECTED_FILENAMES:
-        df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+        df = read_aggregate_file(filename)
         for col in df.columns:
             if df[col].nunique() < 60:
                 print(df[col].value_counts())
@@ -167,17 +168,31 @@ def _mapping_file_exists(filename):
 
 def read_mapping_file(filename):
     logging.debug("Reading %s" % filename)
-    return pd.read_csv(_mapping_filepath(filename))
+    df = pd.read_csv(_mapping_filepath(filename), index_col="code")
+    if filename == "SEC_C_QUI_ALERTE_cat_qui_alerte_id.csv":
+        df.index = df.index.map(lambda v: str(v).rstrip(".0"))
+    if not df.index.is_unique:
+        raise ValueError("Duplicate index values for %s" % filename)
+    return df
+
+
+def read_aggregate_file(filename):
+    df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+    if filename == "operation.csv":
+        df["SEC_C_QUI_ALERTE_cat_qui_alerte_id"] = df[
+            "SEC_C_QUI_ALERTE_cat_qui_alerte_id"
+        ].apply(lambda v: str(v).rstrip(".0"))
+    return df
 
 
 def check_mapping_data():
     for filename in EXPECTED_FILENAMES:
-        df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+        df = read_aggregate_file(filename)
         for col in _headers_for_filename(filename):
             mapping_filename = col + ".csv"
             if _mapping_file_exists(mapping_filename):
                 mapping_data = read_mapping_file(mapping_filename)
-                mapped_values = mapping_data["code"].unique()
+                mapped_values = mapping_data.index.unique()
                 for unique_value in df[col].unique():
                     res = unique_value not in mapped_values
                     if res:
