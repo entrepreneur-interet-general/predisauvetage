@@ -1,19 +1,50 @@
 # -*- coding: utf-8 -*-
-import logging
-from pathlib import Path
 import csv
-from io import TextIOWrapper
-from zipfile import ZipFile
+import logging
+import os
+import socket
 import sys
 from collections import defaultdict
+from ftplib import FTP
+from io import TextIOWrapper
+from pathlib import Path
+from zipfile import ZipFile
+
 import pandas as pd
-import numpy as np
+import socks
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+FTP_BASE_FOLDER = "snosan_secmarweb"
 BASE_PATH = Path("/Users/antoineaugusti/Documents/predisauvetage/snosan_csv")
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])
+
+
+def ftp_download_remote_folder(day):
+    (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
+    if os.getenv("FTP_PROXY", "false") == "true":
+        socks.setdefaultproxy(
+            socks.PROXY_TYPE_SOCKS5,
+            os.getenv("FTP_PROXY_HOST", "localhost"),
+            int(os.getenv("FTP_PROXY_PORT", 8080)),
+        )
+        socket.socket = socks.socksocket
+    env = os.environ
+    ftp = FTP(env["FTP_HOST"])
+    ftp.login(env["FTP_USER"], env["FTP_PASSWORD"])
+    ftp.cwd(FTP_BASE_FOLDER)
+    ftp.cwd(day)
+    filenames = ftp.nlst()
+    logging.debug("Found %s remote files to download for %s" % (len(filenames), day))
+    for filename in filenames:
+        target_path = BASE_PATH / day / filename
+        if target_path.exists():
+            logging.debug("%s/%s already exists, skipping" % (day, filename))
+            continue
+        logging.debug("Downloading %s/%s" % (day, filename))
+        ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
+    ftp.quit()
 
 
 def save_csv_for_day(day, data):
@@ -29,7 +60,7 @@ def save_csv_for_day(day, data):
 def extract_for_day(day):
     result = defaultdict(list)
     files = [f for f in (BASE_PATH / day).iterdir() if f.suffix == ".zip"]
-    logging.debug("Found %s files for %s" % (len(files), day))
+    logging.debug("Extracting %s files for %s" % (len(files), day))
     for zip_filepath in files:
         with ZipFile(str(zip_filepath)) as zf:
             _check_has_required_files(zf.infolist(), zip_filepath)
