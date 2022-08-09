@@ -173,9 +173,18 @@ def build_aggregate_files():
         for day in list_of_days():
             with open(str(BASE_PATH / day / filename), "r") as f:
                 buff.extend(f.readlines()[1:])
-        with open(str(AGGREGATE_FOLDER / filename), "w") as f:
+        target_path = str(AGGREGATE_FOLDER / filename)
+        with open(target_path, "w") as f:
             csv.writer(f).writerow(["operation_id"] + _headers_for_filename(filename))
             f.writelines(buff)
+        df = pd.read_csv(target_path)
+        df["operation_long_name"] = df["operation_id"].apply(
+            lambda v: "_".join(v.split("_")[:-1])
+        )
+        df["operation_version"] = df["operation_id"].apply(
+            lambda v: int(v.split("_")[-1])
+        )
+        df.to_csv(target_path, index=False)
         logging.debug("Created aggregate for %s " % (filename))
 
 
@@ -208,11 +217,28 @@ def read_mapping_file(filename):
 
 
 def read_aggregate_file(filename):
+    logging.debug("Reading aggregate file %s", filename)
     df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+    versions = (
+        df.groupby(["operation_long_name"], sort=False)[
+            ["operation_version", "operation_id"]
+        ]
+        .max()
+        .reset_index()
+    ).set_index("operation_id")
+    df = df.loc[df.operation_id.isin(versions.index)]
+    if filename == "flotteur.csv":
+        df["SEC_FLOTTEUR_IMPLIQUE_mer_force"] = df[
+            "SEC_FLOTTEUR_IMPLIQUE_mer_force"
+        ].str.replace('"', "")
     if filename == "operation.csv":
         df["SEC_C_QUI_ALERTE_cat_qui_alerte_id"] = df[
             "SEC_C_QUI_ALERTE_cat_qui_alerte_id"
         ].apply(lambda v: str(v).rstrip(".0"))
+        df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.replace(
+            '"', ""
+        )
+    df.to_csv(str(AGGREGATE_FOLDER / filename) + ".debug", index=False)
     return df
 
 
@@ -233,6 +259,7 @@ def check_mapping_data():
                         )
 
 
+# ftp_download_remote_folder("20220809")
 process_all_days()
 build_aggregate_files()
 # describe_aggregate_files()
