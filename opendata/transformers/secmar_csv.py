@@ -220,13 +220,11 @@ def read_aggregate_file(filename):
     logging.debug("Reading aggregate file %s", filename)
     df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
     versions = (
-        df.groupby(["operation_long_name"], sort=False)[
-            ["operation_version", "operation_id"]
-        ]
-        .max()
-        .reset_index()
-    ).set_index("operation_id")
-    df = df.loc[df.operation_id.isin(versions.index)]
+        df.sort_values("operation_id", ascending=True)
+        .groupby(["operation_long_name"])
+        .last()["operation_id"]
+    )
+    df = df.loc[df.operation_id.isin(versions)]
     if filename == "flotteur.csv":
         df["SEC_FLOTTEUR_IMPLIQUE_mer_force"] = df[
             "SEC_FLOTTEUR_IMPLIQUE_mer_force"
@@ -251,8 +249,7 @@ def check_mapping_data():
                 mapping_data = read_mapping_file(mapping_filename)
                 mapped_values = mapping_data.index.unique()
                 for unique_value in df[col].unique():
-                    res = unique_value not in mapped_values
-                    if res:
+                    if unique_value not in mapped_values:
                         logging.error(
                             "Value `%s` is not mapped for `%s` in `%s`"
                             % (unique_value, col, filename)
