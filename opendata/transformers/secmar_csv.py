@@ -13,10 +13,8 @@ from zipfile import ZipFile
 import pandas as pd
 import socks
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
 FTP_BASE_FOLDER = "snosan_secmarweb"
-BASE_PATH = Path("/Users/antoineaugusti/Documents/predisauvetage/snosan_csv")
+BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_csv"
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])
 
@@ -256,8 +254,9 @@ def check_mapping_data():
                         )
 
 
-# ftp_download_remote_folder("20220809")
-process_all_days()
-build_aggregate_files()
-# describe_aggregate_files()
-check_mapping_data()
+if __name__ == "__main__":
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    process_all_days()
+    build_aggregate_files()
+    # describe_aggregate_files()
+    check_mapping_data()
