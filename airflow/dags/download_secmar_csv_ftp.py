@@ -42,12 +42,19 @@ download_single_day = PythonOperator(
     templates_dict={"day": "{{ ds_nodash }}"},
 )
 
+process_all_days = PythonOperator(
+    task_id="process_all_days",
+    python_callable=secmar_csv.process_all_days,
+    dag=dag,
+)
+process_all_days.set_upstream(download_single_day)
+
 build_aggregate_files = PythonOperator(
     task_id="build_aggregate_files",
     python_callable=secmar_csv.build_aggregate_files,
     dag=dag,
 )
-build_aggregate_files.set_upstream(download_single_day)
+build_aggregate_files.set_upstream(process_all_days)
 
 check_mapping_data = PythonOperator(
     task_id="check_mapping_data",
