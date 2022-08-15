@@ -217,7 +217,7 @@ def describe_aggregate_files():
 def _mapping_filepath(filename):
     if not filename.endswith(".csv"):
         raise ValueError("Unexpected mapping filename " + filename)
-    return Path(__file__).parent.parent.resolve() / "codes/" / filename
+    return Path(__file__).resolve().parent.parent / "codes/" / filename
 
 
 def _mapping_file_exists(filename):
