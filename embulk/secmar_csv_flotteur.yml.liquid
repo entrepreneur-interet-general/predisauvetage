@@ -1,0 +1,29 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    columns:
+    - {name: operation_id, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_mer_force, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_type_flotteur_id, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_pavillon_id, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_num_immat_fr, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_num_imo, type: double}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_nom, type: string}
+    - {name: SEC_FLOTTEUR_IMPLIQUE_resultat_flotteur_id, type: string}
+    - {name: operation_long_name, type: string}
+    - {name: operation_version, type: long}
+    - {name: secmar_operation_id, type: long}
+{% include 'datasources/out_postgresql' %}
+  table: secmar_csv_flotteur
+  mode: truncate_insert
