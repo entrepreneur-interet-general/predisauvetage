@@ -1,11 +1,12 @@
-code,libelle
-11,Gris-Nez
-12,Jobourg
-21,Corsen
-22,Étel
-31,La Garde
-33,Corse
-41,Antilles-Guyane
-42,La Réunion
-52,Polynésie
-62,Nouvelle-Calédonie
+code,libelle,libelle_court
+11,Gris-Nez,GN
+12,Jobourg,JB
+21,Corsen,CN
+22,Étel,ET
+31,La Garde,LG
+33,Corse,MC
+34,Corse,AJ
+41,Antilles-Guyane,AG
+42,La Réunion,OI
+52,Polynésie,PP
+62,Nouvelle-Calédonie,NC

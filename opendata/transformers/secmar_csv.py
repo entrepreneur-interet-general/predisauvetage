@@ -6,6 +6,7 @@ import socket
 import sys
 from collections import defaultdict
 from ftplib import FTP
+from functools import lru_cache
 from io import TextIOWrapper
 from pathlib import Path
 from zipfile import ZipFile
@@ -17,6 +18,14 @@ FTP_BASE_FOLDER = "snosan_secmarweb"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_csv"
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])
+
+
+@lru_cache(maxsize=None)
+def cross_mapping():
+    mapping = read_mapping_file("SEC_OPERATION_SEC_OPERATIONcross_id.csv")[
+        "libelle_court"
+    ].to_dict()
+    return {v: k for k, v in mapping.items()}
 
 
 def ftp_download_remote_folder(day):
@@ -43,6 +52,17 @@ def ftp_download_remote_folder(day):
         logging.debug("Downloading %s/%s" % (day, filename))
         ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
     ftp.quit()
+
+
+def download_latest_remote_days():
+    for day in pd.date_range(end=pd.to_datetime("today").date(), periods=365)[::-1]:
+        day_str = day.strftime("%Y%m%d")
+        if (BASE_PATH / day_str).exists():
+            logging.debug(
+                "%s is already available locally, stopping remote download" % day_str
+            )
+            break
+        ftp_download_remote_folder(day_str)
 
 
 def save_csv_for_day(day, data):
@@ -197,7 +217,7 @@ def describe_aggregate_files():
 def _mapping_filepath(filename):
     if not filename.endswith(".csv"):
         raise ValueError("Unexpected mapping filename " + filename)
-    return Path("../codes/" + filename)
+    return Path(__file__).parent.parent.resolve() / "codes/" / filename
 
 
 def _mapping_file_exists(filename):
@@ -214,15 +234,30 @@ def read_mapping_file(filename):
     return df
 
 
-def read_aggregate_file(filename):
+def secmar_operation_id(row):
+    # JB_2020_SAR_0941_3
+    cross, year, _, numero_sitrep, _ = row["operation_id"].split("_")
+    seamis_code = "1"
+    cross_id = cross_mapping()[cross]
+    return "%s%s%s%s" % (seamis_code, cross_id, year, numero_sitrep)
+
+
+def read_aggregate_file(filename, replace_mapping=True):
     logging.debug("Reading aggregate file %s", filename)
     df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+
+    # Keep only the most recent version of the operation
     versions = (
         df.sort_values("operation_id", ascending=True)
         .groupby(["operation_long_name"])
         .last()["operation_id"]
     )
     df = df.loc[df.operation_id.isin(versions)]
+
+    # Generic transformations
+    df["secmar_operation_id"] = df.apply(lambda r: secmar_operation_id(r), axis=1)
+
+    # Transformations for each file
     if filename == "flotteur.csv":
         df["SEC_FLOTTEUR_IMPLIQUE_mer_force"] = df[
             "SEC_FLOTTEUR_IMPLIQUE_mer_force"
@@ -234,13 +269,15 @@ def read_aggregate_file(filename):
         df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.replace(
             '"', ""
         )
-    df.to_csv(str(AGGREGATE_FOLDER / filename) + ".debug", index=False)
+    if replace_mapping:
+        df.replace(to_replace=build_replacement_mapping(filename), inplace=True)
+        df.to_csv(str(AGGREGATE_FOLDER / filename) + ".debug", index=False)
     return df
 
 
 def check_mapping_data():
     for filename in EXPECTED_FILENAMES:
-        df = read_aggregate_file(filename)
+        df = read_aggregate_file(filename, replace_mapping=False)
         for col in _headers_for_filename(filename):
             mapping_filename = col + ".csv"
             if _mapping_file_exists(mapping_filename):
@@ -254,8 +291,19 @@ def check_mapping_data():
                         )
 
 
+def build_replacement_mapping(filename):
+    mapping = {}
+    for column in _headers_for_filename(filename):
+        mapping_filename = column + ".csv"
+        if _mapping_file_exists(mapping_filename):
+            mapping_data = read_mapping_file(mapping_filename)
+            mapping[column] = mapping_data["libelle"].to_dict()
+    return mapping
+
+
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    download_latest_remote_days()
     process_all_days()
     build_aggregate_files()
     # describe_aggregate_files()
