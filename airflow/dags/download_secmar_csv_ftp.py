@@ -37,7 +37,7 @@ def call_fn(**kwargs):
 
 def embulk_import(dag, table):
     script = "secmar_csv_%s" % table
-    filepath = str(secmar_csv.AGGREGATE_FOLDER / "%s.cleaned.csv")
+    filepath = str(secmar_csv.AGGREGATE_FOLDER / (table + ".cleaned.csv"))
     return helpers.embulk_run(dag, script, {"EMBULK_FILEPATH": filepath})
 
 
