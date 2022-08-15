@@ -14,7 +14,7 @@ in:
     allow_optional_columns: false
     columns:
     - {name: operation_id, type: string}
-    - {name: SEC_OPERATION_date_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S.%L%z'}
+    - {name: SEC_OPERATION_date_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
     - {name: SEC_OPERATION_autorite_id, type: string}
     - {name: SEC_OPERATION_no_SITREP, type: long}
     - {name: SEC_OPERATION_SEC_OPERATIONcross_id, type: string}
@@ -24,14 +24,14 @@ in:
     - {name: SEC_OPERATION_dept_id, type: string}
     - {name: SEC_OPERATION_latitude, type: double}
     - {name: SEC_OPERATION_longitude, type: double}
-    - {name: SEC_OPERATION_date_heure_recpt_alerte_id, type: timestamp, format: '%Y-%m-%dT%H:%M:%S.%L%z'}
+    - {name: SEC_OPERATION_date_heure_recpt_alerte_id, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
     - {name: SEC_OPERATION_pourquoi_alerte_id, type: string}
     - {name: EC_OPERATION_moyen_alerte_id, type: string}
     - {name: SEC_C_QUI_ALERTE_cat_qui_alerte_id, type: string}
     - {name: SEC_OPERATION_qui_alerte_id, type: string}
     - {name: SEC_OPERATION_vent_direction, type: double}
     - {name: SEC_OPERATION_vent_force, type: string}
-    - {name: SEC_OPERATION_date_heure_fin_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S.%L%z'}
+    - {name: SEC_OPERATION_date_heure_fin_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
     - {name: operation_long_name, type: string}
     - {name: operation_version, type: long}
     - {name: secmar_operation_id, type: long}

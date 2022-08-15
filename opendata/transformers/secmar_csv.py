@@ -116,6 +116,22 @@ def _check_expected_headers(filename, detected_headers, csv_path):
         raise ValueError("Unexpected CSV headers for %s" % csv_path)
 
 
+def _dates_for_filename(filename):
+    return {
+        "bilan.csv": [],
+        "flotteur.csv": [],
+        "moyen.csv": [
+            "SEC_MOYEN_MEO_date_heure_depart",
+            "SEC_MOYEN_MEO_duree",
+        ],
+        "operation.csv": [
+            "SEC_OPERATION_date_operation",
+            "SEC_OPERATION_date_heure_recpt_alerte_id",
+            "SEC_OPERATION_date_heure_fin_operation",
+        ],
+    }[filename]
+
+
 def _headers_for_filename(filename):
     return {
         "bilan.csv": [
@@ -244,7 +260,9 @@ def secmar_operation_id(row):
 
 def read_aggregate_file(filename, replace_mapping=True):
     logging.debug("Reading aggregate file %s", filename)
-    df = pd.read_csv(str(AGGREGATE_FOLDER / filename))
+    df = pd.read_csv(
+        str(AGGREGATE_FOLDER / filename), parse_dates=_dates_for_filename(filename)
+    )
 
     # Keep only the most recent version of the operation
     versions = (
@@ -277,9 +295,11 @@ def read_aggregate_file(filename, replace_mapping=True):
 def create_cleaned_aggregate_files():
     for filename in EXPECTED_FILENAMES:
         target_filename = filename.replace(".csv", ".cleaned.csv")
-        read_aggregate_file(filename, replace_mapping=True).to_csv(
+        df = read_aggregate_file(filename, replace_mapping=True)
+        df.to_csv(
             str(AGGREGATE_FOLDER / target_filename),
             index=False,
+            date_format="%Y-%m-%dT%H:%M:%SZ",
         )
         logging.debug("Saved aggregated and cleaned file %s" % target_filename)
 
