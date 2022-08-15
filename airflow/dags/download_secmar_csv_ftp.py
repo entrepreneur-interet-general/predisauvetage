@@ -5,12 +5,13 @@ This DAG download CSV files from the remote FTP server.
 """
 import os
 from datetime import datetime
-
-from airflow import DAG
-from airflow.models import Variable
-from airflow.operators.python_operator import PythonOperator
+from pathlib import Path
 
 import helpers
+from airflow import DAG
+from airflow.models import Variable
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
 from transformers import secmar_csv
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 22, 10, 0)})
@@ -32,6 +33,12 @@ def call_fn(**kwargs):
     os.environ["FTP_USER"] = Variable.get("SECMAR_CSV_FTP_USER")
     os.environ["FTP_PASSWORD"] = Variable.get("SECMAR_CSV_FTP_PASSWORD")
     secmar_csv.ftp_download_remote_folder(kwargs["templates_dict"]["day"])
+
+
+def embulk_import(dag, table):
+    script = "secmar_csv_%s" % table
+    filepath = str(secmar_csv.AGGREGATE_FOLDER / "%s.cleaned.csv")
+    return helpers.embulk_run(dag, script, {"EMBULK_FILEPATH": filepath})
 
 
 download_single_day = PythonOperator(
@@ -69,3 +76,10 @@ create_cleaned_aggregate_files = PythonOperator(
     dag=dag,
 )
 create_cleaned_aggregate_files.set_upstream(check_mapping_data)
+
+start_embulk = DummyOperator(task_id="start_embulk", dag=dag)
+start_embulk.set_upstream(create_cleaned_aggregate_files)
+
+for table in [Path(f).stem for f in secmar_csv.EXPECTED_FILENAMES]:
+    t = embulk_import(dag, table)
+    t.set_upstream(start_embulk)
