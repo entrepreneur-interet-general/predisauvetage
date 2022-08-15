@@ -271,8 +271,17 @@ def read_aggregate_file(filename, replace_mapping=True):
         )
     if replace_mapping:
         df.replace(to_replace=build_replacement_mapping(filename), inplace=True)
-        df.to_csv(str(AGGREGATE_FOLDER / filename) + ".debug", index=False)
     return df
+
+
+def create_cleaned_aggregate_files():
+    for filename in EXPECTED_FILENAMES:
+        target_filename = filename.replace(".csv", ".cleaned.csv")
+        read_aggregate_file(filename, replace_mapping=True).to_csv(
+            str(AGGREGATE_FOLDER / target_filename),
+            index=False,
+        )
+        logging.debug("Saved aggregated and cleaned file %s" % target_filename)
 
 
 def check_mapping_data():
@@ -308,3 +317,4 @@ if __name__ == "__main__":
     build_aggregate_files()
     # describe_aggregate_files()
     check_mapping_data()
+    create_cleaned_aggregate_files()

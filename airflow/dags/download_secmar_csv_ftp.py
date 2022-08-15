@@ -62,3 +62,10 @@ check_mapping_data = PythonOperator(
     dag=dag,
 )
 check_mapping_data.set_upstream(build_aggregate_files)
+
+create_cleaned_aggregate_files = PythonOperator(
+    task_id="create_cleaned_aggregate_files",
+    python_callable=secmar_csv.create_cleaned_aggregate_files,
+    dag=dag,
+)
+create_cleaned_aggregate_files.set_upstream(check_mapping_data)
