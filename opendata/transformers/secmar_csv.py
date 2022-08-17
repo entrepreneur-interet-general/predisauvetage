@@ -306,6 +306,9 @@ def read_aggregate_file(filename, replace_mapping=True):
         df["SEC_C_QUI_ALERTE_cat_qui_alerte_id"] = df[
             "SEC_C_QUI_ALERTE_cat_qui_alerte_id"
         ].apply(lambda v: str(v).rstrip(".0"))
+        df["SEC_OPERATION_vent_direction"] = np.rad2deg(
+            df["SEC_OPERATION_vent_direction"]
+        ).round()
         df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.extract(
             r"FORCE_(\d)"
         )
@@ -327,6 +330,7 @@ def create_cleaned_aggregate_files():
         df.to_csv(
             str(AGGREGATE_FOLDER / target_filename),
             index=False,
+            float_format="%.6g",
             date_format="%Y-%m-%dT%H:%M:%SZ",
         )
         logging.debug("Saved aggregated and cleaned file %s" % target_filename)
