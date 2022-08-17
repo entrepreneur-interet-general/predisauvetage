@@ -309,9 +309,14 @@ def read_aggregate_file(filename, replace_mapping=True):
         df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.extract(
             r"FORCE_(\d)"
         )
-        df.drop_duplicates(subset=["secmar_operation_id"], keep="last", inplace=True)
+
     if replace_mapping:
         df.replace(to_replace=build_replacement_mapping(filename), inplace=True)
+
+    if filename == "operation.csv":
+        df = df.sort_values(
+            "SEC_OPERATION_evenement_id_1", na_position="first"
+        ).drop_duplicates(subset=["secmar_operation_id"], keep="last")
     return df
 
 
@@ -357,7 +362,7 @@ if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     # download_latest_remote_days()
     # process_all_days()
-    # build_aggregate_files()
+    build_aggregate_files()
     # describe_aggregate_files()
     # check_mapping_data()
     create_cleaned_aggregate_files()
