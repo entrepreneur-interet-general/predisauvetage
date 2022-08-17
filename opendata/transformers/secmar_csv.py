@@ -279,14 +279,15 @@ def read_aggregate_file(filename, replace_mapping=True):
     if filename == "flotteur.csv":
         df["SEC_FLOTTEUR_IMPLIQUE_mer_force"] = df[
             "SEC_FLOTTEUR_IMPLIQUE_mer_force"
-        ].str.replace('"', "")
+        ].str.extract(r"ETAT_MER_(\d)")
     if filename == "operation.csv":
         df["SEC_C_QUI_ALERTE_cat_qui_alerte_id"] = df[
             "SEC_C_QUI_ALERTE_cat_qui_alerte_id"
         ].apply(lambda v: str(v).rstrip(".0"))
-        df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.replace(
-            '"', ""
+        df["SEC_OPERATION_vent_force"] = df["SEC_OPERATION_vent_force"].str.extract(
+            r"FORCE_(\d)"
         )
+        df.drop_duplicates(subset=["secmar_operation_id"], keep="last", inplace=True)
     if replace_mapping:
         df.replace(to_replace=build_replacement_mapping(filename), inplace=True)
     return df
