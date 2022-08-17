@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import csv
+import datetime
 import logging
 import os
 import socket
@@ -11,6 +12,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from zipfile import ZipFile
 
+import numpy as np
 import pandas as pd
 import socks
 
@@ -258,10 +260,30 @@ def secmar_operation_id(row):
     return "%s%s%s%s" % (seamis_code, cross_id, year, numero_sitrep)
 
 
+def date_converters(date_columns):
+    def to_datetime(val):
+        if val == "":
+            return np.nan
+        formats = ["%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ"]
+        for date_format in formats:
+            try:
+                dt = datetime.datetime.strptime(val, date_format)
+                # Found 0819-08-12T00:00:00Z for ET_2021_DIV_3490
+                if dt.year <= 2000:
+                    return np.nan
+                return dt
+            except ValueError:
+                pass
+        raise ValueError("Cannot parse %s as a datetime" % val)
+
+    return {date_column: to_datetime for date_column in date_columns}
+
+
 def read_aggregate_file(filename, replace_mapping=True):
     logging.debug("Reading aggregate file %s", filename)
     df = pd.read_csv(
-        str(AGGREGATE_FOLDER / filename), parse_dates=_dates_for_filename(filename)
+        str(AGGREGATE_FOLDER / filename),
+        converters=date_converters(_dates_for_filename(filename)),
     )
 
     # Keep only the most recent version of the operation
@@ -333,9 +355,9 @@ def build_replacement_mapping(filename):
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    download_latest_remote_days()
-    process_all_days()
-    build_aggregate_files()
+    # download_latest_remote_days()
+    # process_all_days()
+    # build_aggregate_files()
     # describe_aggregate_files()
-    check_mapping_data()
+    # check_mapping_data()
     create_cleaned_aggregate_files()
