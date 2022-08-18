@@ -80,6 +80,11 @@ create_cleaned_aggregate_files.set_upstream(check_mapping_data)
 start_embulk = DummyOperator(task_id="start_embulk", dag=dag)
 start_embulk.set_upstream(create_cleaned_aggregate_files)
 
-for table in [Path(f).stem for f in secmar_csv.EXPECTED_FILENAMES]:
+operation_embulk = embulk_import(dag, "operation")
+operation_embulk.set_upstream(start_embulk)
+
+for table in [
+    Path(f).stem for f in secmar_csv.EXPECTED_FILENAMES if not f.startswith("operation")
+]:
     t = embulk_import(dag, table)
-    t.set_upstream(start_embulk)
+    t.set_upstream(operation_embulk)
