@@ -23,6 +23,7 @@ Les opérations sont classées de la manière suivante, par ordre de priorité 
     - Le navire fait l'objet d'une alerte SSAS (*Ship Security Alert System*) ou de sûreté ;
     - Le navire fait l'objet d'acte de piraterie, de mutinerie ou de terrorisme ;
     - Le navire cause ou fait l'objet de désordres occasionnant un trouble à l'ordre public.
+- **POL** : Opération de recherche de pollutions
 - **DIV** : Autres évènement générant une activité non contenue dans les classifications ci-dessus.
 
 ## Cas particuliers dans les événements

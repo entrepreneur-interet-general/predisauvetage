@@ -20,8 +20,8 @@ components:
           example: 1119920371
         type_operation:
           type: string
-          enum: [SAR, MAS, DIV, SUR]
-          description: "Le type d'opération coordonné par le CROSS. SAR (search and rescue) : vie humaine en danger ; MAS (maritime assistance service) : assistance aux navires ; SUR : sûreté des navires ; DIV : autres cas."
+          enum: [SAR, MAS, DIV, SUR, POL]
+          description: "Le type d'opération coordonné par le CROSS. SAR (search and rescue) : vie humaine en danger ; MAS (maritime assistance service) : assistance aux navires ; SUR : sûreté des navires ; POL : pollutions ; DIV : autres cas."
           example: SAR
           nullable: true
         pourquoi_alerte:
@@ -136,8 +136,8 @@ components:
           description: Numéro de situation report. Les numéros de SITREP sont remis à 0 tous les ans au 1er janvier 0h UTC et la numérotation est incrémentale par la suite. La numérotation des SITREP est indépendante pour chaque CROSS.
         cross_sitrep:
           type: string
-          description: "Identifiant unique de l'opération. Il est composé du CROSS coordinateur de l'opération, de l'année et du numéro de SITREP"
-          example: "Corsen 2017/42"
+          description: "Identifiant unique de l'opération. Il est composé du CROSS coordinateur de l'opération, du type d'opération, de l'année et du numéro de SITREP"
+          example: "Corsen SAR 2017/42"
         fuseau_horaire:
           type: string
           description: "Fuseau horaire du CROSS coordonnant l'opération. Le fuseau horaire correspond à la timezone database de l'IANA"

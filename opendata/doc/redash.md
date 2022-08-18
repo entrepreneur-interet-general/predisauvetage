@@ -56,7 +56,7 @@ GROUP BY 1, 2, 3
 ORDER BY 2 ASC -- Le tri ascendant par CROSS permet d'avoir les CROSS dans l'ordre alphabétique dans le filtre
 ```
 
-Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROSS et une ou plusieurs valeurs possibles pour le type d'opération (SAR / MAS / DIV / SUR).
+Vous obtenez alors le résultat suivant : vous pouvez choisir une valeur de CROSS et une ou plusieurs valeurs possibles pour le type d'opération (SAR / MAS / DIV / SUR / POL).
 
 ![Résultat de la requête avec des filtres](https://i.imgur.com/izuytNo.png)
 

@@ -260,6 +260,15 @@ def read_mapping_file(filename):
     return df
 
 
+def cross_sitrep(row):
+    return "%s %s %s/%s" % (
+        row["SEC_OPERATION_SEC_OPERATIONcross_id"],
+        row["SEC_OPERATION_pourquoi_alerte_id"],
+        row["SEC_OPERATION_date_heure_recpt_alerte_id"].year,
+        row["SEC_OPERATION_no_SITREP"],
+    )
+
+
 def secmar_operation_id(row):
     # JB_2020_SAR_0941_3
     cross, year, pourquoi_alerte, numero_sitrep, _ = row["operation_id"].split("_")
@@ -328,6 +337,7 @@ def read_aggregate_file(filename, replace_mapping=True):
         df.replace(to_replace=build_replacement_mapping(filename), inplace=True)
 
     if filename == "operation.csv":
+        df["cross_sitrep"] = df.apply(lambda r: cross_sitrep(r), axis=1)
         df = df.sort_values(
             "SEC_OPERATION_evenement_id_1", na_position="first"
         ).drop_duplicates(subset=["secmar_operation_id"], keep="last")
