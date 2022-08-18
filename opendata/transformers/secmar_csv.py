@@ -261,10 +261,12 @@ def read_mapping_file(filename):
 
 
 def cross_sitrep(row):
+    # JB_2020_SAR_0941_3
+    year = row["operation_id"].split("_")[1]
     return "%s %s %s/%s" % (
         row["SEC_OPERATION_SEC_OPERATIONcross_id"],
         row["SEC_OPERATION_pourquoi_alerte_id"],
-        row["SEC_OPERATION_date_heure_recpt_alerte_id"].year,
+        year,
         row["SEC_OPERATION_no_SITREP"],
     )
 
