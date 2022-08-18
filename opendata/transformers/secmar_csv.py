@@ -30,6 +30,14 @@ def cross_mapping():
     return {v: k for k, v in mapping.items()}
 
 
+@lru_cache(maxsize=None)
+def pourquoi_alerte_mapping():
+    mapping = read_mapping_file("SEC_OPERATION_pourquoi_alerte_id.csv")[
+        "libelle"
+    ].to_dict()
+    return {v: k for k, v in mapping.items()}
+
+
 def ftp_download_remote_folder(day):
     (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
     if os.getenv("FTP_PROXY", "false") == "true":
@@ -254,10 +262,13 @@ def read_mapping_file(filename):
 
 def secmar_operation_id(row):
     # JB_2020_SAR_0941_3
-    cross, year, _, numero_sitrep, _ = row["operation_id"].split("_")
+    cross, year, pourquoi_alerte, numero_sitrep, _ = row["operation_id"].split("_")
     seamis_code = "1"
     cross_id = cross_mapping()[cross]
-    return "%s%s%s%s" % (seamis_code, cross_id, year, numero_sitrep)
+    pourquoi_alerte_id = pourquoi_alerte_mapping()[pourquoi_alerte]
+    return "".join(
+        map(str, [seamis_code, cross_id, pourquoi_alerte_id, year, numero_sitrep])
+    )
 
 
 def date_converters(date_columns):
