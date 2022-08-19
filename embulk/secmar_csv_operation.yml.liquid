@@ -36,6 +36,9 @@ in:
     - {name: operation_version, type: long}
     - {name: secmar_operation_id, type: long}
     - {name: cross_sitrep, type: string}
+    - {name: vent_direction_categorie, type: string}
+    - {name: fuseau_horaire, type: string}
+    - {name: est_metropolitain, type: string}
 {% include 'datasources/out_postgresql' %}
   table: secmar_csv_operation
   mode: truncate_insert

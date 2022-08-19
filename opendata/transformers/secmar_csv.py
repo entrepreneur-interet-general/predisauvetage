@@ -343,7 +343,68 @@ def read_aggregate_file(filename, replace_mapping=True):
         df = df.sort_values(
             "SEC_OPERATION_evenement_id_1", na_position="first"
         ).drop_duplicates(subset=["secmar_operation_id"], keep="last")
+        df["vent_direction_categorie"] = vent_direction_categorie(
+            df["SEC_OPERATION_vent_direction"]
+        )
+        df["fuseau_horaire"] = fuseau_horaire(df["SEC_OPERATION_SEC_OPERATIONcross_id"])
+        df["est_metropolitain"] = est_metropolitain(df["SEC_OPERATION_dept_id"])
     return df
+
+
+def est_metropolitain(series):
+    dept_hors_metropole = [
+        "Guadeloupe",
+        "Guyane",
+        "La Réunion",
+        "Martinique",
+        "Mayotte",
+        "Nouvelle-Calédonie",
+        "Polynésie française",
+        "Saint-Barthélemy",
+        "Saint-Martin",
+        "Saint-Pierre-et-Miquelon",
+        "Terres australes et antarctiques françaises",
+        "Wallis-et-Futuna",
+        "Île de Clipperton",
+    ]
+    return ~series.isin(dept_hors_metropole)
+
+
+def vent_direction_categorie(series):
+    bins = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, np.inf]
+    labels = [
+        "nord",
+        "nord-est",
+        "est",
+        "sud-est",
+        "sud",
+        "sud-ouest",
+        "ouest",
+        "nord-ouest",
+        "nord2",
+    ]
+    return pd.cut(series, bins=bins, labels=labels).replace("nord2", "nord")
+
+
+def fuseau_horaire(series):
+    return series.map(
+        {
+            "Antilles-Guyane": "America/Cayenne",
+            "Corse": "Europe/Paris",
+            "Corsen": "Europe/Paris",
+            "Gris-Nez": "Europe/Paris",
+            "Guadeloupe": "America/Guadeloupe",
+            "Guyane": "America/Guyana",
+            "Jobourg": "Europe/Paris",
+            "La Garde": "Europe/Paris",
+            "La Réunion": "Indian/Reunion",
+            "Martinique": "America/Martinique",
+            "Mayotte": "Indian/Mayotte",
+            "Nouvelle-Calédonie": "Pacific/Noumea",
+            "Polynésie": "Pacific/Tahiti",
+            "Étel": "Europe/Paris",
+        }
+    )
 
 
 def create_cleaned_aggregate_files():
