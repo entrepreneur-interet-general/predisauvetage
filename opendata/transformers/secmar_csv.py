@@ -367,7 +367,7 @@ def est_metropolitain(series):
         "Wallis-et-Futuna",
         "Île de Clipperton",
     ]
-    return ~series.isin(dept_hors_metropole)
+    return series.map(lambda v: v not in dept_hors_metropole, na_action="ignore")
 
 
 def vent_direction_categorie(series):
