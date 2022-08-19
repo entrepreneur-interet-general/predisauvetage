@@ -126,10 +126,10 @@ def checks():
               date_heure_reception_alerte
             from operations as op
             join (
-                select 'Corsen 2017/1305' cross_sitrep ,'2017-12-16 11:57:00+00' expected_time UNION
-                select 'Corsen 2018/1503' cross_sitrep ,'2018-10-13 08:13:00+00' expected_time UNION
-                select 'Étel 2018/3473' cross_sitrep ,'2018-12-20 08:51:00+00' expected_time UNION
-                select 'Corsen 2019/2604' cross_sitrep ,'2019-12-20 13:26:00+00' expected_time
+                select 'Corsen SAR 2017/1305' cross_sitrep ,'2017-12-16 11:57:00+00' expected_time UNION
+                select 'Corsen SAR 2018/1503' cross_sitrep ,'2018-10-13 08:13:00+00' expected_time UNION
+                select 'Étel SAR 2018/3473' cross_sitrep ,'2018-12-20 08:51:00+00' expected_time UNION
+                select 'Corsen SAR 2019/2604' cross_sitrep ,'2019-12-20 13:26:00+00' expected_time
             ) t on t.cross_sitrep = op.cross_sitrep and op.date_heure_reception_alerte::text = t.expected_time
         ) t
         """,
