@@ -126,6 +126,7 @@ for table in ["flotteurs", "resultats_humain", "moyens"]:
 
 start_checks = DummyOperator(task_id="start_checks", dag=dag)
 end_checks = DummyOperator(task_id="end_checks", dag=dag)
+start_checks.set_upstream(end_sql_insert)
 
 for check_name, query in secmar_csv_checks().items():
     t = CheckOperator(
