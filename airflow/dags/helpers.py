@@ -16,6 +16,12 @@ def opendata_sql_path(filename):
     )
 
 
+def secmar_csv_sql_path(filename):
+    return "{base}/opendata_sql/secmar_csv/{filename}.sql".format(
+        base=base_path(), filename=filename
+    )
+
+
 def data_path(filename):
     return "{base}/data/{filename}".format(base=base_path(), filename=filename)
 

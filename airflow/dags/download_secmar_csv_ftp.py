@@ -9,6 +9,7 @@ from pathlib import Path
 
 import helpers
 from airflow import DAG
+from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
@@ -27,7 +28,7 @@ dag = DAG(
 dag.doc_md = __doc__
 
 
-def call_fn(**kwargs):
+def ftp_download_fn(**kwargs):
     os.environ["FTP_PROXY"] = "false"
     os.environ["FTP_HOST"] = Variable.get("SECMAR_CSV_FTP_HOST")
     os.environ["FTP_USER"] = Variable.get("SECMAR_CSV_FTP_USER")
@@ -41,9 +42,16 @@ def embulk_import(dag, table):
     return helpers.embulk_run(dag, script, {"EMBULK_FILEPATH": filepath})
 
 
+def execute_sql_file(filename):
+    path = helpers.secmar_csv_sql_path(filename)
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return PostgresHook("postgresql_local").run(content)
+
+
 download_single_day = PythonOperator(
     task_id="download_single_day",
-    python_callable=call_fn,
+    python_callable=ftp_download_fn,
     provide_context=True,
     dag=dag,
     templates_dict={"day": "{{ ds_nodash }}"},
@@ -78,13 +86,29 @@ create_cleaned_aggregate_files = PythonOperator(
 create_cleaned_aggregate_files.set_upstream(check_mapping_data)
 
 start_embulk = DummyOperator(task_id="start_embulk", dag=dag)
+end_embulk = DummyOperator(task_id="end_embulk", dag=dag)
 start_embulk.set_upstream(create_cleaned_aggregate_files)
 
 operation_embulk = embulk_import(dag, "operation")
 operation_embulk.set_upstream(start_embulk)
+operation_embulk.set_downstream(end_embulk)
 
 for table in [
     Path(f).stem for f in secmar_csv.EXPECTED_FILENAMES if not f.startswith("operation")
 ]:
     t = embulk_import(dag, table)
     t.set_upstream(operation_embulk)
+    t.set_downstream(end_embulk)
+
+
+start_sql_insert = DummyOperator(task_id="start_sql_insert", dag=dag)
+end_sql_insert = DummyOperator(task_id="end_sql_insert", dag=dag)
+start_sql_insert.set_upstream(end_embulk)
+
+insert_operations = execute_sql_file("insert_operations")
+insert_operations.set_upstream(start_sql_insert)
+
+for table in ["flotteurs", "resultats_humain", "moyens"]:
+    t = execute_sql_file("insert_{table}".format(table=table))
+    t.set_upstream(insert_operations)
+    t.set_downstream(end_sql_insert)
