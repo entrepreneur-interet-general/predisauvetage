@@ -48,7 +48,7 @@ SELECT
   "SEC_MOYEN_MEO_autorite_moyen_id" autorite_moyen,
   "SEC_MOYEN_MEO_date_heure_depart" date_heure_debut,
   "SEC_MOYEN_MEO_duree" date_heure_fin,
-  extract(epoch from "SEC_MOYEN_MEO_date_heure_depart" - "SEC_MOYEN_MEO_duree")/60 duree_engagement_minutes
+  extract(epoch from "SEC_MOYEN_MEO_duree" - "SEC_MOYEN_MEO_date_heure_depart")/60 duree_engagement_minutes
 FROM secmar_csv_moyen m
 LEFT JOIN (
   SELECT DISTINCT moyen, domaine_action FROM moyens
