@@ -11,8 +11,10 @@ import helpers
 from airflow import DAG
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
+from airflow.operators.check_operator import CheckOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
+from secmar_checks import secmar_csv_checks
 from transformers import secmar_csv
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 22, 10, 0)})
@@ -121,3 +123,16 @@ for table in ["flotteurs", "resultats_humain", "moyens"]:
     t = execute_sql_task(dag, "insert_{table}".format(table=table))
     t.set_upstream(insert_operations)
     t.set_downstream(end_sql_insert)
+
+start_checks = DummyOperator(task_id="start_checks", dag=dag)
+end_checks = DummyOperator(task_id="end_checks", dag=dag)
+
+for check_name, query in secmar_csv_checks().items():
+    t = CheckOperator(
+        task_id="check_consistency_" + check_name,
+        sql=query,
+        conn_id="postgresql_local",
+        dag=dag,
+    )
+    t.set_upstream(start_checks)
+    t.set_downstream(end_checks)
