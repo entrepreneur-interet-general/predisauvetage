@@ -13,7 +13,7 @@ from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
 from airflow.operators.check_operator import CheckOperator
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python_operator import PythonOperator, ShortCircuitOperator
 from secmar_checks import secmar_csv_checks
 from transformers import secmar_csv
 
@@ -30,12 +30,21 @@ dag = DAG(
 dag.doc_md = __doc__
 
 
-def ftp_download_fn(**kwargs):
+def setup_ftp_env():
     os.environ["FTP_PROXY"] = "false"
     os.environ["FTP_HOST"] = Variable.get("SECMAR_CSV_FTP_HOST")
     os.environ["FTP_USER"] = Variable.get("SECMAR_CSV_FTP_USER")
     os.environ["FTP_PASSWORD"] = Variable.get("SECMAR_CSV_FTP_PASSWORD")
+
+
+def ftp_download_fn(**kwargs):
+    setup_ftp_env()
     secmar_csv.ftp_download_remote_folder(kwargs["templates_dict"]["day"])
+
+
+def check_if_next_day_exists_fn(**kwargs):
+    setup_ftp_env()
+    secmar_csv.day_exists_in_remote_ftp(kwargs["templates_dict"]["day"])
 
 
 def embulk_import(dag, table):
@@ -68,12 +77,32 @@ download_single_day = PythonOperator(
     templates_dict={"day": "{{ ds_nodash }}"},
 )
 
+check_if_next_day_exists = ShortCircuitOperator(
+    task_id="check_if_next_day_exists",
+    python_callable=check_if_next_day_exists_fn,
+    provide_context=True,
+    dag=dag,
+    templates_dict={"day": "{{ tomorrow_ds_nodash }}"},
+)
+check_if_next_day_exists.set_upstream(download_single_day)
+
+download_next_day = PythonOperator(
+    task_id="download_next_day",
+    python_callable=ftp_download_fn,
+    provide_context=True,
+    dag=dag,
+    templates_dict={"day": "{{ tomorrow_ds_nodash }}"},
+)
+download_next_day.set_upstream(check_if_next_day_exists)
+
 process_all_days = PythonOperator(
     task_id="process_all_days",
     python_callable=secmar_csv.process_all_days,
     dag=dag,
+    trigger_rule="all_done",
 )
 process_all_days.set_upstream(download_single_day)
+process_all_days.set_upstream(download_next_day)
 
 build_aggregate_files = PythonOperator(
     task_id="build_aggregate_files",

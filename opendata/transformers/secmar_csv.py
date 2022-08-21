@@ -38,8 +38,7 @@ def pourquoi_alerte_mapping():
     return {v: k for k, v in mapping.items()}
 
 
-def ftp_download_remote_folder(day):
-    (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
+def _setup_ftp_connexion():
     if os.getenv("FTP_PROXY", "false") == "true":
         socks.setdefaultproxy(
             socks.PROXY_TYPE_SOCKS5,
@@ -51,6 +50,17 @@ def ftp_download_remote_folder(day):
     ftp = FTP(env["FTP_HOST"])
     ftp.login(env["FTP_USER"], env["FTP_PASSWORD"])
     ftp.cwd(FTP_BASE_FOLDER)
+    return ftp
+
+
+def day_exists_in_remote_ftp(day):
+    folders = [name for name, _ in _setup_ftp_connexion().mlsd()]
+    return day in folders
+
+
+def ftp_download_remote_folder(day):
+    (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
+    ftp = _setup_ftp_connexion()
     ftp.cwd(day)
     filenames = ftp.nlst()
     logging.debug("Found %s remote files to download for %s" % (len(filenames), day))
