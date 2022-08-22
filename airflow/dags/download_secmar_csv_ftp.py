@@ -13,7 +13,7 @@ from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
 from airflow.operators.check_operator import CheckOperator
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator, ShortCircuitOperator
+from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
 from secmar_checks import secmar_csv_checks
 from transformers import secmar_csv
 
@@ -44,7 +44,9 @@ def ftp_download_fn(**kwargs):
 
 def check_if_next_day_exists_fn(**kwargs):
     setup_ftp_env()
-    secmar_csv.day_exists_in_remote_ftp(kwargs["templates_dict"]["day"])
+    if secmar_csv.day_exists_in_remote_ftp(kwargs["templates_dict"]["day"]):
+        return "download_next_day"
+    return "process_all_days"
 
 
 def embulk_import(dag, table):
@@ -77,7 +79,7 @@ download_single_day = PythonOperator(
     templates_dict={"day": "{{ ds_nodash }}"},
 )
 
-check_if_next_day_exists = ShortCircuitOperator(
+check_if_next_day_exists = BranchPythonOperator(
     task_id="check_if_next_day_exists",
     python_callable=check_if_next_day_exists_fn,
     provide_context=True,
