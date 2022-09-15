@@ -1,52 +1,14 @@
-DROP TABLE IF EXISTS public.operations_copy CASCADE;
-CREATE TABLE public.operations_copy (
-    "operation_id" bigint primary key,
-    "type_operation" varchar(3),
-    "pourquoi_alerte" varchar(50),
-    "moyen_alerte" varchar(100) not null,
-    "qui_alerte" varchar(100) not null,
-    "categorie_qui_alerte" varchar(100) not null,
-    "cross" noms_cross not null,
-    "departement" varchar(100),
-    "est_metropolitain" boolean,
-    "evenement" varchar(100) not null,
-    "categorie_evenement" varchar(50) not null,
-    "autorite" varchar(100) not null,
-    "seconde_autorite" varchar(100),
-    "zone_responsabilite" varchar(50) not null,
-    "latitude" numeric(7, 4),
-    "longitude" numeric(7, 4),
-    "vent_direction" smallint,
-    "vent_direction_categorie" varchar(10),
-    "vent_force" smallint,
-    "mer_force" smallint,
-    "date_heure_reception_alerte" timestamp with time zone not null,
-    "date_heure_fin_operation" timestamp with time zone not null,
-    "numero_sitrep" smallint not null,
-    "cross_sitrep" varchar(50) not null,
-    "fuseau_horaire" varchar(25) not null
-);
+ALTER TABLE operations ALTER COLUMN evenement DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN categorie_evenement DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN moyen_alerte DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN autorite DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN qui_alerte DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN zone_responsabilite DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN categorie_qui_alerte DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN date_heure_reception_alerte DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN date_heure_fin_operation DROP NOT NULL;
 
-CREATE INDEX ON operations_copy(type_operation);
-CREATE INDEX ON operations_copy(pourquoi_alerte);
-CREATE INDEX ON operations_copy("cross");
-CREATE INDEX ON operations_copy(departement);
-CREATE INDEX ON operations_copy(date_heure_reception_alerte);
-CREATE INDEX ON operations_copy(date_heure_fin_operation);
-
-insert into operations_copy select * from operations;
-
-ALTER TABLE operations_copy ALTER COLUMN evenement DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN categorie_evenement DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN moyen_alerte DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN autorite DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN qui_alerte DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN zone_responsabilite DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN categorie_qui_alerte DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN date_heure_reception_alerte DROP NOT NULL;
-ALTER TABLE operations_copy ALTER COLUMN date_heure_fin_operation DROP NOT NULL;
-
-insert into operations_copy (
+insert into operations (
     "operation_id",
     "type_operation",
     "pourquoi_alerte",
@@ -101,4 +63,4 @@ select
     "cross_sitrep" cross_sitrep,
     "fuseau_horaire" fuseau_horaire
 from secmar_csv_operation
-where cross_sitrep not in (select cross_sitrep from operations_copy);
+where cross_sitrep not in (select cross_sitrep from operations);

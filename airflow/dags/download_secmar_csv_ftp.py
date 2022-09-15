@@ -9,12 +9,9 @@ from pathlib import Path
 
 import helpers
 from airflow import DAG
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
-from airflow.operators.check_operator import CheckOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
-from secmar_checks import secmar_csv_checks
 from transformers import secmar_csv
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 22, 10, 0)})
@@ -53,22 +50,6 @@ def embulk_import(dag, table):
     script = "secmar_csv_%s" % table
     filepath = str(secmar_csv.AGGREGATE_FOLDER / (table + ".cleaned.csv"))
     return helpers.embulk_run(dag, script, {"EMBULK_FILEPATH": filepath})
-
-
-def _execute_sql_file(filename):
-    path = helpers.secmar_csv_sql_path(filename)
-    with open(path, "r", encoding="utf-8") as f:
-        content = f.read()
-    return PostgresHook("postgresql_local").run(content)
-
-
-def execute_sql_task(dag, filename):
-    return PythonOperator(
-        task_id="run_" + filename,
-        python_callable=lambda **kwargs: _execute_sql_file(filename),
-        provide_context=True,
-        dag=dag,
-    )
 
 
 download_single_day = PythonOperator(
@@ -141,30 +122,3 @@ for table in [
     t = embulk_import(dag, table)
     t.set_upstream(operation_embulk)
     t.set_downstream(end_embulk)
-
-
-start_sql_insert = DummyOperator(task_id="start_sql_insert", dag=dag)
-end_sql_insert = DummyOperator(task_id="end_sql_insert", dag=dag)
-start_sql_insert.set_upstream(end_embulk)
-
-insert_operations = execute_sql_task(dag, "insert_operations")
-insert_operations.set_upstream(start_sql_insert)
-
-for table in ["flotteurs", "resultats_humain", "moyens"]:
-    t = execute_sql_task(dag, "insert_{table}".format(table=table))
-    t.set_upstream(insert_operations)
-    t.set_downstream(end_sql_insert)
-
-start_checks = DummyOperator(task_id="start_checks", dag=dag)
-end_checks = DummyOperator(task_id="end_checks", dag=dag)
-start_checks.set_upstream(end_sql_insert)
-
-for check_name, query in secmar_csv_checks().items():
-    t = CheckOperator(
-        task_id="check_consistency_" + check_name,
-        sql=query,
-        conn_id="postgresql_local",
-        dag=dag,
-    )
-    t.set_upstream(start_checks)
-    t.set_downstream(end_checks)
