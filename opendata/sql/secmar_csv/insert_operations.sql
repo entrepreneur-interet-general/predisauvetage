@@ -56,7 +56,7 @@ select
     "vent_direction_categorie" vent_direction_categorie,
     "SEC_OPERATION_vent_force" vent_force,
     null mer_force,
-    "SEC_OPERATION_date_heure_recpt_alerte_id" date_heure_reception_alerte,
+    coalesce("SEC_OPERATION_date_heure_recpt_alerte_id", "SEC_OPERATION_date_heure_fin_operation") date_heure_reception_alerte,
     "SEC_OPERATION_date_heure_fin_operation" date_heure_fin_operation,
     -- "SEC_OPERATION_date_operation",
     "SEC_OPERATION_no_SITREP" numero_sitrep,
@@ -64,3 +64,6 @@ select
     "fuseau_horaire" fuseau_horaire
 from secmar_csv_operation
 where cross_sitrep not in (select cross_sitrep from operations);
+
+update operations set latitude = null where longitude is null;
+update operations set longitude = null where latitude is null;
