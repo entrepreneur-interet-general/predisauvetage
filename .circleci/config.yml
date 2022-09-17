@@ -59,7 +59,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: Pull CHANGELOG
-          command: wget https://raw.githubusercontent.com/MTES-MCT/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
+          command: wget https://raw.githubusercontent.com/snosan-tools/secmar-data/master/CHANGELOG.md -O doc/CHANGELOG.md
       - run:
           name: Build Markdown documentation for opendata
           command: |
