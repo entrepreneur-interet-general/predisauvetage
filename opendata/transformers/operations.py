@@ -15,9 +15,9 @@ class OperationsTransformer(BaseTransformer):
         df = self.read_csv()
 
         df["numero_sitrep"] = df.apply(lambda r: self.numero_sitrep(r), axis=1)
-        df["cross_sitrep"] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df["fuseau_horaire"] = self.fuseau_horaire(df.cross)
         df.insert(1, "type_operation", self.type_operation(df.pourquoi_alerte))
+        df["cross_sitrep"] = df.apply(lambda r: self.cross_sitrep(r), axis=1)
         df["pourquoi_alerte"] = self.pourquoi_alerte(df.pourquoi_alerte)
         df.insert(
             loc=df.columns.get_loc("vent_direction") + 1,
@@ -75,18 +75,24 @@ class OperationsTransformer(BaseTransformer):
         return row["numero_sitrep"]
 
     def cross_sitrep(self, row):
-        return "{cross} {year}/{sitrep_nb}".format(
+        type_operation_str = " "
+        if row["type_operation"] not in [np.nan, "nan"]:
+            type_operation_str = " {type_operation} ".format(
+                type_operation=row["type_operation"]
+            )
+        return "{cross}{type_operation_str}{year}/{sitrep_nb}".format(
             cross=row["cross"],
+            type_operation_str=type_operation_str,
             year=row["date_heure_reception_alerte"].year,
             sitrep_nb=int(row["numero_sitrep"]),
         )
 
     def pourquoi_alerte(self, series):
-        return series.replace({r"^(SAR|MAS|DIV|SUR).*": np.nan}, regex=True)
+        return series.replace({r"^(SAR|MAS|DIV|SUR|POL).*": np.nan}, regex=True)
 
     def type_operation(self, series):
-        return series.replace({r"^(SAR|MAS|DIV|SUR).*": r"\1"}, regex=True).replace(
-            {r"^(?!SAR|MAS|DIV|SUR).*": np.nan}, regex=True
+        return series.replace({r"^(SAR|MAS|DIV|SUR|POL).*": r"\1"}, regex=True).replace(
+            {r"^(?!SAR|MAS|DIV|SUR|POL).*": np.nan}, regex=True
         )
 
     def fuseau_horaire(self, series):

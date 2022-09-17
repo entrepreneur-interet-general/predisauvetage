@@ -123,10 +123,12 @@ secmar <- secmar %>%
 secmar <- secmar %>%
           mutate(date_heure = as.numeric(format(date_heure_reception_alerte, "%H")) +
                               as.numeric(format(date_heure_reception_alerte, "%M"))/60)
-#Replace na by Non renseigné in type_operation and departement
+#Replace na by Non renseigné for various fields
 secmar <- secmar %>%
           mutate(type_operation = replace_na(type_operation, "Non renseigné")) %>%
-          mutate(departement = replace_na(departement, 'Non renseigné'))
+          mutate(departement = replace_na(departement, "Non renseigné")) %>%
+          mutate(evenement = replace_na(evenement, "Non renseigné")) %>%
+          mutate(zone_responsabilite = replace_na(zone_responsabilite, "Non renseignée"))
 
 # Create a column with a list of flotteurs involved
 secmar <- secmar %>%

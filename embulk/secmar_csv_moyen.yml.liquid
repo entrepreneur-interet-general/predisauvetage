@@ -1,0 +1,27 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    columns:
+    - {name: operation_id, type: string}
+    - {name: SEC_MOYEN_MEO_date_heure_depart, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: SEC_MOYEN_MEO_duree, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
+    - {name: SEC_MOYEN_MEO_autorite_moyen_id, type: string}
+    - {name: SEC_C_MOYEN_cat_moyen_id, type: string}
+    - {name: SEC_MOYEN_MEO_moyen_id, type: string}
+    - {name: operation_long_name, type: string}
+    - {name: operation_version, type: long}
+    - {name: secmar_operation_id, type: long}
+{% include 'datasources/out_postgresql' %}
+  table: secmar_csv_moyen
+  mode: truncate_insert

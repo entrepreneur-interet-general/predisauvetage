@@ -1,0 +1,10 @@
+code,libelle
+ABS,null
+ASSI,Personne assistée
+AUTR,Autre
+SECO,Personne secourue
+TAS,Personne tirée d'affaire seule
+NOAS,Personne impliquée dans fausse alerte
+RETR,Personne retrouvée
+DCDA,Personne décédée accidentellement
+DISP,Personne disparue

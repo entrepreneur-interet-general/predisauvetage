@@ -7,20 +7,23 @@ Extract, transform and load SECMAR data
 """
 from datetime import datetime
 
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.check_operator import CheckOperator
-from airflow.hooks.postgres_hook import PostgresHook
-from operators.pg_download_operator import PgDownloadOperator
-from airflow.operators.dagrun_operator import TriggerDagRunOperator
-
-
 import helpers
-from secmar_dags import in_path, out_path, secmar_transform
-from secmar_dags import SECMAR_TABLES, secmar_transformer
-from secmar_checks import checks
+from airflow import DAG
+from airflow.hooks.postgres_hook import PostgresHook
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.check_operator import CheckOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
+from operators.pg_download_operator import PgDownloadOperator
+from secmar_checks import checks, secmar_csv_checks
+from secmar_dags import (
+    SECMAR_TABLES,
+    in_path,
+    out_path,
+    secmar_transform,
+    secmar_transformer,
+)
 
 default_args = helpers.default_args({"start_date": datetime(2018, 4, 27, 5, 40)})
 
@@ -89,6 +92,22 @@ def execute_sql_file(filename):
     return PostgresHook("postgresql_local").run(content)
 
 
+def _execute_secmar_csv_sql_file(filename):
+    path = helpers.secmar_csv_sql_path(filename)
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return PostgresHook("postgresql_local").run(content)
+
+
+def secmar_csv_sql_task(dag, filename):
+    return PythonOperator(
+        task_id="run_" + filename,
+        python_callable=lambda **kwargs: _execute_secmar_csv_sql_file(filename),
+        provide_context=True,
+        dag=dag,
+    )
+
+
 def make_distance_fn(distance):
     return lambda **kwargs: execute_sql_file(distance)
 
@@ -147,6 +166,33 @@ delete_invalid_operations = PythonOperator(
 )
 delete_invalid_operations.set_upstream(end_import)
 
+# Insert data fetched by FTP, "secmar_csv"
+start_secmar_csv_insert = DummyOperator(task_id="start_secmar_csv_insert", dag=dag)
+end_secmar_csv_insert = DummyOperator(task_id="end_secmar_csv_insert", dag=dag)
+start_secmar_csv_insert.set_upstream(delete_invalid_operations)
+
+insert_operations = secmar_csv_sql_task(dag, "insert_operations")
+insert_operations.set_upstream(start_secmar_csv_insert)
+
+for table in ["flotteurs", "resultats_humain", "moyens"]:
+    t = secmar_csv_sql_task(dag, "insert_{table}".format(table=table))
+    t.set_upstream(insert_operations)
+    t.set_downstream(end_secmar_csv_insert)
+
+start_secmar_csv_checks = DummyOperator(task_id="start_secmar_csv_checks", dag=dag)
+end_secmar_csv_checks = DummyOperator(task_id="end_secmar_csv_checks", dag=dag)
+start_secmar_csv_checks.set_upstream(end_secmar_csv_insert)
+
+for check_name, query in secmar_csv_checks().items():
+    t = CheckOperator(
+        task_id="check_consistency_" + check_name,
+        sql=query,
+        conn_id="postgresql_local",
+        dag=dag,
+    )
+    t.set_upstream(start_secmar_csv_checks)
+    t.set_downstream(end_secmar_csv_checks)
+
 insert_operations_stats = PythonOperator(
     task_id="insert_operations_stats",
     python_callable=insert_operations_stats_fn,
@@ -161,7 +207,7 @@ prepare_operations_points = PythonOperator(
     provide_context=True,
     dag=dag,
 )
-prepare_operations_points.set_upstream(delete_invalid_operations)
+prepare_operations_points.set_upstream(end_secmar_csv_checks)
 
 insert_moyens_snsm = PythonOperator(
     task_id="insert_moyens_snsm",
@@ -169,7 +215,7 @@ insert_moyens_snsm = PythonOperator(
     provide_context=True,
     dag=dag,
 )
-insert_moyens_snsm.set_upstream(delete_invalid_operations)
+insert_moyens_snsm.set_upstream(end_secmar_csv_checks)
 insert_moyens_snsm.set_downstream(start_checks)
 
 distances = [
@@ -213,7 +259,7 @@ download_operations_local_time = PgDownloadOperator(
     csv_params={"sep": ",", "index": False},
     dag=dag,
 )
-download_operations_local_time.set_upstream(delete_invalid_operations)
+download_operations_local_time.set_upstream(end_secmar_csv_checks)
 
 transform_operations_stats = PythonOperator(
     task_id="transform_operations_stats",

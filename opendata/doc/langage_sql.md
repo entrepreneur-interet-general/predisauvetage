@@ -47,7 +47,7 @@ Ainsi, une requête pour calculer l'année d'il y a 10 ans peut s'exprimer de la
 select (date_part('year', current_date) - 10)
 ```
 
-Cette fonctionnalité permet de calculer des choses sur des années glissantes. Par exemple, le nombre d'opérations SAR/MAS/DIV/SUR pour tous les CROSS par année sur les 10 dernières années :
+Cette fonctionnalité permet de calculer des choses sur des années glissantes. Par exemple, le nombre d'opérations SAR/MAS/DIV/SUR/POL pour tous les CROSS par année sur les 10 dernières années :
 ```sql
 SELECT
   "stats"."annee",

@@ -126,10 +126,10 @@ def checks():
               date_heure_reception_alerte
             from operations as op
             join (
-                select 'Corsen 2017/1305' cross_sitrep ,'2017-12-16 11:57:00+00' expected_time UNION
-                select 'Corsen 2018/1503' cross_sitrep ,'2018-10-13 08:13:00+00' expected_time UNION
-                select 'Étel 2018/3473' cross_sitrep ,'2018-12-20 08:51:00+00' expected_time UNION
-                select 'Corsen 2019/2604' cross_sitrep ,'2019-12-20 13:26:00+00' expected_time
+                select 'Corsen SAR 2017/1305' cross_sitrep ,'2017-12-16 11:57:00+00' expected_time UNION
+                select 'Corsen SAR 2018/1503' cross_sitrep ,'2018-10-13 08:13:00+00' expected_time UNION
+                select 'Étel SAR 2018/3473' cross_sitrep ,'2018-12-20 08:51:00+00' expected_time UNION
+                select 'Corsen SAR 2019/2604' cross_sitrep ,'2019-12-20 13:26:00+00' expected_time
             ) t on t.cross_sitrep = op.cross_sitrep and op.date_heure_reception_alerte::text = t.expected_time
         ) t
         """,
@@ -138,5 +138,35 @@ def checks():
             count(1) = 0
         from operations_stats
         where concerne_snosan and avec_clandestins
+        """,
+    }
+
+
+def secmar_csv_checks():
+    return {
+        "operations_count_2021": """
+            select count(1) between 16800 and 16820
+            from operations
+            where extract(year from date_heure_reception_alerte) = 2021
+        """,
+        "operations_count_up_to_2021": """
+            select count(1) between 321500 and 321600
+            from operations
+            where extract(year from date_heure_reception_alerte) <= 2021
+        """,
+        "operations_count_cross_2021": """
+            select count(distinct "cross") = 11
+            from operations
+            where extract(year from date_heure_reception_alerte) = 2021
+        """,
+        "operations_count_2021_from_secmar_csv": """
+            select count(1) between 14670 and 14680
+            from operations
+            where extract(year from date_heure_reception_alerte) = 2021 and operation_id in (select secmar_operation_id from secmar_csv_operation)
+        """,
+        "est_metropolitain": """
+            select string_agg(distinct "cross"::varchar, '|' order by "cross"::varchar) = 'Antilles-Guyane|Gris-Nez|Guadeloupe|Guyane|La Réunion|Martinique|Mayotte|Nouvelle-Calédonie|Polynésie'
+            from operations
+            where not est_metropolitain
         """,
     }

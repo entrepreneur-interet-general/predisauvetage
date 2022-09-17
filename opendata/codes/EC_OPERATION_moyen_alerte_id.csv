@@ -1,0 +1,17 @@
+code,libelle
+ABS,null
+10,VHF phonie
+11,VHF ASN
+12,Balise de détresse
+14,MF/HF phonie
+15,MF/HF ASN
+16,Autre signal réglementaire
+17,VHF AIS
+18,Balise de sûreté des navires
+19,Téléphone à terre / Fixe
+2,Télex
+20,Téléphone mobile à terre
+3,Télécopie
+6,Téléphone à la mer / GSM
+8,Téléphone à la mer / satellite
+9,Signal pyrotechnique
