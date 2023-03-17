@@ -11,6 +11,8 @@ import socks
 
 FTP_BASE_FOLDER = "snosan_json"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_json"
+AGGREGATE_FOLDER = BASE_PATH / "aggregate"
+AGGREGATE_FILEPATH = AGGREGATE_FOLDER / "all.json"
 
 
 def _setup_ftp_connexion():
@@ -67,22 +69,14 @@ def save_json_for_day(day, data):
 
 def process_all_days():
     all = []
-    for day in filter(_should_process_day, list_of_days()):
+    for day in list_of_days():
         data_for_day = extract_for_day(day)
         save_json_for_day(day, data_for_day)
         all.extend(data_for_day)
 
-    with open("/tmp/data.json", "w") as f:
+    AGGREGATE_FOLDER.mkdir(parents=False, exist_ok=True)
+    with open(str(AGGREGATE_FILEPATH), "w") as f:
         f.write("\n".join(all) + "\n")
-
-
-def _should_process_day(day):
-    result = not (BASE_PATH / day / "data.json").exists()
-    if result:
-        logging.debug("Processing %s" % day)
-    else:
-        logging.debug("Skipping %s" % day)
-    return result
 
 
 def extract_for_day(day):
@@ -107,5 +101,5 @@ def list_of_days():
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    download_latest_remote_days()
+    # download_latest_remote_days()
     process_all_days()

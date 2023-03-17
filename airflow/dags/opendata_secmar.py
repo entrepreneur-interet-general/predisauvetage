@@ -14,17 +14,16 @@ When datasets are available, we push them to a remote server so that they can be
 """
 from datetime import datetime
 
-from airflow import DAG
-from airflow.models import Variable
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.dummy_operator import DummyOperator
-from operators.pg_download_operator import PgDownloadOperator
 import pandas as pd
 
 import helpers
-from secmar_dags import SECMAR_TABLES, opendata_transformer, out_path
-from secmar_dags import secmar_transform, opendata_path
+from airflow import DAG
+from airflow.models import Variable
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
+from operators.pg_download_operator import PgDownloadOperator
+from secmar_dags import SECMAR_TABLES, opendata_path, opendata_transformer, out_path, secmar_transform
 
 default_args = helpers.default_args({"start_date": datetime(2018, 5, 22, 5, 40)})
 

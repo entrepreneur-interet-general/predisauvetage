@@ -22,6 +22,12 @@ def secmar_csv_sql_path(filename):
     )
 
 
+def secmar_json_sql_path(filename):
+    return "{base}/opendata_sql/secmar_json/{filename}.sql".format(
+        base=base_path(), filename=filename
+    )
+
+
 def data_path(filename):
     return "{base}/data/{filename}".format(base=base_path(), filename=filename)
 

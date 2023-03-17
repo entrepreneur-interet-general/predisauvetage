@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 # download_secmar_json_ftp
-This DAG downloads JSON files from the remote FTP server.
+This DAG downloads JSON files from the remote FTP server and imports them in the database.
 """
 import os
 from datetime import datetime
 
 import helpers
 from airflow import DAG
+from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
-from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
+from airflow.operators.postgres_operator import PostgresOperator
+from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
 from transformers import secmar_json
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 21, 10, 0)})
@@ -42,6 +44,22 @@ def check_if_next_day_exists_fn(**kwargs):
     if secmar_json.day_exists_in_remote_ftp(kwargs["templates_dict"]["day"]):
         return "download_next_day"
     return "process_all_days"
+
+
+def _execute_secmar_json_sql_file(filename):
+    path = helpers.secmar_json_sql_path(filename)
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return PostgresHook("postgresql_local").run(content)
+
+
+def secmar_json_sql_task(dag, filename):
+    return PythonOperator(
+        task_id="run_" + filename,
+        python_callable=lambda **kwargs: _execute_secmar_json_sql_file(filename),
+        provide_context=True,
+        dag=dag,
+    )
 
 
 download_single_day = PythonOperator(
@@ -78,3 +96,22 @@ process_all_days = PythonOperator(
 )
 process_all_days.set_upstream(download_single_day)
 process_all_days.set_upstream(download_next_day)
+
+create_tables = secmar_json_sql_task(dag, "create_tables")
+create_tables.set_upstream(process_all_days)
+
+# The PostgreSQL user running the `COPY` command needs to be superuser
+# `ALTER USER secmar WITH SUPERUSER;`
+copy_json_sql = "COPY {table_name} (data) FROM '{input}' csv quote e'\x01' delimiter e'\x02';".format(
+    table_name="snosan_json", input=str(secmar_json.AGGREGATE_FILEPATH)
+)
+copy_json_data = PostgresOperator(
+    task_id="copy_json_data",
+    sql=copy_json_sql,
+    postgres_conn_id="postgresql_local",
+    dag=dag,
+)
+copy_json_data.set_upstream(create_tables)
+
+insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+insert_snosan_json_unique.set_upstream(copy_json_data)

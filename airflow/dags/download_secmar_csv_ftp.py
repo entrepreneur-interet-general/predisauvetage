@@ -11,7 +11,7 @@ import helpers
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
+from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
 from transformers import secmar_csv
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 22, 10, 0)})
@@ -29,9 +29,9 @@ dag.doc_md = __doc__
 
 def setup_ftp_env():
     os.environ["FTP_PROXY"] = "false"
-    os.environ["FTP_HOST"] = Variable.get("SECMAR_CSV_FTP_HOST")
-    os.environ["FTP_USER"] = Variable.get("SECMAR_CSV_FTP_USER")
-    os.environ["FTP_PASSWORD"] = Variable.get("SECMAR_CSV_FTP_PASSWORD")
+    os.environ["FTP_HOST"] = Variable.get("SECMAR_FTP_HOST")
+    os.environ["FTP_USER"] = Variable.get("SECMAR_FTP_USER")
+    os.environ["FTP_PASSWORD"] = Variable.get("SECMAR_FTP_PASSWORD")
 
 
 def ftp_download_fn(**kwargs):

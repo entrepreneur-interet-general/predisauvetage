@@ -17,13 +17,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from operators.pg_download_operator import PgDownloadOperator
 from secmar_checks import checks, secmar_csv_checks
-from secmar_dags import (
-    SECMAR_TABLES,
-    in_path,
-    out_path,
-    secmar_transform,
-    secmar_transformer,
-)
+from secmar_dags import SECMAR_TABLES, in_path, out_path, secmar_transform, secmar_transformer
 
 default_args = helpers.default_args({"start_date": datetime(2018, 4, 27, 5, 40)})
 
