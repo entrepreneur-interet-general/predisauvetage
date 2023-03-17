@@ -89,6 +89,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Cms\Classes\CmsException
+     *
      * @expectedExceptionMessage is not found
      */
     public function testLayoutNotFound()
@@ -148,6 +149,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Twig_Error_Runtime
+     *
      * @expectedExceptionMessage is not found
      */
     public function testPartialNotFound()
@@ -195,6 +197,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Cms\Classes\CmsException
+     *
      * @expectedExceptionMessage AJAX handler 'onNoHandler' was not found.
      */
     public function testAjaxHandlerNotFound()
@@ -208,6 +211,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Cms\Classes\CmsException
+     *
      * @expectedExceptionMessage Invalid AJAX handler name: delete.
      */
     public function testAjaxInvalidHandlerName()
@@ -221,6 +225,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Cms\Classes\CmsException
+     *
      * @expectedExceptionMessage Invalid partial name: p:artial.
      */
     public function testAjaxInvalidPartial()
@@ -234,6 +239,7 @@ class ControllerTest extends TestCase
 
     /**
      * @expectedException        Cms\Classes\CmsException
+     *
      * @expectedExceptionMessage The partial 'partial' is not found.
      */
     public function testAjaxPartialNotFound()
@@ -372,6 +378,7 @@ ESC;
 
     /**
      * @expectedException        October\Rain\Exception\SystemException
+     *
      * @expectedExceptionMessage is not registered for the component
      */
     public function testComponentClassNotFound()
