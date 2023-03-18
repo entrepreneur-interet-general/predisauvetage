@@ -100,6 +100,9 @@ process_all_days.set_upstream(download_next_day)
 create_tables = secmar_json_sql_task(dag, "create_tables")
 create_tables.set_upstream(process_all_days)
 
+secmar_json_evenement_codes = secmar_json_sql_task(dag, "secmar_json_evenement_codes")
+secmar_json_evenement_codes.set_upstream(process_all_days)
+
 # The PostgreSQL user running the `COPY` command needs to be superuser
 # `ALTER USER secmar WITH SUPERUSER;`
 copy_json_sql = "COPY {table_name} (data) FROM '{input}' csv quote e'\x01' delimiter e'\x02';".format(
