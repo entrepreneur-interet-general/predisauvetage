@@ -107,11 +107,11 @@ def checks():
             where op.latitude is not null
               and (stats.distance_cote_milles_nautiques is null or stats.distance_cote_metres is null)
         """,
-        #"recent_data_last_72h": """
+        # "recent_data_last_72h": """
         #    select count(1) > 0
         #    from operations
         #    where date_heure_reception_alerte > current_date - interval '2 day'
-        #""",
+        # """,
         "school_holidays_over_last_3_months": """
             select count(1) > 0
             from operations_stats
@@ -138,6 +138,12 @@ def checks():
             count(1) = 0
         from operations_stats
         where concerne_snosan and avec_clandestins
+        """,
+        "est_metropolitain_outre_mer": """
+        select
+            count(1) = 0
+        from operations
+        where "cross" in ('Antilles-Guyane', 'Guadeloupe', 'Guyane', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie') and (est_metropolitain or est_metropolitain is null)
         """,
     }
 

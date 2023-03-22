@@ -357,11 +357,11 @@ def read_aggregate_file(filename, replace_mapping=True):
             df["SEC_OPERATION_vent_direction"]
         )
         df["fuseau_horaire"] = fuseau_horaire(df["SEC_OPERATION_SEC_OPERATIONcross_id"])
-        df["est_metropolitain"] = est_metropolitain(df["SEC_OPERATION_dept_id"])
+        df["est_metropolitain"] = df.apply(lambda r: est_metropolitain(r), axis=1)
     return df
 
 
-def est_metropolitain(series):
+def est_metropolitain(row):
     dept_hors_metropole = [
         "Guadeloupe",
         "Guyane",
@@ -377,7 +377,21 @@ def est_metropolitain(series):
         "Wallis-et-Futuna",
         "Île de Clipperton",
     ]
-    return series.map(lambda v: v not in dept_hors_metropole, na_action="ignore")
+    cross_hors_metropole = [
+        "Antilles-Guyane",
+        "Guadeloupe",
+        "Guyane",
+        "La Réunion",
+        "Martinique",
+        "Mayotte",
+        "Nouvelle-Calédonie",
+        "Polynésie",
+    ]
+    if row["SEC_OPERATION_SEC_OPERATIONcross_id"] in cross_hors_metropole:
+        return False
+    if pd.isna(row["SEC_OPERATION_dept_id"]):
+        return np.nan
+    return row["SEC_OPERATION_dept_id"] not in dept_hors_metropole
 
 
 def vent_direction_categorie(series):

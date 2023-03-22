@@ -29,6 +29,7 @@ class OperationsTransformer(BaseTransformer):
             value="Plongée avec bouteille",
             inplace=True,
         )
+        df["est_metropolitain"] = df.apply(lambda r: self.est_metropolitain(r), axis=1)
 
         # Clean coordinates:
         # - 0 to NULL
@@ -40,6 +41,22 @@ class OperationsTransformer(BaseTransformer):
         df.loc[df.latitude.isna(), "longitude"] = np.nan
 
         self.to_csv(df, output)
+
+    def est_metropolitain(self, row):
+        cross_hors_metropole = [
+            "Antilles-Guyane",
+            "Guadeloupe",
+            "Guyane",
+            "La Réunion",
+            "Martinique",
+            "Mayotte",
+            "Nouvelle-Calédonie",
+            "Polynésie",
+        ]
+
+        if row["cross"] in cross_hors_metropole:
+            return False
+        return row["est_metropolitain"]
 
     def vent_direction_categorie(self, series):
         bins = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, np.inf]
