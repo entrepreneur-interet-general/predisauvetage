@@ -16,7 +16,7 @@ select
 from snosan_json_unique s
 join (
   select seamis, secmar
-  from snosan_json_evenement_codes
+  from secmar_json_evenement_codes
 ) t on t.seamis = data->'identification'->>'operativeEvent';
 
 -- Gestion des `operativeEvent` à `NULL` : `Toutes fausses alertes` ou `Incertitude`
