@@ -10,6 +10,7 @@ import helpers
 from airflow import DAG
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
+from airflow.operators.check_operator import CheckOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
 from transformers import secmar_json
@@ -117,4 +118,40 @@ copy_json_data = PostgresOperator(
 copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+
+check_completeness_snosan_json_operative_event = CheckOperator(
+    task_id="check_completeness_snosan_json_operative_event",
+    sql="""
+    select
+        count(1) = 0
+    from secmar_json_evenement_codes
+    where seamis not in (
+        select distinct data->'identification'->>'operativeEvent'
+        from snosan_json_unique
+    );
+    """,
+    conn_id="postgresql_local",
+    dag=dag,
+)
+check_completeness_snosan_json_operative_event.set_upstream(insert_snosan_json_unique)
+check_completeness_snosan_json_operative_event.set_upstream(secmar_json_evenement_codes)
 insert_snosan_json_unique.set_upstream(copy_json_data)
+
+snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
+snosan_json_evenement.set_upstream(check_completeness_snosan_json_operative_event)
+
+check_completeness_count_rows_secmar_json_evenement = CheckOperator(
+    task_id="check_completeness_count_rows_secmar_json_evenement",
+    sql="""
+    select nb = nb1
+    from  (
+        select count(1) nb1 from secmar_json_evenement
+    ) t2
+    join (
+        select count(1) nb from snosan_json_unique
+    ) t on true = true;
+    """,
+    conn_id="postgresql_local",
+    dag=dag,
+)
+check_completeness_count_rows_secmar_json_evenement.set_upstream(snosan_json_evenement)
