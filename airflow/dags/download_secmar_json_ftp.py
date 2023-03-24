@@ -143,13 +143,12 @@ snosan_json_evenement.set_upstream(check_completeness_snosan_json_operative_even
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
     sql="""
-    select nb = nb1
+    select count(1) = 0
     from  (
-        select count(1) nb1 from secmar_json_evenement
-    ) t2
-    join (
-        select count(1) nb from snosan_json_unique
-    ) t on true = true;
+        select chrono from secmar_json_evenement where chrono not in (
+            select data->>'chrono' from snosan_json_unique
+        )
+    ) t
     """,
     conn_id="postgresql_local",
     dag=dag,

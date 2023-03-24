@@ -1,6 +1,6 @@
 drop table if exists snosan_json_evenement;
 create table snosan_json_evenement (
-  chrono varchar,
+  chrono varchar not null,
   operation_long_name varchar primary key unique,
   secmar_evenement varchar
 );
