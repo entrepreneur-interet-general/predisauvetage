@@ -1,3 +1,26 @@
+update secmar_csv_operation SET
+    "SEC_OPERATION_evenement_id_1" = t.secmar_evenement,
+    "SEC_C_EVENEMENT_cat_evenement_id_1" = t.categorie_evenement
+from (
+    select
+        sje.operation_long_name,
+        sje.secmar_evenement,
+        t.categorie_evenement
+    from snosan_json_evenement sje
+    left join (
+        select o.evenement, o.categorie_evenement
+        from operations o
+        where extract(year from o.date_heure_reception_alerte) >= 2010
+        group by 1, 2
+    ) t on sje.secmar_evenement = t.evenement
+    where operation_long_name in (
+        select operation_long_name
+        from secmar_csv_operation
+        where "SEC_OPERATION_evenement_id_1" is null
+    )
+) t
+where t.operation_long_name = secmar_csv_operation.operation_long_name;
+
 ALTER TABLE operations ALTER COLUMN evenement DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN categorie_evenement DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN moyen_alerte DROP NOT NULL;

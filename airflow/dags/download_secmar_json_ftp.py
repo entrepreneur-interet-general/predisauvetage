@@ -145,8 +145,8 @@ check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     sql="""
     select count(1) = 0
     from  (
-        select chrono from secmar_json_evenement where chrono not in (
-            select data->>'chrono' from snosan_json_unique
+        select data->>'chrono' from snosan_json_unique where data->>'chrono' not in (
+            select chrono from snosan_json_evenement
         )
     ) t
     """,

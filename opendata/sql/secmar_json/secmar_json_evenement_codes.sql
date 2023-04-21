@@ -7,6 +7,9 @@ CREATE TABLE secmar_json_evenement_codes (
 
 CREATE UNIQUE INDEX ON secmar_json_evenement_codes (seamis);
 
+-- TODO
+-- Certains évènements `secmar` qui ont été créés n'ont pas de valeur de `categorie_evenement`,
+-- il faudrait en créer
 INSERT INTO secmar_json_evenement_codes
   (seamis, secmar)
 VALUES
@@ -19,7 +22,7 @@ VALUES
   ('ATTAQUE_TERRORISTE', 'Attaque terroriste'),
   ('AUTRE_ACCIDENT', 'Autre accident'),
   ('AUTRE_EVENEMENT', 'Autre événement'),
-  ('AVARIE_AERONAUTIQUE', ''),
+  ('AVARIE_AERONAUTIQUE', 'Accident aéronautique'),
   ('AVARIE_APPAREIL_A_GOUVERNER', 'Avarie de l''appareil à gouverner'),
   ('AVARIE_DE_COMMUNICATION', 'Avarie des systèmes de communication'),
   ('AVARIE_DE_GREEMENT', 'Avarie de l''appareil à gouverner'),
@@ -40,7 +43,7 @@ VALUES
   ('CHUTE_A_LA_MER', 'Homme à la mer'),
   ('CHUTE_DUNE_FALAISE', 'Chute falaise / Emporté par une lame'),
   ('CHUTE_FALAISE', 'Chute falaise / Emporté par une lame'),
-  ('COLLISION', ''),
+  ('COLLISION', 'Collision'),
   ('DECOUVERTE_CORPS', 'Découverte de corps'),
   ('DECOUVERTE_DE_CORPS', 'Découverte de corps'),
   ('DECOUVERTE_DOBJET', 'Découverte d''explosif'),
@@ -93,7 +96,7 @@ VALUES
   ('RUPTURE_MOUILLAGE', 'Rupture de mouillage'),
   ('SITUATION_INDETERMINEE', 'Incertitude'),
   ('SUICIDE', 'Suicide'),
-  ('TALONNAGE', ''),
+  ('TALONNAGE', 'Talonnage'),
   ('TENTATIVE_DE_SUICIDE', 'Tentative de suicide'),
   ('TRANSPORT_SANITAIRE', 'Transport sanitaire île-continent'),
   ('TRANSPORT_SANITAIRE_ILECONTINENT', 'Transport sanitaire île-continent'),
