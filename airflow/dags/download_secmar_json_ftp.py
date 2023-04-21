@@ -11,6 +11,7 @@ from airflow import DAG
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import Variable
 from airflow.operators.check_operator import CheckOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
 from transformers import secmar_json
@@ -154,3 +155,13 @@ check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     dag=dag,
 )
 check_completeness_count_rows_secmar_json_evenement.set_upstream(snosan_json_evenement)
+
+download_secmar_csv_ftp = TriggerDagRunOperator(
+    task_id="trigger_download_secmar_csv_ftp_dag",
+    trigger_dag_id="download_secmar_csv_ftp",
+    python_callable=lambda context, dag_run: dag_run,
+    dag=dag,
+)
+download_secmar_csv_ftp.set_upstream(
+    check_completeness_count_rows_secmar_json_evenement
+)

@@ -22,7 +22,7 @@ dag = DAG(
     max_active_runs=1,
     concurrency=1,
     catchup=True,
-    schedule_interval="0 10 * * *",
+    schedule_interval=None,
 )
 dag.doc_md = __doc__
 
