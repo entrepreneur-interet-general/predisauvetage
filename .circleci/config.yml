@@ -1,30 +1,5 @@
 version: 2
 jobs:
-  python:
-    docker:
-      - image: circleci/python:2.7.13
-    working_directory: ~/repo
-    steps:
-      - checkout
-
-      - run:
-          name: Install Ubuntu dependencies
-          command: sudo apt install -y  software-properties-common python-dev libsqlite3-dev zlib1g-dev
-
-      - restore_cache:
-          key: requirements-{{ checksum "requirements.txt" }}
-      - run:
-          name: Install Python deps in a venv
-          command: |
-            virtualenv -p /usr/bin/python2.7 venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            echo "source $(pwd)/venv/bin/activate" >> $BASH_ENV
-      - save_cache:
-          key: requirements-{{ checksum "requirements.txt" }}
-          paths:
-            - "venv"
-
   opendata_build:
     docker:
       - image: antoineaugusti/secmar-opendata-build:0.0.4
@@ -160,7 +135,6 @@ workflows:
   version: 2
   all_jobs:
     jobs:
-      - python
       - opendata_test
       - opendata_build:
           requires:
