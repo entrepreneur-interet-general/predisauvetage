@@ -362,6 +362,7 @@ def read_aggregate_file(filename, replace_mapping=True):
 
 
 def est_metropolitain(row):
+    cross = row["SEC_OPERATION_SEC_OPERATIONcross_id"]
     dept_hors_metropole = [
         "Guadeloupe",
         "Guyane",
@@ -387,8 +388,10 @@ def est_metropolitain(row):
         "Nouvelle-Calédonie",
         "Polynésie",
     ]
-    if row["SEC_OPERATION_SEC_OPERATIONcross_id"] in cross_hors_metropole:
+    if cross in cross_hors_metropole:
         return False
+    if cross not in cross_hors_metropole and cross != "Gris-Nez":
+        return True
     if pd.isna(row["SEC_OPERATION_dept_id"]):
         return np.nan
     return row["SEC_OPERATION_dept_id"] not in dept_hors_metropole

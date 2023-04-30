@@ -5,7 +5,7 @@ from (
     select
         sje.operation_long_name,
         sje.secmar_evenement,
-        t.categorie_evenement
+        coalesce(t.categorie_evenement, new_categorie_evenement.categorie_evenement) categorie_evenement
     from snosan_json_evenement sje
     left join (
         select o.evenement, o.categorie_evenement
@@ -13,16 +13,19 @@ from (
         where extract(year from o.date_heure_reception_alerte) >= 2010
         group by 1, 2
     ) t on sje.secmar_evenement = t.evenement
+    left join (
+        select secmar, categorie_evenement
+        from secmar_json_evenement_codes
+        where categorie_evenement is not null
+    ) new_categorie_evenement on sje.secmar_evenement = new_categorie_evenement.secmar
     where operation_long_name in (
         select operation_long_name
         from secmar_csv_operation
-        where "SEC_OPERATION_evenement_id_1" is null
     )
 ) t
 where t.operation_long_name = secmar_csv_operation.operation_long_name;
 
 ALTER TABLE operations ALTER COLUMN evenement DROP NOT NULL;
-ALTER TABLE operations ALTER COLUMN categorie_evenement DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN moyen_alerte DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN autorite DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN qui_alerte DROP NOT NULL;
