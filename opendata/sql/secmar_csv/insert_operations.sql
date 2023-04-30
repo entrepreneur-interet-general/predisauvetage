@@ -26,6 +26,7 @@ from (
 where t.operation_long_name = secmar_csv_operation.operation_long_name;
 
 ALTER TABLE operations ALTER COLUMN evenement DROP NOT NULL;
+ALTER TABLE operations ALTER COLUMN categorie_evenement DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN moyen_alerte DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN autorite DROP NOT NULL;
 ALTER TABLE operations ALTER COLUMN qui_alerte DROP NOT NULL;
