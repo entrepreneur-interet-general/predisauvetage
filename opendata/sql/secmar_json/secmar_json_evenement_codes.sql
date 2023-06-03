@@ -99,7 +99,7 @@ VALUES
   ('TENTATIVE_DE_SUICIDE', 'Tentative de suicide', 'Accidents individuels à personnes'),
   ('TRANSPORT_SANITAIRE', 'Transport sanitaire île-continent', null),
   ('TRANSPORT_SANITAIRE_ILECONTINENT', 'Transport sanitaire île-continent', null),
-  ('TROUBLE_A_LORDRE_PUBLIC', 'Trouble à l''ordre public', 'Accidents individuels à personnes'),
+  ('TROUBLE_A_LORDRE_PUBLIC', 'Trouble à l''ordre public', 'Autres affaires nécessitant opération'),
   ('VOIE_DEAU', 'Voie d''eau', null),
   ('VOIE_EAU', 'Voie d''eau', null)
 ;
