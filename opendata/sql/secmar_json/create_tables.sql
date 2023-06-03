@@ -1,5 +1,8 @@
 DROP TABLE IF EXISTS snosan_json;
-CREATE TABLE snosan_json (data jsonb);
+CREATE TABLE snosan_json (
+  id SERIAL PRIMARY KEY,
+  data jsonb
+);
 
 CREATE INDEX ON snosan_json((data ->> 'id'::text) text_ops);
 CREATE INDEX ON snosan_json((data ->> 'version'::text) text_ops);
