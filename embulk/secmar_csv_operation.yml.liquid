@@ -13,7 +13,9 @@ in:
     allow_extra_columns: false
     allow_optional_columns: false
     columns:
+    - {name: deduplication_id, type: string}
     - {name: operation_id, type: string}
+    - {name: extraction_date, type: timestamp, format: '%Y%m%d'}
     - {name: SEC_OPERATION_date_operation, type: timestamp, format: '%Y-%m-%dT%H:%M:%S%z'}
     - {name: SEC_OPERATION_autorite_id, type: string}
     - {name: SEC_OPERATION_no_SITREP, type: long}
