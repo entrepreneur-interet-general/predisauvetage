@@ -1,6 +1,3 @@
-ALTER TABLE resultats_humain ALTER COLUMN categorie_personne DROP NOT NULL;
-ALTER TABLE resultats_humain ALTER COLUMN resultat_humain DROP NOT NULL;
-
 INSERT INTO resultats_humain (
   "operation_id",
   "categorie_personne",
@@ -9,10 +6,11 @@ INSERT INTO resultats_humain (
   "dont_nombre_blesse"
 )
 select
-  secmar_operation_id "operation_id",
-  "SEC_RESULTAT_HUMAIN_cat_personne_id" "categorie_personne",
-  "SEC_RESULTAT_HUMAIN_resultat_humain_id" "resultat_humain",
-  "SEC_RESULTAT_HUMAIN_nb" "nombre",
-  "SEC_RESULTAT_HUMAIN_dont_nb_blesse" "dont_nombre_blesse"
-from secmar_csv_bilan
-where secmar_operation_id in (select operation_id from operations);
+  sco.secmar_operation_id,
+  sjrh."categorie_personne",
+  sjrh."resultat_humain",
+  sjrh."nombre",
+  sjrh."dont_nombre_blesse"
+from snosan_json_resultats_humain sjrh
+join secmar_csv_operation sco on sco.operation_long_name = replace(sjrh.chrono, '-', '_')
+where sco.secmar_operation_id not in (select distinct operation_id from resultats_humain);

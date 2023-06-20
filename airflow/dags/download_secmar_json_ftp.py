@@ -141,6 +141,9 @@ insert_snosan_json_unique.set_upstream(copy_json_data)
 snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
 snosan_json_evenement.set_upstream(check_completeness_snosan_json_operative_event)
 
+snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_humain")
+snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
+
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
     sql="""

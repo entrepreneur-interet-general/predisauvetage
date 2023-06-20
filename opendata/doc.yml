@@ -152,7 +152,17 @@ components:
         categorie_personne:
           type: string
           description: Indique la catégorie de personne impliquée dans le bilan humain
-          enum: [Autre, Plaisancier français, Clandestin, Pêcheur français, Commerce français, Marin étranger, Toutes catégories]
+          enum: [
+            Autre,
+            Clandestin,
+            Commerce français,
+            Marin étranger,
+            Migrant,
+            Plaisancier français,
+            Pratiquant loisirs nautiques,
+            Pêcheur amateur,
+            Pêcheur français
+          ]
           example: Pêcheur français
         resultat_humain:
           type: string
