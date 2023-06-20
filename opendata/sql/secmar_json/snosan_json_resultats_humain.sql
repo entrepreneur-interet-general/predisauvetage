@@ -30,7 +30,7 @@ select
     when personne->'resultat' ? 'FAUSSE_ALERTE' or personne->'resultat' ? 'IMPL_FAUSSE_ALERTE' then 'Personne impliquée dans fausse alerte'
     else 'Personne tirée d''affaire seule'
   end resultat_humain,
-  coalesce((personne->>'npi')::int, 1) nombre
+  coalesce((personne->>'npi')::int, 1) nombre,
   case
     when personne->'etatInitial' ? 'BLESSE' then coalesce((personne->>'npi')::int, 1)
     else 0
