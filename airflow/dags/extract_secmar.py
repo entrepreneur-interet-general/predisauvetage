@@ -17,7 +17,13 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from operators.pg_download_operator import PgDownloadOperator
 from secmar_checks import checks, secmar_csv_checks
-from secmar_dags import SECMAR_TABLES, in_path, out_path, secmar_transform, secmar_transformer
+from secmar_dags import (
+    SECMAR_TABLES,
+    in_path,
+    out_path,
+    secmar_transform,
+    secmar_transformer,
+)
 
 default_args = helpers.default_args({"start_date": datetime(2018, 4, 27, 5, 40)})
 
@@ -166,28 +172,28 @@ end_secmar_csv_insert = DummyOperator(task_id="end_secmar_csv_insert", dag=dag)
 end_secmar_csv_insert.set_upstream(start_secmar_csv_insert)
 start_secmar_csv_insert.set_upstream(delete_invalid_operations)
 
-# insert_operations = secmar_csv_sql_task(dag, "insert_operations")
-# insert_operations.set_upstream(start_secmar_csv_insert)
+insert_operations = secmar_csv_sql_task(dag, "insert_operations")
+insert_operations.set_upstream(start_secmar_csv_insert)
 
-# for table in ["flotteurs", "resultats_humain", "moyens"]:
-#     t = secmar_csv_sql_task(dag, "insert_{table}".format(table=table))
-#     t.set_upstream(insert_operations)
-#     t.set_downstream(end_secmar_csv_insert)
+for table in ["flotteurs", "resultats_humain", "moyens"]:
+    t = secmar_csv_sql_task(dag, "insert_{table}".format(table=table))
+    t.set_upstream(insert_operations)
+    t.set_downstream(end_secmar_csv_insert)
 
 start_secmar_csv_checks = DummyOperator(task_id="start_secmar_csv_checks", dag=dag)
 end_secmar_csv_checks = DummyOperator(task_id="end_secmar_csv_checks", dag=dag)
 end_secmar_csv_checks.set_upstream(start_secmar_csv_checks)
 start_secmar_csv_checks.set_upstream(end_secmar_csv_insert)
 
-# for check_name, query in secmar_csv_checks().items():
-#     t = CheckOperator(
-#         task_id="check_consistency_" + check_name,
-#         sql=query,
-#         conn_id="postgresql_local",
-#         dag=dag,
-#     )
-#     t.set_upstream(start_secmar_csv_checks)
-#     t.set_downstream(end_secmar_csv_checks)
+for check_name, query in secmar_csv_checks().items():
+    t = CheckOperator(
+        task_id="check_consistency_" + check_name,
+        sql=query,
+        conn_id="postgresql_local",
+        dag=dag,
+    )
+    t.set_upstream(start_secmar_csv_checks)
+    t.set_downstream(end_secmar_csv_checks)
 
 insert_operations_stats = PythonOperator(
     task_id="insert_operations_stats",

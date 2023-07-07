@@ -151,7 +151,7 @@ def checks():
 def secmar_csv_checks():
     return {
         "operations_count_2021": """
-            select count(1) between 16800 and 16820
+            select count(1) between 16800 and 16900
             from operations
             where extract(year from date_heure_reception_alerte) = 2021
         """,
@@ -174,5 +174,10 @@ def secmar_csv_checks():
             select string_agg(distinct "cross"::varchar, '|' order by "cross"::varchar) = 'Antilles-Guyane|Gris-Nez|Guadeloupe|Guyane|La Réunion|Martinique|Mayotte|Nouvelle-Calédonie|Polynésie'
             from operations
             where not est_metropolitain
+        """,
+        "categorie_evenement": """
+        select count(1) = 0
+        from operations o
+        where categorie_evenement is null and evenement is not null;
         """,
     }

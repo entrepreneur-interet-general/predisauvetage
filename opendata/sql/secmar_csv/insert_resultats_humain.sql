@@ -13,4 +13,4 @@ select
   sjrh."dont_nombre_blesse"
 from snosan_json_resultats_humain sjrh
 join secmar_csv_operation sco on sco.operation_long_name = replace(sjrh.chrono, '-', '_')
-where sco.secmar_operation_id not in (select distinct operation_id from resultats_humain);
+where sco.secmar_operation_id not in (select distinct operation_id from resultats_humain) and sco.secmar_operation_id IN (SELECT operation_id FROM operations);
