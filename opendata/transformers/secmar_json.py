@@ -35,6 +35,18 @@ def day_exists_in_remote_ftp(day):
     return day in folders
 
 
+def ftp_delete_remote_folder(day):
+    if not day_exists_in_remote_ftp(day):
+        return
+    ftp = _setup_ftp_connexion()
+    ftp.cwd(day)
+    for filename in ftp.nlst():
+        ftp.delete(filename)
+    ftp.cwd(FTP_BASE_FOLDER)
+    ftp.rmd(day)
+    ftp.quit()
+
+
 def ftp_download_remote_folder(day):
     (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
     ftp = _setup_ftp_connexion()
