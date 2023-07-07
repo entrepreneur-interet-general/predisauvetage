@@ -13,6 +13,7 @@ from airflow.models import Variable
 from airflow.operators.check_operator import CheckOperator
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.operators.postgres_operator import PostgresOperator
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
 from transformers import secmar_json
 
@@ -102,13 +103,18 @@ process_all_days.set_upstream(download_next_day)
 create_tables = secmar_json_sql_task(dag, "create_tables")
 create_tables.set_upstream(process_all_days)
 
+start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
+start_create_codes_tables.set_upstream(process_all_days)
+end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
+
 for code in [
     "secmar_json_evenement_codes",
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
 ]:
     task = secmar_json_sql_task(dag, code)
-    task.set_upstream(process_all_days)
+    task.set_upstream(start_create_codes_tables)
+    task.set_downstream(end_create_codes_tables)
 
 # The PostgreSQL user running the `COPY` command needs to be superuser
 # `ALTER USER secmar WITH SUPERUSER;`
@@ -140,7 +146,7 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     dag=dag,
 )
 check_completeness_snosan_json_operative_event.set_upstream(insert_snosan_json_unique)
-check_completeness_snosan_json_operative_event.set_upstream(secmar_json_evenement_codes)
+check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tables)
 insert_snosan_json_unique.set_upstream(copy_json_data)
 
 snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
