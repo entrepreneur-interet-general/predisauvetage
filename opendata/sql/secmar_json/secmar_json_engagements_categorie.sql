@@ -1,13 +1,12 @@
 DROP TABLE IF EXISTS secmar_json_engagements_categorie;
 
 CREATE TABLE secmar_json_engagements_categorie (
-  seamis varchar,
+  seamis varchar primary key,
   secmar varchar,
   domaine_action varchar
 );
 
 CREATE INDEX ON secmar_json_engagements_categorie(secmar);
-CREATE UNIQUE INDEX ON secmar_json_engagements_categorie (seamis);
 
 INSERT INTO secmar_json_engagements_categorie
   (seamis, secmar, domaine_action)

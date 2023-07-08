@@ -111,6 +111,8 @@ for code in [
     "secmar_json_evenement_codes",
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
+    "secmar_json_engagements_type",
+    "secmar_json_engagements_durees",
 ]:
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
@@ -130,6 +132,27 @@ copy_json_data = PostgresOperator(
 copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+
+for column in ["autorite", "type", "categorie"]:
+    table = f"secmar_json_engagements_{column}"
+    task = PostgresOperator(
+        task_id=f"check_completness_engagements_{column}",
+        sql=f"""
+        select count(1) = 0
+        from (
+          select distinct e->>'{column}'
+          from (
+            select jsonb_array_elements(data->'engagements') as e
+            from snosan_json_unique
+            where data ? 'engagements'
+          ) t
+          where e->>'{column}' not in (select seamis from {table})
+        ) t
+        """,
+        postgres_conn_id="postgresql_local",
+        dag=dag,
+    )
+    task.set_upstream(end_create_codes_tables)
 
 check_completeness_snosan_json_operative_event = CheckOperator(
     task_id="check_completeness_snosan_json_operative_event",

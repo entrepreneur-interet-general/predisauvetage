@@ -1,12 +1,11 @@
 DROP TABLE IF EXISTS secmar_json_engagements_autorite;
 
 CREATE TABLE secmar_json_engagements_autorite (
-  seamis varchar,
+  seamis varchar primary key,
   secmar varchar
 );
 
 CREATE INDEX ON secmar_json_engagements_autorite(secmar);
-CREATE UNIQUE INDEX ON secmar_json_engagements_autorite (seamis);
 
 INSERT INTO secmar_json_engagements_autorite
   (seamis, secmar)

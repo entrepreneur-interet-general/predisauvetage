@@ -1,13 +1,12 @@
 DROP TABLE IF EXISTS secmar_json_evenement_codes;
 
 CREATE TABLE secmar_json_evenement_codes (
-  seamis varchar,
+  seamis varchar primary key,
   secmar varchar,
   categorie_evenement varchar
 );
 
 CREATE INDEX ON secmar_json_evenement_codes(secmar);
-CREATE UNIQUE INDEX ON secmar_json_evenement_codes (seamis);
 
 INSERT INTO secmar_json_evenement_codes
   (seamis, secmar, categorie_evenement)
