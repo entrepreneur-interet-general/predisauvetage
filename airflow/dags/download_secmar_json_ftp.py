@@ -103,21 +103,6 @@ process_all_days.set_upstream(download_next_day)
 create_tables = secmar_json_sql_task(dag, "create_tables")
 create_tables.set_upstream(process_all_days)
 
-start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
-start_create_codes_tables.set_upstream(process_all_days)
-end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
-
-for code in [
-    "secmar_json_evenement_codes",
-    "secmar_json_engagements_autorite",
-    "secmar_json_engagements_categorie",
-    "secmar_json_engagements_type",
-    "secmar_json_engagements_durees",
-]:
-    task = secmar_json_sql_task(dag, code)
-    task.set_upstream(start_create_codes_tables)
-    task.set_downstream(end_create_codes_tables)
-
 # The PostgreSQL user running the `COPY` command needs to be superuser
 # `ALTER USER secmar WITH SUPERUSER;`
 copy_json_sql = "COPY {table_name} (data) FROM '{input}' csv quote e'\x01' delimiter e'\x02';".format(
@@ -132,6 +117,21 @@ copy_json_data = PostgresOperator(
 copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+
+start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
+start_create_codes_tables.set_upstream(insert_snosan_json_unique)
+end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
+
+for code in [
+    "secmar_json_evenement_codes",
+    "secmar_json_engagements_autorite",
+    "secmar_json_engagements_categorie",
+    "secmar_json_engagements_type",
+    "secmar_json_engagements_durees",
+]:
+    task = secmar_json_sql_task(dag, code)
+    task.set_upstream(start_create_codes_tables)
+    task.set_downstream(end_create_codes_tables)
 
 for column in ["autorite", "type", "categorie"]:
     table = "secmar_json_engagements_{column}".format(column=column)
@@ -170,7 +170,6 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     conn_id="postgresql_local",
     dag=dag,
 )
-check_completeness_snosan_json_operative_event.set_upstream(insert_snosan_json_unique)
 check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tables)
 insert_snosan_json_unique.set_upstream(copy_json_data)
 
