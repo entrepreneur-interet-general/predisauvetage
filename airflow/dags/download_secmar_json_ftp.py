@@ -134,10 +134,10 @@ copy_json_data.set_upstream(create_tables)
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
 
 for column in ["autorite", "type", "categorie"]:
-    table = f"secmar_json_engagements_{column}"
+    table = "secmar_json_engagements_{column}".format(column=column)
     task = PostgresOperator(
-        task_id=f"check_completness_engagements_{column}",
-        sql=f"""
+        task_id="check_completness_engagements_{column}".format(column=column),
+        sql="""
         select count(1) = 0
         from (
           select distinct e->>'{column}'
@@ -148,7 +148,9 @@ for column in ["autorite", "type", "categorie"]:
           ) t
           where e->>'{column}' not in (select seamis from {table})
         ) t
-        """,
+        """.format(
+            column=column, table=table
+        ),
         postgres_conn_id="postgresql_local",
         dag=dag,
     )
