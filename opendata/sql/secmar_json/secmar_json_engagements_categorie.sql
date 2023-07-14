@@ -22,7 +22,7 @@ VALUES
   ('HELICOPTER', 'Hélicoptère', 'Aérien'),
   ('POSTE_DE_PLAGE', 'Poste de plage', 'Terrestre'),
   ('COAST_STATION', 'Station côtière', 'Terrestre'),
-  ('AUTRE_CATEGORIE', 'Autre catégorie', null),
+  ('AUTRE_CATEGORIE', 'Autre', null),
   ('BEACH_STATION', 'Poste de plage', 'Terrestre'),
   ('OTHERS', 'Autre', null),
   ('AIRPLANE', 'Aérien', 'Aérien'),
