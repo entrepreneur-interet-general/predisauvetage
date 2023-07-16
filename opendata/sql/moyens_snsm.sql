@@ -15,5 +15,6 @@ from (
   from moyens
   where autorite_moyen = 'SNSM'
     and domaine_action in ('Nautique', 'Terrestre')
+    and not moyen is null
   group by operation_id
 ) t;
