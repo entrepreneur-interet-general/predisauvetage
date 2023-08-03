@@ -79,11 +79,14 @@ def ftp_download_remote_folder(day):
     logging.debug("Found %s remote files to download for %s" % (len(filenames), day))
     for filename in filenames:
         target_path = BASE_PATH / day / filename
-        if target_path.exists():
+        if target_path.exists() and target_path.stat().st_size > 0:
             logging.debug("%s/%s already exists, skipping" % (day, filename))
             continue
         logging.debug("Downloading %s/%s" % (day, filename))
         ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
+        # Download again?
+        if target_path.stat().st_size == 0:
+            ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
     ftp.quit()
 
 
