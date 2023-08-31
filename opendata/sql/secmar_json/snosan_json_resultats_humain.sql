@@ -41,4 +41,4 @@ from (
     jsonb_array_elements(data->'personnes') personne
   from snosan_json_unique
 ) t
-where personne->>'isInvolved' = 'true';
+where personne->>'isInvolved' = 'true' and personne->>'principalImpl' = 'true';
