@@ -188,7 +188,7 @@ secmar_year <- secmar %>%
 
 ui <- dashboardPage(
   dashboardHeader(title = #tags$a(href='https://www.snosan.fr/',
-                                 'Carte Secmar'
+                                 'Carte SECMAR'
                                  #)
                   ),
 
@@ -225,11 +225,11 @@ ui <- dashboardPage(
      menuItem("Évenement", tabName = "event", icon = icon("anchor"),
               checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
-                             choices=unique(secmar$evenement),
+                             choices=sort(unique(secmar$evenement)),
                              multiple = TRUE)),
      menuItem("CROSS et département", tabName = "cross", icon = icon("male"),
-              pickerInput(inputId="cross", label=h5("Quel CROSS a coordoné l'intervention ?"),
-                          choices=unique(secmar$cross),
+              pickerInput(inputId="cross", label=h5("Quel CROSS a coordonné l'intervention ?"),
+                          choices=sort(unique(secmar$cross)),
                           options = list(
                             `selected-text-format` = "count > 5",
                             `count-selected-text` = "{0} CROSS sélectionnés",
@@ -270,7 +270,7 @@ ui <- dashboardPage(
               ),
       menuItem("Type d'opérations", tabName = "op", icon = icon("ambulance"),
                pickerInput(inputId="operation", label=h5("Quel type d'intervention ?"),
-                           choices=unique(secmar$type_operation),
+                           choices=sort(unique(secmar$type_operation)),
                            options = list(
                              `selected-text-format` = "count > 5",
                              `count-selected-text` = "{0} types sélectionnés",
@@ -321,7 +321,7 @@ ui <- dashboardPage(
                ),
      menuItem("Distance des côtes et responsabilité", tabName = "cote", icon = icon("globe"),
               "",
-              pickerInput(inputId="cotes", label=h5("A quelle distance des côtes se déroule les interventions ?"),
+              pickerInput(inputId="cotes", label=h5("À quelle distance des côtes se déroule les interventions ?"),
                                                 choices=unique(secmar$distance_cote_milles_nautiques_cat),
                                                 options = list(
                                                   `selected-text-format` = "count > 5",
