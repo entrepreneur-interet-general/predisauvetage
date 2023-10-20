@@ -166,6 +166,7 @@ class SimpleTreeModelTest extends PluginTestCase
 
     /**
      * @expectedException        \Exception
+     *
      * @expectedExceptionMessage Column mismatch in listsNested method
      */
     public function testListsNestedUnknownColumn()

@@ -93,7 +93,7 @@ class BlogMarkdown extends MarkdownEditor
             $response = Response::make()->setContent($result);
             $response->send();
 
-            exit();
+            exit;
         } catch (Exception $ex) {
             $message = $uploadedFileName
                 ? Lang::get('cms::lang.asset.error_uploading_file', ['name' => $uploadedFileName, 'error' => $ex->getMessage()])
@@ -107,7 +107,7 @@ class BlogMarkdown extends MarkdownEditor
             $response = Response::make()->setContent($result);
             $response->send();
 
-            exit();
+            exit;
         }
     }
 }

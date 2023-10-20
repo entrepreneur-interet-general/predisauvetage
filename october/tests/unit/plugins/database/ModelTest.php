@@ -25,6 +25,7 @@ class ModelTest extends PluginTestCase
 
     /**
      * @expectedException        \Illuminate\Database\Eloquent\MassAssignmentException
+     *
      * @expectedExceptionMessage title
      */
     public function testGuardedAttribute()

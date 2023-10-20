@@ -33,7 +33,7 @@ class Categories extends Controller
     {
         if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
             foreach ($checkedIds as $categoryId) {
-                if ((!$category = Category::find($categoryId))) {
+                if (!$category = Category::find($categoryId)) {
                     continue;
                 }
 
