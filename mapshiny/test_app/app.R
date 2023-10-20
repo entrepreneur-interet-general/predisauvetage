@@ -222,7 +222,7 @@ ui <- dashboardPage(
                               end = Sys.Date(),
                               separator = " - ", startview = "year", format = "dd/mm/yyyy"
             ),
-     menuItem("Évenement", tabName = "event", icon = icon("anchor"),
+     menuItem("Événement", tabName = "event", icon = icon("anchor"),
               checkboxInput('eve', 'Tout sélectionner/désélectionner', value = TRUE),
               selectizeInput(inputId="evenement", label=h5("Quel motif d'intervention ?"),
                              choices=sort(unique(secmar$evenement)),
