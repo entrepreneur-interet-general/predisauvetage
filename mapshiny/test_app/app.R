@@ -240,7 +240,7 @@ ui <- dashboardPage(
                           selected = unique(secmar$cross),
                           multiple = TRUE),
               checkboxInput('dep', 'Tout sélectionner/désélectionner', value = TRUE),
-              selectizeInput(inputId="departement", label=h5("Quels sont les departement?"),
+              selectizeInput(inputId="departement", label=h5("Quels sont les départements ?"),
                              choices=sort(unique(secmar$departement)),
                              multiple = TRUE)),
      menuItem("Heure et saison", tabName = "season", icon = icon("hourglass"),
@@ -471,7 +471,8 @@ server <- function(input, output, session) {
 
   snosanInput <- reactive({
     if (input$snosan == FALSE) {
-      #Need to remove missing values for longitude and latitude because heatmap doesn't handle missing values
+      # Need to remove missing values for longitude and latitude
+      # because heatmap doesn't handle missing values
       secmar %>% drop_na(longitude, latitude)
     } else {
       secmar %>% drop_na(longitude, latitude) %>% filter(concerne_snosan == TRUE)
@@ -499,8 +500,8 @@ server <- function(input, output, session) {
 
   observe({
     updateSelectizeInput(
-      session, 'evenement', choices = unique(secmar$evenement),
-      selected = if (input$eve) unique(secmar$evenement)
+      session, 'evenement', choices=sort(unique(secmar$evenement)),
+      selected = if (input$eve) sort(unique(secmar$evenement))
     )
   })
 
