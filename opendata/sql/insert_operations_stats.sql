@@ -112,16 +112,16 @@ left join (
       sum(case when resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees,
       sum(case when resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues,
       sum(case when resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule,
-      sum(case when categorie_personne <> 'Clandestin' then dont_nombre_blesse else 0 end) nombre_personnes_blessees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée accidentellement' then nombre else 0 end) nombre_personnes_decedees_accidentellement_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne disparue' then nombre else 0 end) nombre_personnes_disparues_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne impliquée dans fausse alerte' then nombre else 0 end) nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') then dont_nombre_blesse else 0 end) nombre_personnes_blessees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée accidentellement' then nombre else 0 end) nombre_personnes_decedees_accidentellement_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne disparue' then nombre else 0 end) nombre_personnes_disparues_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne impliquée dans fausse alerte' then nombre else 0 end) nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins
     from resultats_humain rh
     group by rh.operation_id
    ) t
@@ -232,7 +232,7 @@ update operations_stats set concerne_plongee = true
 where operation_id in (
   select operation_id
   from operations
-  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine')
+  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée autonome')
 );
 
 update operations_stats set mois_texte = t.mois_texte::mois_francais

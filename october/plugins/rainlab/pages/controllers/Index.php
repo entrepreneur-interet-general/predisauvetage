@@ -23,7 +23,6 @@ use RainLab\Pages\Widgets\MenuList;
 use RainLab\Pages\Widgets\PageList;
 use RainLab\Pages\Widgets\SnippetList;
 use Request;
-use Response;
 use System\Helpers\DateTime;
 use Url;
 
