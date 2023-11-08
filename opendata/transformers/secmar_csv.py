@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import socks
 
-FTP_BASE_FOLDER = "snosan_secmarweb"
+FTP_BASE_FOLDER = "SECMARWEB"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_csv"
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])

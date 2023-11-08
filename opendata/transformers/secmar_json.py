@@ -9,7 +9,7 @@ from pathlib import Path
 import pandas as pd
 import socks
 
-FTP_BASE_FOLDER = "snosan_json"
+FTP_BASE_FOLDER = "JSON"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_json"
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 AGGREGATE_FILEPATH = AGGREGATE_FOLDER / "all.json"
