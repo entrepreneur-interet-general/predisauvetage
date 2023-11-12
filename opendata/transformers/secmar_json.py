@@ -15,6 +15,13 @@ AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 AGGREGATE_FILEPATH = AGGREGATE_FOLDER / "all.json"
 
 
+class FTP_PassiveMode_IgnoreHost(FTP):
+    def makepasv(self):
+        # See https://stumbles.id.au/python-ftps-and-mis-configured-servers.html
+        _, port = super().makepasv()
+        return self.host, port
+
+
 def _setup_ftp_connexion():
     if os.getenv("FTP_PROXY", "false") == "true":
         socks.setdefaultproxy(
@@ -24,7 +31,7 @@ def _setup_ftp_connexion():
         )
         socket.socket = socks.socksocket
     env = os.environ
-    ftp = FTP(env["FTP_HOST"])
+    ftp = FTP_PassiveMode_IgnoreHost(env["FTP_HOST"])
     ftp.login(env["FTP_USER"], env["FTP_PASSWORD"])
     ftp.cwd(FTP_BASE_FOLDER)
     return ftp
