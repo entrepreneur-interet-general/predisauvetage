@@ -87,15 +87,12 @@ def save_json_for_day(day, data):
 
 
 def process_all_days():
-    all = []
-    for day in list_of_days():
-        data_for_day = extract_for_day(day)
-        save_json_for_day(day, data_for_day)
-        all.extend(data_for_day)
-
     AGGREGATE_FOLDER.mkdir(parents=False, exist_ok=True)
     with open(str(AGGREGATE_FILEPATH), "w") as f:
-        f.write("\n".join(all) + "\n")
+        for day in list_of_days():
+            data_for_day = extract_for_day(day)
+            save_json_for_day(day, data_for_day)
+            f.write("\n".join(data_for_day) + "\n")
 
 
 def extract_for_day(day):
