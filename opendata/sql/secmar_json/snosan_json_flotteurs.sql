@@ -21,7 +21,7 @@ INSERT INTO snosan_json_flotteurs (
 )
 SELECT
   _.chrono,
-  v->>'flag' pavillon,
+  case when v->>'flag' in ('FRA', 'France') then 'Français' else 'Étranger' end pavillon,
   sjrf.secmar resultat_flotteur,
   sjtf.secmar type_flotteur,
   sjtf.categorie_flotteur categorie_flotteur,
