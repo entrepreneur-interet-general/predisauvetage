@@ -123,11 +123,16 @@ start_create_codes_tables.set_upstream(insert_snosan_json_unique)
 end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
 
 for code in [
+    # Opérations
     "secmar_json_evenement_codes",
+    # Moyens
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
     "secmar_json_engagements_type",
     "secmar_json_engagements_durees",
+    # Flotteurs
+    "snosan_json_flotteurs_resultat_flotteur",
+    "snosan_json_flotteurs_type_flotteur",
 ]:
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
@@ -181,6 +186,9 @@ snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
 
 snosan_json_moyens = secmar_json_sql_task(dag, "snosan_json_moyens")
 snosan_json_moyens.set_upstream(end_create_codes_tables)
+
+snosan_json_flotteurs = secmar_json_sql_task(dag, "snosan_json_flotteurs")
+snosan_json_flotteurs.set_upstream(end_create_codes_tables)
 
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
