@@ -187,7 +187,7 @@ for column in ["autorite", "type", "categorie"]:
     task.set_downstream(snosan_json_moyens)
 
 check_completness_secmar_json_type_flotteur = CheckOperator(
-    task_id="check_completeness_snosan_json_operative_event",
+    task_id="check_completness_secmar_json_type_flotteur",
     sql="""
     select
         count(1) = 0
