@@ -138,29 +138,6 @@ for code in [
     task.set_upstream(start_create_codes_tables)
     task.set_downstream(end_create_codes_tables)
 
-for column in ["autorite", "type", "categorie"]:
-    table = "secmar_json_engagements_{column}".format(column=column)
-    task = PostgresOperator(
-        task_id="check_completness_engagements_{column}".format(column=column),
-        sql="""
-        select count(1) = 0
-        from (
-          select distinct e->>'{column}'
-          from (
-            select jsonb_array_elements(data->'engagements') as e
-            from snosan_json_unique
-            where data ? 'engagements'
-          ) t
-          where e->>'{column}' not in (select seamis from {table})
-        ) t
-        """.format(
-            column=column, table=table
-        ),
-        postgres_conn_id="postgresql_local",
-        dag=dag,
-    )
-    task.set_upstream(end_create_codes_tables)
-
 check_completeness_snosan_json_operative_event = CheckOperator(
     task_id="check_completeness_snosan_json_operative_event",
     sql="""
@@ -185,10 +162,53 @@ snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_
 snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
 
 snosan_json_moyens = secmar_json_sql_task(dag, "snosan_json_moyens")
-snosan_json_moyens.set_upstream(end_create_codes_tables)
+for column in ["autorite", "type", "categorie"]:
+    table = "secmar_json_engagements_{column}".format(column=column)
+    task = PostgresOperator(
+        task_id="check_completness_engagements_{column}".format(column=column),
+        sql="""
+        select count(1) = 0
+        from (
+          select distinct e->>'{column}'
+          from (
+            select jsonb_array_elements(data->'engagements') as e
+            from snosan_json_unique
+            where data ? 'engagements'
+          ) t
+          where e->>'{column}' not in (select seamis from {table})
+        ) t
+        """.format(
+            column=column, table=table
+        ),
+        postgres_conn_id="postgresql_local",
+        dag=dag,
+    )
+    task.set_upstream(end_create_codes_tables)
+    task.set_downstream(snosan_json_moyens)
+
+check_completness_secmar_json_type_flotteur = CheckOperator(
+    task_id="check_completeness_snosan_json_operative_event",
+    sql="""
+    select
+        count(1) = 0
+    from secmar_json_type_flotteur
+    where seamis not in (
+        select distinct coalesce(v->>'type', v->>'typeAero')
+        from (
+            select
+              jsonb_array_elements(data->'vehicules') as v
+            from snosan_json_unique
+            where data ? 'vehicules' and data->>'chrono' not similar to '%20(19|20|21)%'
+        ) _
+    );
+    """,
+    conn_id="postgresql_local",
+    dag=dag,
+)
+check_completness_secmar_json_type_flotteur.set_upstream(end_create_codes_tables)
 
 snosan_json_flotteurs = secmar_json_sql_task(dag, "snosan_json_flotteurs")
-snosan_json_flotteurs.set_upstream(end_create_codes_tables)
+snosan_json_flotteurs.set_upstream(check_completness_secmar_json_type_flotteur)
 
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
@@ -211,6 +231,4 @@ download_secmar_csv_ftp = TriggerDagRunOperator(
     python_callable=lambda context, dag_run: dag_run,
     dag=dag,
 )
-download_secmar_csv_ftp.set_upstream(
-    check_completeness_count_rows_secmar_json_evenement
-)
+download_secmar_csv_ftp.set_upstream(check_completeness_count_rows_secmar_json_evenement)
