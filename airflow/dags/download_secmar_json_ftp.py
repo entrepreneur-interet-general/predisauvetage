@@ -207,8 +207,21 @@ check_completness_secmar_json_type_flotteur = CheckOperator(
 )
 check_completness_secmar_json_type_flotteur.set_upstream(end_create_codes_tables)
 
+check_completness_secmar_json_resultat_flotteur = CheckOperator(
+    task_id="check_completness_secmar_json_resultat_flotteur",
+    sql="""
+    select count(1) = 0
+    from secmar_json_resultat_flotteur f
+    where f.seamis != '["INCONNU"]' and f.seamis::text like '%INCONNU%' and f.count > 25
+    """,
+    conn_id="postgresql_local",
+    dag=dag,
+)
+check_completness_secmar_json_resultat_flotteur.set_upstream(end_create_codes_tables)
+
 snosan_json_flotteurs = secmar_json_sql_task(dag, "snosan_json_flotteurs")
 snosan_json_flotteurs.set_upstream(check_completness_secmar_json_type_flotteur)
+snosan_json_flotteurs.set_upstream(check_completness_secmar_json_resultat_flotteur)
 
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
