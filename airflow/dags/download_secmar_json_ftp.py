@@ -160,7 +160,7 @@ for (column, json_path) in [
           where data->>'chrono' not similar to '%20(19|20|21)%' and data->>'{json_path}' not in (select seamis from {table})
         ) t
         """.format(
-            column=column, table=table
+            json_path=json_path, table=table
         ),
         postgres_conn_id="postgresql_local",
         dag=dag,
