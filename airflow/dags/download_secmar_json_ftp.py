@@ -125,11 +125,15 @@ end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=d
 for code in [
     # Opérations
     "secmar_json_evenement_codes",
+    "secmar_json_operations_cross",
+    "secmar_json_operations_moyen_alerte",
+    "secmar_json_operations_qui_alerte",
+    "secmar_json_operations_zone_responsabilite",
     # Moyens
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
-    "secmar_json_engagements_type",
     "secmar_json_engagements_durees",
+    "secmar_json_engagements_type",
     # Flotteurs
     "snosan_json_flotteurs_resultat_flotteur",
     "snosan_json_flotteurs_type_flotteur",
@@ -137,6 +141,32 @@ for code in [
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
     task.set_downstream(end_create_codes_tables)
+
+snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
+for (column, json_path) in [
+    ("cross", "crossCoordonnateurId"),
+    ("moyen_alerte", "moyenAlerte"),
+    ("qui_alerte", "quiAlerte"),
+    ("zone_responsabilite", "zoneResponsabilite"),
+]:
+    table = "secmar_json_operations_{column}".format(column=column)
+    task = PostgresOperator(
+        task_id="check_completness_operations_{column}".format(column=column),
+        sql="""
+        select count(1) = 0
+        from (
+          select distinct data->>'{json_path}'
+          from snosan_json_unique
+          where data->>'chrono' not similar to '%20(19|20|21)%' and data->>'{json_path}' not in (select seamis from {table})
+        ) t
+        """.format(
+            column=column, table=table
+        ),
+        postgres_conn_id="postgresql_local",
+        dag=dag,
+    )
+    task.set_upstream(end_create_codes_tables)
+    task.set_downstream(snosan_json_evenement)
 
 check_completeness_snosan_json_operative_event = CheckOperator(
     task_id="check_completeness_snosan_json_operative_event",
@@ -152,11 +182,9 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     conn_id="postgresql_local",
     dag=dag,
 )
+check_completeness_snosan_json_operative_event.set_downstream(snosan_json_evenement)
 check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tables)
 insert_snosan_json_unique.set_upstream(copy_json_data)
-
-snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
-snosan_json_evenement.set_upstream(check_completeness_snosan_json_operative_event)
 
 snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_humain")
 snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
