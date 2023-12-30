@@ -177,6 +177,7 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     where seamis not in (
         select distinct data->'identification'->>'operativeEvent'
         from snosan_json_unique
+        where data->>'chrono' not similar to '%20(19|20|21)%'
     );
     """,
     conn_id="postgresql_local",
