@@ -21,6 +21,7 @@ from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
 from operators.pg_download_operator import PgDownloadOperator
 from secmar_dags import SECMAR_TABLES, opendata_path, opendata_transformer, out_path, secmar_transform
@@ -41,9 +42,7 @@ dag.doc_md = __doc__
 def filter_operations_fn(**kwargs):
     operations = pd.read_csv(out_path("operations"))
     operations_stats = pd.read_csv(out_path("operations_stats"))
-    df = operations.loc[
-        operations["operation_id"].isin(operations_stats["operation_id"]), :
-    ]
+    df = operations.loc[operations["operation_id"].isin(operations_stats["operation_id"]), :]
     df.to_csv(out_path("operations"), index=False)
 
 
@@ -68,8 +67,22 @@ filter_operations = PythonOperator(
     dag=dag,
 )
 filter_operations.set_upstream(download_operations_stats)
-filter_operations.set_downstream(start)
 
+remove_operations_sous_marin = PostgresOperator(
+    task_id="remove_operations_sous_marin",
+    sql="""
+    delete from operations
+    where operation_id in (
+        select distinct operation_id
+        from flotteurs f
+        where f.type_flotteur = 'Sous-marin'
+    )
+    """,
+    postgres_conn_id="postgresql_local",
+    dag=dag,
+)
+remove_operations_sous_marin.set_upstream(download_operations_stats)
+remove_operations_sous_marin.set_downstream(start)
 
 for table in SECMAR_TABLES + ["operations_stats"]:
     t = PythonOperator(
@@ -87,15 +100,11 @@ for table in SECMAR_TABLES + ["operations_stats"]:
     t.set_upstream(start)
     t.set_downstream(end_transform)
 
-scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(
-    host=Variable.get("REMOTE_SERVER_CSV_HOST")
-)
+scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(host=Variable.get("REMOTE_SERVER_CSV_HOST"))
 
 publish_csv_files = BashOperator(
     task_id="publish_csv_files",
-    bash_command=" && ".join(
-        ["cd " + helpers.opendata_folder_path(), "rm -f moyens.csv", scp_command]
-    ),
+    bash_command=" && ".join(["cd " + helpers.opendata_folder_path(), "rm -f moyens.csv", scp_command]),
     dag=dag,
 )
 publish_csv_files.set_upstream(end_transform)
