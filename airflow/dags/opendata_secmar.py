@@ -81,7 +81,7 @@ remove_operations_sous_marin = PostgresOperator(
     postgres_conn_id="postgresql_local",
     dag=dag,
 )
-remove_operations_sous_marin.set_upstream(download_operations_stats)
+remove_operations_sous_marin.set_upstream(filter_operations)
 remove_operations_sous_marin.set_downstream(start)
 
 for table in SECMAR_TABLES + ["operations_stats"]:
