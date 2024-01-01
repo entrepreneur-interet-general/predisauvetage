@@ -15,6 +15,7 @@ VALUES
   ('ACCIDENT_AERONAUTIQUE', 'Accident aéronautique', 'Autres affaires nécessitant opération'),
   ('ACCIDENT_CORPOREL', 'Accident corporel', 'Accidents individuels à personnes'),
   ('ACTE_DE_PIRATERIE', 'Acte de piraterie / terrorisme', 'Autres affaires nécessitant opération'),
+  ('ATTAQUE_TERRORISTE', 'Acte de piraterie / terrorisme', 'Autres affaires nécessitant opération'),
   ('AUTRE_EVENEMENT', 'Autre événement', 'Autres affaires nécessitant opération'),
   ('AVARIE_AERONAUTIQUE', 'Accident aéronautique', 'Autres affaires nécessitant opération'),
   ('AVARIE_APPAREIL_A_GOUVERNER', 'Avarie de l''appareil à gouverner', 'Accidents de navire'),
