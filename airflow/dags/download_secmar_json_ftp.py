@@ -158,7 +158,7 @@ for (column, json_path) in [
           select distinct data->>'{json_path}'
           from snosan_json_unique
           where data->>'chrono' not similar to '%20(19|20|21)%' and data->>'{json_path}' not in (select seamis from {table})
-        ) t
+        ) _
         """.format(
             json_path=json_path, table=table
         ),
@@ -173,12 +173,12 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     sql="""
     select
         count(1) = 0
-    from secmar_json_evenement_codes
-    where seamis not in (
-        select distinct data->'identification'->>'operativeEvent'
+    from (
+        select distinct data->'identification'->>'operativeEvent' operative_event
         from snosan_json_unique
         where data->>'chrono' not similar to '%20(19|20|21)%'
-    );
+    ) _
+    where operative_event not in (select seamis from secmar_json_evenement_codes);
     """,
     conn_id="postgresql_local",
     dag=dag,
@@ -203,9 +203,9 @@ for column in ["autorite", "type", "categorie"]:
             select jsonb_array_elements(data->'engagements') as e
             from snosan_json_unique
             where data ? 'engagements'
-          ) t
+          ) _
           where e->>'{column}' not in (select seamis from {table})
-        ) t
+        ) _
         """.format(
             column=column, table=table
         ),
@@ -218,18 +218,16 @@ for column in ["autorite", "type", "categorie"]:
 check_completness_secmar_json_type_flotteur = CheckOperator(
     task_id="check_completness_secmar_json_type_flotteur",
     sql="""
-    select
-        count(1) = 0
-    from secmar_json_type_flotteur
-    where seamis not in (
-        select distinct coalesce(v->>'type', v->>'typeAero')
+    select count(1) = 0
+    from (
+        select distinct coalesce(v->>'type', v->>'typeAero') _ype_flotteur
         from (
-            select
-              jsonb_array_elements(data->'vehicules') as v
+            select jsonb_array_elements(data->'vehicules') as v
             from snosan_json_unique
             where data ? 'vehicules' and data->>'chrono' not similar to '%20(19|20|21)%'
         ) _
-    );
+    ) _
+    where type_flotteur not in (select seamis from secmar_json_type_flotteur)
     """,
     conn_id="postgresql_local",
     dag=dag,
@@ -255,12 +253,13 @@ snosan_json_flotteurs.set_upstream(check_completness_secmar_json_resultat_flotte
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
     sql="""
-    select count(1) = 0
-    from  (
-        select data->>'chrono' from snosan_json_unique where data->>'chrono' not in (
-            select chrono from snosan_json_evenement
-        )
-    ) t
+    select
+        count(1) = 0
+    from snosan_json_unique
+    where
+      data->>'chrono' not in (select chrono from snosan_json_evenement)
+      and data->>'chrono' not similar to '%20(19|20|21)%'
+      and not data->'identification'->>'operativeEvent' is null
     """,
     conn_id="postgresql_local",
     dag=dag,
