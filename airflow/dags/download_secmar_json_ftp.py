@@ -220,7 +220,7 @@ check_completness_secmar_json_type_flotteur = CheckOperator(
     sql="""
     select count(1) = 0
     from (
-        select distinct coalesce(v->>'type', v->>'typeAero') _ype_flotteur
+        select distinct coalesce(v->>'type', v->>'typeAero') type_flotteur
         from (
             select jsonb_array_elements(data->'vehicules') as v
             from snosan_json_unique
