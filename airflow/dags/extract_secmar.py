@@ -81,6 +81,10 @@ def insert_moyens_snsm_fn(**kwargs):
     return execute_sql_file("moyens_snsm")
 
 
+def operations_est_metropolitain_fn(**kwargs):
+    return execute_sql_file("operations_est_metropolitain")
+
+
 def set_tide_data_fn(**kwargs):
     return execute_sql_file("compute_tide")
 
@@ -220,6 +224,15 @@ insert_moyens_snsm = PythonOperator(
 insert_moyens_snsm.set_upstream(end_secmar_csv_checks)
 insert_moyens_snsm.set_downstream(start_checks)
 
+operations_est_metropolitain = PythonOperator(
+    task_id="operations_est_metropolitain",
+    python_callable=operations_est_metropolitain_fn,
+    provide_context=True,
+    dag=dag,
+)
+operations_est_metropolitain.set_upstream(end_secmar_csv_checks)
+operations_est_metropolitain.set_downstream(start_checks)
+
 distances = [
     (
         "compute_shore_distance",
@@ -236,9 +249,7 @@ distances = [
 ]
 
 for name, python_fn in distances:
-    t = PythonOperator(
-        task_id=name, python_callable=python_fn, provide_context=True, dag=dag
-    )
+    t = PythonOperator(task_id=name, python_callable=python_fn, provide_context=True, dag=dag)
     t.set_upstream(prepare_operations_points)
     t.set_downstream(insert_operations_stats)
 
