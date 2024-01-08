@@ -99,6 +99,7 @@ def checks():
             where stats.distance_cote_metres < 20000
               and o."cross" not in ('Antilles-Guyane', 'Corse', 'Guadeloupe', 'Guyane', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie')
               and stats.maree_coefficient is null
+              and o.est_metropolitain
         """,
         "unset_shore_distance": """
             select count(1) = 0
