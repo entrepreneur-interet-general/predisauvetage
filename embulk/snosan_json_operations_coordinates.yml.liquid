@@ -1,0 +1,21 @@
+in:
+  type: file
+  path_prefix: {{ env.EMBULK_FILEPATH }}
+  parser:
+    charset: UTF-8
+    newline: LF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    allow_extra_columns: false
+    allow_optional_columns: false
+    columns:
+    - {name: chrono, type: string}
+    - {name: latitude, type: double}
+    - {name: longitude, type: double}
+{% include 'datasources/out_postgresql' %}
+  table: snosan_json_operations_coordinates
+  mode: truncate_insert

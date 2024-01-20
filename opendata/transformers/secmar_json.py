@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import csv
 import logging
 import os
 import socket
@@ -8,6 +9,8 @@ from pathlib import Path
 
 import pandas as pd
 import socks
+
+from transformers.coordinates import parse as parse_coordinates
 
 FTP_BASE_FOLDER = "JSON"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_json"
@@ -74,9 +77,7 @@ def download_latest_remote_days():
     for day in pd.date_range(end=pd.to_datetime("today").date(), periods=365)[::-1]:
         day_str = day.strftime("%Y%m%d")
         if (BASE_PATH / day_str).exists():
-            logging.debug(
-                "%s is already available locally, stopping remote download" % day_str
-            )
+            logging.debug("%s is already available locally, stopping remote download" % day_str)
             break
         ftp_download_remote_folder(day_str)
 
@@ -97,11 +98,7 @@ def process_all_days():
 
 def extract_for_day(day):
     result = []
-    files = [
-        f
-        for f in (BASE_PATH / day).iterdir()
-        if f.suffix == ".json" and f.name != "data.json"
-    ]
+    files = [f for f in (BASE_PATH / day).iterdir() if f.suffix == ".json" and f.name != "data.json"]
     logging.debug("Extracting %s files for %s" % (len(files), day))
     for filepath in files:
         with open(str(filepath), "r") as f:
@@ -110,9 +107,17 @@ def extract_for_day(day):
 
 
 def list_of_days():
-    return filter(
-        lambda x: x.is_dir() and x.name.isdigit(), sorted(BASE_PATH.iterdir())
-    )
+    return filter(lambda x: x.is_dir() and x.name.isdigit(), sorted(BASE_PATH.iterdir()))
+
+
+def parse_and_save_coordinates(in_filepath, out_filepath):
+    with open(in_filepath) as in_file, open(out_filepath, "w") as out_file:
+        fieldnames = ["chrono", "latitude", "longitude"]
+        writer = csv.DictWriter(out_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in csv.DictReader(in_file):
+            latitude, longitude = parse_coordinates(row["paragraphe"])
+            writer.writerow({"chrono": row["chrono"], "latitude": latitude, "longitude": longitude})
 
 
 if __name__ == "__main__":

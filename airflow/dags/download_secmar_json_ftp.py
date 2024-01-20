@@ -15,6 +15,7 @@ from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
+from operators.pg_download_operator import PgDownloadOperator
 from transformers import secmar_json
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 21, 10, 0)})
@@ -29,6 +30,9 @@ dag = DAG(
 )
 dag.doc_md = __doc__
 
+OPERATIONS_COORDINATES_IN_FILEPATH = helpers.data_path("snosan_json_operations_coordinates.csv")
+OPERATIONS_COORDINATES_OUT_FILEPATH = helpers.data_path("snosan_json_operations_cleaned_coordinates.csv")
+
 
 def setup_ftp_env():
     os.environ["FTP_PROXY"] = "false"
@@ -40,6 +44,11 @@ def setup_ftp_env():
 def ftp_download_fn(**kwargs):
     setup_ftp_env()
     secmar_json.ftp_download_remote_folder(kwargs["templates_dict"]["day"])
+
+
+def parse_and_save_coordinates_fn(**kwargs):
+    secmar_json.parse_and_save_coordinates(OPERATIONS_COORDINATES_IN_FILEPATH, OPERATIONS_COORDINATES_OUT_FILEPATH)
+    os.remove(OPERATIONS_COORDINATES_IN_FILEPATH)
 
 
 def check_if_next_day_exists_fn(**kwargs):
@@ -117,6 +126,38 @@ copy_json_data = PostgresOperator(
 copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+
+download_operations_coordinates = PgDownloadOperator(
+    task_id="download_operations_coordinates",
+    postgres_conn_id="postgresql_local",
+    sql="""
+    select
+      data->>'chrono' chrono,
+      coalesce(data->'messages'->0->>'paragraphe2', data->'messages'->0->>'paragrapheB') paragraphe
+    from snosan_json_unique
+    """,
+    pandas_sql_params={"chunksize": 10000},
+    csv_path=OPERATIONS_COORDINATES_IN_FILEPATH,
+    csv_params={"sep": ",", "index": False},
+    dag=dag,
+)
+download_operations_coordinates.set_upstream(insert_snosan_json_unique)
+
+parse_and_save_coordinates = PythonOperator(
+    task_id="parse_and_save_coordinates",
+    python_callable=parse_and_save_coordinates_fn,
+    provide_context=True,
+    dag=dag,
+)
+parse_and_save_coordinates.set_upstream(download_operations_coordinates)
+
+create_snosan_json_operations_coordinates = secmar_json_sql_task(dag, "snosan_json_operations_coordinates")
+create_snosan_json_operations_coordinates.set_upstream(parse_and_save_coordinates)
+
+import_snosan_json_operations_coordinates = helpers.embulk_run(
+    dag, "snosan_json_operations_coordinates", {"EMBULK_FILEPATH": OPERATIONS_COORDINATES_OUT_FILEPATH}
+)
+import_snosan_json_operations_coordinates.set_upstream(create_snosan_json_operations_coordinates)
 
 start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
 start_create_codes_tables.set_upstream(insert_snosan_json_unique)
