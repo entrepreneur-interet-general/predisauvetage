@@ -7,7 +7,7 @@ PATTERN_DM = re.compile(
 )
 # Example: 43°32'27"N - 003°58'41"E
 PATTERN_DMS = re.compile(
-    r"(?P<lat>\d+)°(?P<lat_m>\d+)'(?P<lat_s>\d+)\"(?P<lat_dir>N|S) - (?P<lon>\d+)°(?P<lon_m>\d+)'(?P<lon_s>\d+)\"(?P<lon_dir>W|E)"
+    r"(?P<lat>\d+)°(?P<lat_m>\d+)'(?P<lat_s>\d+)\"?(?P<lat_dir>N|S) - (?P<lon>\d+)°(?P<lon_m>\d+)'(?P<lon_s>\d+)\"?(?P<lon_dir>W|E)"
 )
 # Example: -51,033333 - 2,0515
 PATTERN_DD = re.compile(r"(?P<lat>-?\d+(,|.)\d+) - (?P<lon>-?\d+(,|.)\d+)")
@@ -35,7 +35,7 @@ def parse(content):
 def convert_dm(groups, coordinate):
     return round(
         sign(groups.group(coordinate + "_dir"))
-        * (float(groups.group(coordinate + "")) + float(groups.group(coordinate + "_m")) / 60),
+        * (group_name_to_float(groups, coordinate) + group_name_to_float(groups, coordinate + "_m") / 60),
         6,
     )
 
@@ -44,12 +44,16 @@ def convert_dms(groups, coordinate):
     return round(
         sign(groups.group(coordinate + "_dir"))
         * (
-            float(groups.group(coordinate + ""))
-            + float(groups.group(coordinate + "_m")) / 60
-            + float(groups.group(coordinate + "_s")) / 3600
+            group_name_to_float(groups, coordinate)
+            + group_name_to_float(groups, coordinate + "_m") / 60
+            + group_name_to_float(groups, coordinate + "_s") / 3600
         ),
         6,
     )
+
+
+def group_name_to_float(groups, name):
+    return float(groups.group(name).replace(",", "."))
 
 
 def sign(direction):
