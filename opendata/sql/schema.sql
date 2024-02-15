@@ -188,6 +188,7 @@ CREATE TABLE public.operations_stats (
     "nombre_flotteurs_engin_de_plage_impliques" smallint not null,
     "nombre_flotteurs_kitesurf_impliques" smallint not null,
     "nombre_flotteurs_plaisance_voile_legere_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_a_moteur_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_voile_impliques" smallint not null,

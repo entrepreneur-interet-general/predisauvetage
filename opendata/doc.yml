@@ -808,6 +808,12 @@ components:
           description: Le nombre de flotteurs de plaisance à voile légère impliqués dans l'opération.
           example: 1
           minimum: 0
+        nombre_flotteurs_plaisance_a_moteur_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à moteur.
+          example: 1
+          minimum: 0
         nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques:
           type: integer
           format: int32
