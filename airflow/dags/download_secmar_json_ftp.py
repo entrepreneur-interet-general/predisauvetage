@@ -127,6 +127,10 @@ copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
 
+start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
+start_create_codes_tables.set_upstream(insert_snosan_json_unique)
+end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
+
 download_operations_coordinates = PgDownloadOperator(
     task_id="download_operations_coordinates",
     postgres_conn_id="postgresql_local",
@@ -158,10 +162,7 @@ import_snosan_json_operations_coordinates = helpers.embulk_run(
     dag, "snosan_json_operations_coordinates", {"EMBULK_FILEPATH": OPERATIONS_COORDINATES_OUT_FILEPATH}
 )
 import_snosan_json_operations_coordinates.set_upstream(create_snosan_json_operations_coordinates)
-
-start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
-start_create_codes_tables.set_upstream(insert_snosan_json_unique)
-end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
+import_snosan_json_operations_coordinates.set_downstream(end_create_codes_tables)
 
 for code in [
     # Opérations
@@ -170,6 +171,7 @@ for code in [
     "secmar_json_operations_moyen_alerte",
     "secmar_json_operations_qui_alerte",
     "secmar_json_operations_zone_responsabilite",
+    "secmar_json_operations_vent_categorie",
     # Moyens
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
