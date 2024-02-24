@@ -183,6 +183,8 @@ for code in [
     # Flotteurs
     "secmar_json_resultat_flotteur_codes",
     "secmar_json_flotteurs_type_flotteur",
+    # Résultats humain
+    "secmar_json_resultats_humain_categorie",
 ]:
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
@@ -260,7 +262,28 @@ check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tab
 check_completeness_snosan_json_operative_event.set_downstream(snosan_json_operations)
 
 snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_humain")
-snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
+for column in ["categorie"]:
+    table = "secmar_json_resultats_humain_{column}".format(column=column)
+    task = PostgresOperator(
+        task_id="check_completness_resultats_humain_{column}".format(column=column),
+        sql="""
+        select count(1) = 0
+        from (
+          select distinct personne->>'{column}'
+            from (
+                select jsonb_array_elements(data->'personnes') personne
+                from snosan_json_unique
+            ) _
+          where personne->>'{column}' not in (select seamis from {table})
+        ) _
+        """.format(
+            column=column, table=table
+        ),
+        postgres_conn_id="postgresql_local",
+        dag=dag,
+    )
+    task.set_upstream(end_create_codes_tables)
+    task.set_downstream(snosan_json_resultats_humain)
 
 snosan_json_moyens = secmar_json_sql_task(dag, "snosan_json_moyens")
 for column in ["autorite", "type", "categorie"]:
@@ -323,6 +346,7 @@ snosan_json_flotteurs.set_upstream(check_completness_secmar_json_type_flotteur)
 snosan_json_flotteurs.set_upstream(check_completness_secmar_json_resultat_flotteur)
 
 snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
+snosan_json_evenement.set_upstream(start_create_codes_tables)
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
     sql="""

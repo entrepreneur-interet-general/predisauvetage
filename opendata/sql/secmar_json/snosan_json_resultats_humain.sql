@@ -12,15 +12,7 @@ create index on snosan_json_resultats_humain(chrono);
 insert into snosan_json_resultats_humain (chrono, categorie_personne, resultat_humain, nombre, dont_nombre_blesse)
 select
   t.chrono chrono,
-  case
-    when personne->>'categorie' = 'PLAISANCIER' then 'Plaisancier français'
-    when personne->>'categorie' = 'PRATIQUANT_LOISIRS_NAUTIQUES' then 'Pratiquant loisirs nautiques'
-    when personne->>'categorie' = 'PROFESSIONNEL' then 'Commerce français'
-    when personne->>'categorie' = 'MIGRANT' then 'Migrant'
-    when personne->>'categorie' = 'PECHEUR_PRO' then 'Pêcheur français'
-    when personne->>'categorie' = 'PECHEUR_AMATEUR' then 'Pêcheur amateur'
-    else 'Autre'
-  end categorie_personne,
+  coalesce(rhc.secmar, 'Autre') categorie_personne,
   case
     when personne->'resultat' ? 'DECEDE' then 'Personne décédée'
     when personne->'resultat' ? 'DISPARU' then 'Personne disparue'
@@ -41,4 +33,5 @@ from (
     jsonb_array_elements(data->'personnes') personne
   from snosan_json_unique
 ) t
+left join secmar_json_resultats_humain_categorie rhc on rhc.seamis = personne->>'categorie'
 where personne->>'isInvolved' = 'true' and personne->>'principalImpl' = 'true';
