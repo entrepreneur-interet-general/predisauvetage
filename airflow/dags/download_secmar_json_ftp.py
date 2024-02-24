@@ -167,6 +167,7 @@ import_snosan_json_operations_coordinates.set_downstream(end_create_codes_tables
 
 for code in [
     # Opérations
+    "snosan_json_operation_id",
     "secmar_json_evenement_codes",
     "secmar_json_operations_cross",
     "secmar_json_operations_moyen_alerte",
@@ -187,7 +188,7 @@ for code in [
     task.set_upstream(start_create_codes_tables)
     task.set_downstream(end_create_codes_tables)
 
-snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
+snosan_json_operations = secmar_json_sql_task(dag, "snosan_json_operations")
 for (column, json_path) in [
     ("cross", "crossCoordonnateurId"),
     ("moyen_alerte", "moyenAlerte"),
@@ -212,7 +213,7 @@ for (column, json_path) in [
         dag=dag,
     )
     task.set_upstream(end_create_codes_tables)
-    task.set_downstream(snosan_json_evenement)
+    task.set_downstream(snosan_json_operations)
 
 check_completness_operations_force_vent = PostgresOperator(
     task_id="check_completness_operations_force_vent",
@@ -225,7 +226,7 @@ check_completness_operations_force_vent = PostgresOperator(
     dag=dag,
 )
 check_completness_operations_force_vent.set_upstream(end_create_codes_tables)
-check_completness_operations_force_vent.set_upstream(snosan_json_evenement)
+check_completness_operations_force_vent.set_downstream(snosan_json_operations)
 
 check_completness_operations_etat_mer = PostgresOperator(
     task_id="check_completness_operations_etat_mer",
@@ -238,7 +239,7 @@ check_completness_operations_etat_mer = PostgresOperator(
     dag=dag,
 )
 check_completness_operations_etat_mer.set_upstream(end_create_codes_tables)
-check_completness_operations_etat_mer.set_upstream(snosan_json_evenement)
+check_completness_operations_etat_mer.set_downstream(snosan_json_operations)
 
 check_completeness_snosan_json_operative_event = CheckOperator(
     task_id="check_completeness_snosan_json_operative_event",
@@ -255,8 +256,8 @@ check_completeness_snosan_json_operative_event = CheckOperator(
     conn_id="postgresql_local",
     dag=dag,
 )
-check_completeness_snosan_json_operative_event.set_downstream(snosan_json_evenement)
 check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tables)
+check_completeness_snosan_json_operative_event.set_downstream(snosan_json_operations)
 
 snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_humain")
 snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
@@ -321,6 +322,7 @@ snosan_json_flotteurs = secmar_json_sql_task(dag, "snosan_json_flotteurs")
 snosan_json_flotteurs.set_upstream(check_completness_secmar_json_type_flotteur)
 snosan_json_flotteurs.set_upstream(check_completness_secmar_json_resultat_flotteur)
 
+snosan_json_evenement = secmar_json_sql_task(dag, "snosan_json_evenement")
 check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     task_id="check_completeness_count_rows_secmar_json_evenement",
     sql="""
@@ -336,6 +338,7 @@ check_completeness_count_rows_secmar_json_evenement = CheckOperator(
     dag=dag,
 )
 check_completeness_count_rows_secmar_json_evenement.set_upstream(snosan_json_evenement)
+check_completeness_count_rows_secmar_json_evenement.set_downstream(snosan_json_operations)
 
 download_secmar_csv_ftp = TriggerDagRunOperator(
     task_id="trigger_download_secmar_csv_ftp_dag",
@@ -343,4 +346,7 @@ download_secmar_csv_ftp = TriggerDagRunOperator(
     python_callable=lambda context, dag_run: dag_run,
     dag=dag,
 )
-download_secmar_csv_ftp.set_upstream(check_completeness_count_rows_secmar_json_evenement)
+download_secmar_csv_ftp.set_upstream(snosan_json_operations)
+download_secmar_csv_ftp.set_upstream(snosan_json_flotteurs)
+download_secmar_csv_ftp.set_upstream(snosan_json_moyens)
+download_secmar_csv_ftp.set_upstream(snosan_json_resultats_humain)
