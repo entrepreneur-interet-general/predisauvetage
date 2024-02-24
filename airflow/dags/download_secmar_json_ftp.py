@@ -180,8 +180,8 @@ for code in [
     "secmar_json_engagements_durees",
     "secmar_json_engagements_type",
     # Flotteurs
-    "snosan_json_flotteurs_resultat_flotteur",
-    "snosan_json_flotteurs_type_flotteur",
+    "secmar_json_resultat_flotteur_codes",
+    "secmar_json_flotteurs_type_flotteur",
 ]:
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
