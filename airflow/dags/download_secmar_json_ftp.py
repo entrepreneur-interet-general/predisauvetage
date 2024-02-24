@@ -126,6 +126,7 @@ copy_json_data = PostgresOperator(
 copy_json_data.set_upstream(create_tables)
 
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
+insert_snosan_json_unique.set_upstream(copy_json_data)
 
 start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
 start_create_codes_tables.set_upstream(insert_snosan_json_unique)
@@ -213,6 +214,32 @@ for (column, json_path) in [
     task.set_upstream(end_create_codes_tables)
     task.set_downstream(snosan_json_evenement)
 
+check_completness_operations_force_vent = PostgresOperator(
+    task_id="check_completness_operations_force_vent",
+    sql="""
+    select count(1) = 0
+    from snosan_json_unique
+    where not data->'bulletinsMeteo'->0->>'forceVent' ~ '^FORCE_([\d]{1}|10|11|12)$'
+    """,
+    postgres_conn_id="postgresql_local",
+    dag=dag,
+)
+check_completness_operations_force_vent.set_upstream(end_create_codes_tables)
+check_completness_operations_force_vent.set_upstream(snosan_json_evenement)
+
+check_completness_operations_etat_mer = PostgresOperator(
+    task_id="check_completness_operations_etat_mer",
+    sql="""
+    select count(1) = 0
+    from snosan_json_unique
+    where not data->'bulletinsMeteo'->0->>'etatMer' ~ '^ETAT_MER_[0-8]$'
+    """,
+    postgres_conn_id="postgresql_local",
+    dag=dag,
+)
+check_completness_operations_etat_mer.set_upstream(end_create_codes_tables)
+check_completness_operations_etat_mer.set_upstream(snosan_json_evenement)
+
 check_completeness_snosan_json_operative_event = CheckOperator(
     task_id="check_completeness_snosan_json_operative_event",
     sql="""
@@ -230,7 +257,6 @@ check_completeness_snosan_json_operative_event = CheckOperator(
 )
 check_completeness_snosan_json_operative_event.set_downstream(snosan_json_evenement)
 check_completeness_snosan_json_operative_event.set_upstream(end_create_codes_tables)
-insert_snosan_json_unique.set_upstream(copy_json_data)
 
 snosan_json_resultats_humain = secmar_json_sql_task(dag, "snosan_json_resultats_humain")
 snosan_json_resultats_humain.set_upstream(insert_snosan_json_unique)
