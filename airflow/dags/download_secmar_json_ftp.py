@@ -172,6 +172,7 @@ for code in [
     "secmar_json_operations_qui_alerte",
     "secmar_json_operations_zone_responsabilite",
     "secmar_json_operations_vent_categorie",
+    "secmar_json_operations_departement",
     # Moyens
     "secmar_json_engagements_autorite",
     "secmar_json_engagements_categorie",
@@ -191,6 +192,7 @@ for (column, json_path) in [
     ("moyen_alerte", "moyenAlerte"),
     ("qui_alerte", "quiAlerte"),
     ("zone_responsabilite", "zoneResponsabilite"),
+    ("departement", "departement"),
 ]:
     table = "secmar_json_operations_{column}".format(column=column)
     task = PostgresOperator(
