@@ -5,7 +5,7 @@ CREATE TYPE jours_semaine_francais AS enum('Lundi', 'Mardi', 'Mercredi', 'Jeudi'
 DROP TYPE IF EXISTS phase_journee CASCADE;
 CREATE TYPE phase_journee AS enum('matinée', 'déjeuner', 'après-midi', 'nuit');
 DROP TYPE IF EXISTS noms_cross CASCADE;
-CREATE TYPE noms_cross AS enum('Adge', 'Antilles-Guyane', 'Corse', 'Corsen', 'Étel', 'Gris-Nez', 'Guadeloupe', 'Guyane', 'Jobourg', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie', 'Soulac');
+CREATE TYPE noms_cross AS enum('Adge', 'Antilles-Guyane', 'Corse', 'Corsen', 'Étel', 'Gris-Nez', 'Guadeloupe', 'Guyane', 'Jobourg', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie', 'Soulac', 'Sud océan Indien');
 
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
