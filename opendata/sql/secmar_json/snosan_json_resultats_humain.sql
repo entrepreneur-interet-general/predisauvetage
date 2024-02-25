@@ -14,13 +14,17 @@ select
   t.chrono chrono,
   coalesce(rhc.secmar, 'Autre') categorie_personne,
   case
-    when personne->'resultat' ? 'DECEDE' then 'Personne décédée'
-    when personne->'resultat' ? 'DISPARU' then 'Personne disparue'
-    when personne->'resultat' ? 'SECOURU' then 'Personne secourue'
-    when personne->'resultat' ? 'ASSISTE' or personne->'resultat' ? 'ASSITE' then 'Personne assistée'
-    when personne->'resultat' ? 'RETROUVE_RECHERCHE' or personne->'resultat' ? 'RETROUVE_APRES_RECHERCHE' then 'Personne retrouvée'
-    when personne->'resultat' ? 'FAUSSE_ALERTE' or personne->'resultat' ? 'IMPL_FAUSSE_ALERTE' then 'Personne impliquée dans fausse alerte'
-    else 'Personne tirée d''affaire seule'
+    when personne->'resultat' ? 'DECEDE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'DECEDE')
+    when personne->'resultat' ? 'DISPARU' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'DISPARU')
+    when personne->'resultat' ? 'SECOURU' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'SECOURU')
+    when personne->'resultat' ? 'ASSISTE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'ASSISTE')
+    when personne->'resultat' ? 'RETROUVE_APRES_RECHERCHE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'RETROUVE_APRES_RECHERCHE')
+    when personne->'resultat' ? 'FAUSSE_ALERTE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'FAUSSE_ALERTE')
+    when personne->'resultat' ? 'BLESSE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'BLESSE')
+    when personne->'resultat' ? 'MALADE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'MALADE')
+    when personne->'resultat' ? 'TIRE_DAFFAIRE_SEUL' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'TIRE_DAFFAIRE_SEUL')
+    when personne->'resultat' ? 'INDEMNE' then (select secmar from secmar_json_resultats_humain_resultat where seamis = 'INDEMNE')
+    else 'Inconnu'
   end resultat_humain,
   coalesce((personne->>'npi')::int, 1) nombre,
   case

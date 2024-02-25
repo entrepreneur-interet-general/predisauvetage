@@ -185,6 +185,7 @@ for code in [
     "secmar_json_flotteurs_type_flotteur",
     # Résultats humain
     "secmar_json_resultats_humain_categorie",
+    "secmar_json_resultats_humain_resultat",
 ]:
     task = secmar_json_sql_task(dag, code)
     task.set_upstream(start_create_codes_tables)
@@ -284,6 +285,29 @@ for column in ["categorie"]:
     )
     task.set_upstream(end_create_codes_tables)
     task.set_downstream(snosan_json_resultats_humain)
+
+check_completness_resultats_humain_resultat = PostgresOperator(
+    task_id="check_completness_resultats_humain_resultat",
+    sql="""
+    select count(1) = 0
+    from (
+      select value
+      from (
+        select distinct jsonb_array_elements(personne->'resultat')->>0 as value
+        from (
+          select jsonb_array_elements(data->'personnes') personne
+          from snosan_json_unique
+          where data->>'chrono' not similar to '%20(19|20|21)%'
+        ) _
+      )_
+      where value not in (select seamis from secmar_json_resultats_humain_resultat)
+    ) _
+    """,
+    postgres_conn_id="postgresql_local",
+    dag=dag,
+)
+check_completness_resultats_humain_resultat.set_upstream(end_create_codes_tables)
+check_completness_resultats_humain_resultat.set_downstream(snosan_json_resultats_humain)
 
 snosan_json_moyens = secmar_json_sql_task(dag, "snosan_json_moyens")
 for column in ["autorite", "type", "categorie"]:
