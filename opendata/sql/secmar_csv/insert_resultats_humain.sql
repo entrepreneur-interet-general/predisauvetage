@@ -6,11 +6,11 @@ INSERT INTO resultats_humain (
   "dont_nombre_blesse"
 )
 select
-  sco.secmar_operation_id,
+  scoi."operation_id",
   sjrh."categorie_personne",
   sjrh."resultat_humain",
   sjrh."nombre",
   sjrh."dont_nombre_blesse"
 from snosan_json_resultats_humain sjrh
-join secmar_csv_operation sco on sco.operation_long_name = replace(sjrh.chrono, '-', '_')
-where sco.secmar_operation_id not in (select distinct operation_id from resultats_humain) and sco.secmar_operation_id IN (SELECT operation_id FROM operations);
+JOIN snosan_json_operation_id scoi on scoi.chrono = sjm.chrono
+where scoi.operation_id not in (select distinct operation_id from resultats_humain) and scoi.operation_id IN (SELECT operation_id FROM operations);

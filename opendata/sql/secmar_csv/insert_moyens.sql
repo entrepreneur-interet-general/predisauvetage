@@ -19,7 +19,7 @@ INSERT INTO moyens (
   duree_engagement_minutes
 )
 select
-  sco.secmar_operation_id,
+  scoi.operation_id,
   sjm.numero_ordre,
   sjm.moyen,
   sjm.categorie_moyen,
@@ -29,5 +29,5 @@ select
   sjm.date_heure_fin,
   sjm.duree_engagement_minutes
 from snosan_json_moyens sjm
-join secmar_csv_operation sco on sco.operation_long_name = replace(sjm.chrono, '-', '_')
-where sco.secmar_operation_id not in (select distinct operation_id from moyens) and sco.secmar_operation_id IN (SELECT operation_id FROM operations);
+JOIN snosan_json_operation_id scoi on scoi.chrono = sjm.chrono
+where scoi.operation_id not in (select distinct operation_id from moyens) and scoi.operation_id IN (SELECT operation_id FROM operations);

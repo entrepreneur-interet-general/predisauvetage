@@ -12,12 +12,12 @@ INSERT INTO flotteurs (
   "longueur"
 )
 SELECT
-  sco.secmar_operation_id operation_id,
+  scoi.operation_id "operation_id",
   sjf.pavillon "pavillon",
   sjf.resultat_flotteur "resultat_flotteur",
   sjf.type_flotteur "type_flotteur",
   sjf.categorie_flotteur "categorie_flotteur",
-  sjf.longueur longueur
+  sjf.longueur "longueur"
 FROM snosan_json_flotteurs sjf
-JOIN secmar_csv_operation sco on sco.operation_long_name = replace(sjf.chrono, '-', '_')
-WHERE sco.secmar_operation_id not in (select distinct operation_id from flotteurs) and sco.secmar_operation_id IN (SELECT operation_id FROM operations);
+JOIN snosan_json_operation_id scoi on scoi.chrono = sjf.chrono
+WHERE scoi.operation_id not in (select distinct operation_id from flotteurs) and scoi.operation_id IN (SELECT operation_id FROM operations);
