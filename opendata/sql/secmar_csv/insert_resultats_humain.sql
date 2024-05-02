@@ -12,5 +12,5 @@ select
   sjrh."nombre",
   sjrh."dont_nombre_blesse"
 from snosan_json_resultats_humain sjrh
-JOIN snosan_json_operation_id scoi on scoi.chrono = sjm.chrono
+JOIN snosan_json_operation_id scoi on scoi.chrono = sjrh.chrono
 where scoi.operation_id not in (select distinct operation_id from resultats_humain) and scoi.operation_id IN (SELECT operation_id FROM operations);
