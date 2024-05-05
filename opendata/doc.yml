@@ -142,6 +142,11 @@ components:
           type: string
           description: "Fuseau horaire du CROSS coordonnant l'opération. Le fuseau horaire correspond à la timezone database de l'IANA"
           example: Europe/Paris
+        systeme_source:
+          type: string
+          description: Indique le système informatique d'où provient la donnée
+          enum: [secmarweb, seamis_json]
+          example: secmarweb
     resultats_humain:
       properties:
         operation_id:

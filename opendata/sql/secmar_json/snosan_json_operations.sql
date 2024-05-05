@@ -25,7 +25,8 @@ CREATE TABLE snosan_json_operations (
     "date_heure_fin_operation" timestamp with time zone,
     "numero_sitrep" smallint,
     "cross_sitrep" varchar(50),
-    "fuseau_horaire" varchar(25)
+    "fuseau_horaire" varchar(25),
+    "systeme_source" varchar(25) not null
 );
 
 INSERT INTO snosan_json_operations
@@ -61,7 +62,8 @@ select
     (u.data->'identification'->>'yearOfCreation') || '/' ||
     (u.data->'identification'->>'numberInYear')
   ) cross_sitrep,
-  'UTC' fuseau_horaire
+  'UTC' fuseau_horaire,
+  'seamis_json' "systeme_source"
 from snosan_json_unique u
 join snosan_json_operations_coordinates oc on oc.chrono = u.data->>'chrono'
 left join snosan_json_evenement e on e.chrono = u.data->>'chrono'

@@ -30,13 +30,12 @@ class OperationsTransformer(BaseTransformer):
             inplace=True,
         )
         df["est_metropolitain"] = df.apply(lambda r: self.est_metropolitain(r), axis=1)
+        df["systeme_source"] = "secmarweb"
 
         # Clean coordinates:
         # - 0 to NULL
         # - if at least a coordinate is null, both should be NULL
-        df.replace(
-            {"latitude": {0.0: np.nan}, "longitude": {0.0: np.nan}}, inplace=True
-        )
+        df.replace({"latitude": {0.0: np.nan}, "longitude": {0.0: np.nan}}, inplace=True)
         df.loc[df.longitude.isna(), "latitude"] = np.nan
         df.loc[df.latitude.isna(), "longitude"] = np.nan
 
@@ -57,9 +56,7 @@ class OperationsTransformer(BaseTransformer):
         if row["cross"] in cross_hors_metropole:
             return False
         if row["est_metropolitain"] is None:
-            return (
-                row["cross"] not in cross_hors_metropole and row["cross"] != "Gris-Nez"
-            )
+            return row["cross"] not in cross_hors_metropole and row["cross"] != "Gris-Nez"
         return row["est_metropolitain"]
 
     def vent_direction_categorie(self, series):
@@ -98,9 +95,7 @@ class OperationsTransformer(BaseTransformer):
     def cross_sitrep(self, row):
         type_operation_str = " "
         if row["type_operation"] not in [np.nan, "nan"]:
-            type_operation_str = " {type_operation} ".format(
-                type_operation=row["type_operation"]
-            )
+            type_operation_str = " {type_operation} ".format(type_operation=row["type_operation"])
         return "{cross}{type_operation_str}{year}/{sitrep_nb}".format(
             cross=row["cross"],
             type_operation_str=type_operation_str,

@@ -33,7 +33,8 @@ insert into operations (
     "date_heure_fin_operation",
     "numero_sitrep",
     "cross_sitrep",
-    "fuseau_horaire"
+    "fuseau_horaire",
+    "systeme_source"
 )
 select
     "operation_id",
@@ -60,7 +61,8 @@ select
     "date_heure_fin_operation",
     "numero_sitrep",
     "cross_sitrep",
-    "fuseau_horaire"
+    "fuseau_horaire",
+    "systeme_source"
 from snosan_json_operations
 where cross_sitrep not in (select cross_sitrep from operations);
 
