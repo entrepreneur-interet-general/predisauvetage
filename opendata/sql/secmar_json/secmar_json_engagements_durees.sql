@@ -28,7 +28,7 @@ from (
     select
       chrono,
       e->>'uuid' uuid,
-      ((jsonb_each_text(e->'etapesEngagement')).value)::timestamptz dt
+      ((jsonb_each_text(e->'etapesEngagement')).value)::timestamptz(0) dt
     from (
       select
         data->>'chrono' as chrono,

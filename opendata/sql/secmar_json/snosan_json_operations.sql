@@ -52,8 +52,8 @@ select
   vc.secmar vent_direction_categorie,
   replace(data->'bulletinsMeteo'->0->>'forceVent', 'FORCE_', '')::int vent_force,
   replace(data->'bulletinsMeteo'->0->>'etatMer', 'ETAT_MER_', '')::int mer_force,
-  (u.data->>'gdhAlert')::timestamptz date_heure_reception_alerte,
-  (u.data->>'gdhFin')::timestamptz date_heure_fin_operation,
+  (u.data->>'gdhAlert')::timestamptz(0) date_heure_reception_alerte,
+  (u.data->>'gdhFin')::timestamptz(0) date_heure_fin_operation,
   (u.data->'identification'->>'numberInYear')::smallint numero_sitrep,
   (
     c.secmar || ' ' ||
@@ -74,3 +74,7 @@ left join secmar_json_operations_departement d on d.seamis = u.data->>'departeme
 join snosan_json_operation_id id on id.chrono = u.data->>'chrono'
 where abs(coalesce(oc.latitude, 0)) <= 90 and abs(coalesce(oc.longitude, 0)) <= 180
 ;
+
+update snosan_json_operations
+set date_heure_reception_alerte = date_heure_fin_operation
+where date_heure_reception_alerte is null;
