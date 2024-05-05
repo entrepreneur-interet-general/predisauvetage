@@ -42,7 +42,7 @@ select
     "moyen_alerte",
     "qui_alerte",
     "categorie_qui_alerte",
-    "cross",
+    "cross"::noms_cross,
     "departement",
     "est_metropolitain",
     "evenement",
