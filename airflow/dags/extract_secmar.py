@@ -16,7 +16,7 @@ from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from operators.pg_download_operator import PgDownloadOperator
-from secmar_checks import checks, secmar_csv_checks
+from secmar_checks import checks, snosan_json_checks
 from secmar_dags import (
     SECMAR_TABLES,
     in_path,
@@ -184,20 +184,20 @@ for table in ["flotteurs", "resultats_humain", "moyens"]:
     t.set_upstream(insert_operations)
     t.set_downstream(end_secmar_csv_insert)
 
-start_secmar_csv_checks = DummyOperator(task_id="start_secmar_csv_checks", dag=dag)
-end_secmar_csv_checks = DummyOperator(task_id="end_secmar_csv_checks", dag=dag)
-end_secmar_csv_checks.set_upstream(start_secmar_csv_checks)
-start_secmar_csv_checks.set_upstream(end_secmar_csv_insert)
+start_snosan_json_checks = DummyOperator(task_id="start_snosan_json_checks", dag=dag)
+end_snosan_json_checks = DummyOperator(task_id="end_snosan_json_checks", dag=dag)
+end_snosan_json_checks.set_upstream(start_snosan_json_checks)
+start_snosan_json_checks.set_upstream(end_secmar_csv_insert)
 
-for check_name, query in secmar_csv_checks().items():
+for check_name, query in snosan_json_checks().items():
     t = CheckOperator(
         task_id="check_consistency_" + check_name,
         sql=query,
         conn_id="postgresql_local",
         dag=dag,
     )
-    t.set_upstream(start_secmar_csv_checks)
-    t.set_downstream(end_secmar_csv_checks)
+    t.set_upstream(start_snosan_json_checks)
+    t.set_downstream(end_snosan_json_checks)
 
 insert_operations_stats = PythonOperator(
     task_id="insert_operations_stats",
@@ -213,7 +213,7 @@ prepare_operations_points = PythonOperator(
     provide_context=True,
     dag=dag,
 )
-prepare_operations_points.set_upstream(end_secmar_csv_checks)
+prepare_operations_points.set_upstream(end_snosan_json_checks)
 
 insert_moyens_snsm = PythonOperator(
     task_id="insert_moyens_snsm",
@@ -221,7 +221,7 @@ insert_moyens_snsm = PythonOperator(
     provide_context=True,
     dag=dag,
 )
-insert_moyens_snsm.set_upstream(end_secmar_csv_checks)
+insert_moyens_snsm.set_upstream(end_snosan_json_checks)
 insert_moyens_snsm.set_downstream(start_checks)
 
 operations_est_metropolitain = PythonOperator(
@@ -230,7 +230,7 @@ operations_est_metropolitain = PythonOperator(
     provide_context=True,
     dag=dag,
 )
-operations_est_metropolitain.set_upstream(end_secmar_csv_checks)
+operations_est_metropolitain.set_upstream(end_snosan_json_checks)
 operations_est_metropolitain.set_downstream(start_checks)
 
 distances = [
@@ -272,7 +272,7 @@ download_operations_local_time = PgDownloadOperator(
     csv_params={"sep": ",", "index": False},
     dag=dag,
 )
-download_operations_local_time.set_upstream(end_secmar_csv_checks)
+download_operations_local_time.set_upstream(end_snosan_json_checks)
 
 transform_operations_stats = PythonOperator(
     task_id="transform_operations_stats",
