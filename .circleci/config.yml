@@ -144,4 +144,6 @@ workflows:
             - opendata_build
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - snosan_json
