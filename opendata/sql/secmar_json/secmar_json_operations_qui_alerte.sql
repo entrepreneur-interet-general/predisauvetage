@@ -69,7 +69,7 @@ VALUES
   ('ORGANISME_PROFESSIONNEL_PECHEURS', 'Organisme professionnel / Pêcheur', 'Organisme ou personne privée'),
   ('COMPAGNIE_ASSURANCE', 'Compagnie d''assurance', 'Organisme ou personne privée'),
   ('SHOM', 'SHOM', 'Autorité militaire française à terre'),
-  ('AMBASSADE_CONSULAT', 'Ambassade / consulat', 'Autorité civile française à terre'),
+  ('AMBASSADE_CONSULAT', 'Ambassade / Consulat', 'Autorité civile française à terre'),
   ('COGIC_INTERMINISTERIEL', 'COGIC interministériel', 'Autorité civile française à terre'),
   ('RADIO_AMATEUR', 'Radio amateur', 'Organisme ou personne privée')
 ;

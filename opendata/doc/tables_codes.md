@@ -98,6 +98,135 @@ Ceci décrit les valeurs possibles dans `operations.evenement`
 | Trouble à l'ordre public | ❌ | ✅ |
 | Voie d'eau | ✅ | ✅ |
 
+## Moyen d'alerte
+Ceci décrit les valeurs possibles dans `operations.moyen_alerte`
+
+| Moyen d'alerte | Présent dans SECMAR | Présent dans SEAMIS |
+| -------------- | ------------------- | ------------------- |
+| Autre moyen d'alerte | ✅ | ✅ |
+| Autre signal réglementaire | ✅ | ✅ |
+| Balise 121,5 Mhz | ✅ | ✅ |
+| Balise de détresse | ✅ | ✅ |
+| Balise de détresse ELT | ❌ | ✅ |
+| Balise de détresse EPIRB | ❌ | ✅ |
+| Balise de détresse PLB | ❌ | ✅ |
+| Balise de sûreté des navires | ✅ | ✅ |
+| Email | ❌ | ✅ |
+| HF | ✅ | ❌ |  
+| Inmarsat C | ❌ | ✅ |
+| MF/HF ASN | ✅ | ✅ |
+| MF/HF phonie | ✅ | ✅ |
+| MOB ASN | ❌ | ✅ |
+| Mob AIS | ❌ | ✅ |
+| SART | ❌ | ✅ |
+| SSAS | ❌ | ✅ |
+| Signal pyrotechnique | ✅ | ✅ |
+| Système individuel d'alerte | ❌ | ✅ |
+| Télex | ✅ | ❌ |
+| Télécopie | ✅ | ✅ |
+| Téléphone fixe | ✅ | ✅ |
+| Téléphone fixe 196 | ❌ | ✅ |
+| Téléphone mobile | ❌ | ✅ |
+| Téléphone mobile à terre | ✅ | ✅ |
+| Téléphone à la mer / GSM | ✅ | ✅ |
+| Téléphone à la mer / satellite | ✅ | ✅ |
+| Téléphone à terre | ✅ | ❌ |
+| Téléphonie mobile 196 | ❌ | ✅ |
+| VHF | ✅ | ❌ |
+| VHF AIS | ❌ | ✅ |
+| VHF ASN | ✅ | ✅ |
+| VHF phonie | ✅ | ✅ |
+
+## Qui alerte
+Ceci décrit les valeurs possibles dans `operations.qui_alerte`
+
+| Moyen d'alerte | Présent dans SECMAR | Présent dans SEAMIS |
+| -------------- | ------------------- | ------------------- |
+| ARCC ARSC | ❌ | ✅ |
+| Affaires maritimes / CSN | ✅ | ✅ |
+| Affaires maritimes / phares et balises | ✅ | ✅ |
+| Agent maritime | ❌ | ✅ |
+| Ambassade / Consulat | ✅ | ✅ |
+| Ambassade / consulat | ❌ | ✅ |
+| Armateur | ✅ | ✅ |
+| Armée de terre-air | ✅ | ❌ |  
+| Autorité médicale étrangère | ✅ | ❌ |
+| Autre administration civile | ✅ | ✅ |
+| Autre autorité civile française à terre | ✅ | ✅ |
+| Autre autorité étrangère | ✅ | ✅ |
+| Autre aéronef | ✅ | ✅ |
+| Autre navire à la mer | ✅ | ✅ |
+| Autre organisme ou personne privée | ✅ | ✅ |
+| Aéronef administratif | ✅ | ✅ |
+| Aéronef civil | ❌ | ✅ |
+| Aéronef impliqué | ✅ | ✅ |
+| Aéronef militaire | ✅ | ✅ |
+| CCMM | ✅ | ✅ |
+| CODIS / SDIS / CTA | ✅ | ✅ |
+| COGIC | ✅ | ❌ |
+| COGIC interministériel | ❌ | ✅ |
+| CORG / Gendarmerie nationale | ✅ | ✅ |
+| COZ / Sécurité civile | ✅ | ✅ |
+| CROSS / MRCC | ✅ | ✅ |
+| Centre secours locaux (caserne pompier) | ✅ | ✅ |
+| Cibiste | ✅ | ❌ |
+| Collectivité locale / Mairie | ✅ | ✅ |
+| Comité de course | ✅ | ✅ |
+| Compagnie aérienne | ✅ | ❌ |  
+| Compagnie d'assurance | ✅ | ✅ |
+| Contrôle aérien | ❌ | ✅ |
+| DRAM et DDAM | ✅ | ❌ |  
+| Douane | ✅ | ✅ |
+| École de voile | ✅ | ✅ |
+| EPSHOM | ✅ | ❌ |  
+| Famille / Proche | ✅ | ✅ |
+| Gendarmerie maritime | ✅ | ✅ |
+| Gendarmerie nationale | ✅ | ✅ |
+| IMMARSAT A | ✅ | ❌ |  
+| IMMARSAT C | ✅ | ❌ |  
+| Loueur de bateaux | ✅ | ✅ |
+| MCC COSPAS-SARSAT | ✅ | ✅ |
+| MCC SARSAT COAPAS 121,5-243 | ✅ | ✅ |
+| MCC SARSAT COSPAS 406 | ✅ | ✅ |
+| MCC Sarsat – Cospas | ✅ | ✅ |
+| MRCC | ✅ | ✅ |
+| Marine nationale | ✅ | ✅ |
+| MiMer | ✅ | ❌ |
+| Navire Marine nationale | ✅ | ✅ |
+| Navire administration civile | ✅ | ✅ |
+| Navire de commerce | ✅ | ✅ |
+| Navire de gendarmerie | ✅ | ✅ |
+| Navire de plaisance | ✅ | ✅ |
+| Navire de pêche | ✅ | ✅ |
+| Navire de sauvetage | ✅ | ✅ |
+| Navire impliqué | ✅ | ✅ |
+| Organisme professionnel / Pêcheur | ✅ | ✅ |
+| Phares et balises | ✅ | ✅ |
+| Pilotage | ✅ | ✅ |
+| Police | ✅ | ✅ |
+| Port | ✅ | ✅ |
+| Poste de plage | ✅ | ✅ |
+| PreMar | ✅ | ❌ |  
+| Propriétaire | ❌ | ✅ |
+| Préfecture | ❌ | ✅ |
+| Préfecture terrestre ou maritime | ✅ | ✅ |
+| RCC / RSC | ✅ | ✅ |
+| RCC et RSC | ✅ | ✅ |
+| Radio amateur | ❌ | ✅ |
+| Radio-amateur | ✅ | ❌ |
+| SAM ou station AffMar | ✅ | ❌ |
+| SAMU | ✅ | ✅ |
+| SAMU Coordination médicale maritime | ✅ | ✅ |
+| SCMM | ✅ | ✅ |
+| SHOM | ❌ | ✅ |
+| SNSM | ✅ | ✅ |
+| Service de géolocalisation privé | ✅ | ✅ |
+| Station radio-maritime | ✅ | ✅ |
+| Support de plongée | ✅ | ✅ |
+| Sémaphore | ✅ | ✅ |
+| Témoin | ✅ | ✅ |
+
+
 ## Bilan humain
 Ceci décrit les valeurs possibles dans `resultats_humain.resultat_humain`
 
