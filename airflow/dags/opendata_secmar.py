@@ -38,16 +38,12 @@ dag = DAG(
 )
 dag.doc_md = __doc__
 
-
-def filter_operations_fn(**kwargs):
-    operations = pd.read_csv(out_path("operations"))
-    operations_stats = pd.read_csv(out_path("operations_stats"))
-    df = operations.loc[operations["operation_id"].isin(operations_stats["operation_id"]), :]
-    df.to_csv(out_path("operations"), index=False)
-
-
-start = DummyOperator(task_id="start", dag=dag)
+start_download = DummyOperator(task_id="start_download", dag=dag)
+end_download = DummyOperator(task_id="end_download", dag=dag)
+start_transform = DummyOperator(task_id="start_transform", dag=dag)
 end_transform = DummyOperator(task_id="end_transform", dag=dag)
+
+start_transform.set_upstream(end_download)
 
 download_operations_stats = PgDownloadOperator(
     task_id="download_operations_stats",
@@ -58,15 +54,8 @@ download_operations_stats = PgDownloadOperator(
     csv_params={"sep": ",", "index": False},
     dag=dag,
 )
-download_operations_stats.set_downstream(start)
-
-filter_operations = PythonOperator(
-    task_id="filter_operations",
-    python_callable=filter_operations_fn,
-    provide_context=True,
-    dag=dag,
-)
-filter_operations.set_upstream(download_operations_stats)
+download_operations_stats.set_upstream(start_download)
+download_operations_stats.set_downstream(end_download)
 
 remove_operations_sous_marin = PostgresOperator(
     task_id="remove_operations_sous_marin",
@@ -81,8 +70,21 @@ remove_operations_sous_marin = PostgresOperator(
     postgres_conn_id="postgresql_local",
     dag=dag,
 )
-remove_operations_sous_marin.set_upstream(filter_operations)
-remove_operations_sous_marin.set_downstream(start)
+
+for table in SECMAR_TABLES:
+    task = PgDownloadOperator(
+        task_id="download_{table}".format(table=table),
+        postgres_conn_id="postgresql_local",
+        sql="select * from {table}".format(table=table),
+        pandas_sql_params={"chunksize": 10000},
+        csv_path=out_path(table),
+        csv_params={"sep": ",", "index": False},
+        dag=dag,
+    )
+    task.set_upstream(start_download)
+    task.set_downstream(end_download)
+    if table == "operations":
+        task.set_upstream(remove_operations_sous_marin)
 
 for table in SECMAR_TABLES + ["operations_stats"]:
     t = PythonOperator(
@@ -97,7 +99,7 @@ for table in SECMAR_TABLES + ["operations_stats"]:
             "transformer": opendata_transformer(table),
         },
     )
-    t.set_upstream(start)
+    t.set_upstream(start_transform)
     t.set_downstream(end_transform)
 
 scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(host=Variable.get("REMOTE_SERVER_CSV_HOST"))
