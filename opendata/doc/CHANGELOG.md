@@ -5,8 +5,12 @@ Les changements de schéma du jeu de données SECMAR sont répertoriés ci-desso
 
 Les données provenant de SeaMIS proviennent désormais exclusivement des exports bruts en JSON mis à disposition et non d'un format intermédiaire. Ceci améliore la qualité des données et permet de maitriser les processus d'intégration.
 
+Les données de SeaMIS et de SECMAR (ancien système) cohabitent au sein de la même base de données.
+
 #### Transition d'un système à l'autre
 SeaMIS a été déployé progressivement à partir de 2020 avec une montée en puissance jusqu'à la fin de l'année 2021. Ces deux années ont constitué une phase de rodage et de déploiement et a permis des ajustements du logiciel, des règles de saisie et des valeurs des énumérés. Les données à partir de l'année 2022 sont optimales.
+
+Les différents CROSS sont passés progressivement à SEA MIS. En 2024, seul le CROSS Nouvelle-Calédonie n'est pas équipé de SEAMIS.
 
 #### Modèle de données
 Le modèle de données reste peu affecté :
