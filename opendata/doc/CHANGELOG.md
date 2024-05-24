@@ -10,7 +10,7 @@ Les données de SeaMIS et de SECMAR (ancien système) cohabitent au sein de la m
 #### Transition d'un système à l'autre
 SeaMIS a été déployé progressivement à partir de 2020 avec une montée en puissance jusqu'à la fin de l'année 2021. Ces deux années ont constitué une phase de rodage et de déploiement et a permis des ajustements du logiciel, des règles de saisie et des valeurs des énumérés. Les données à partir de l'année 2022 sont optimales.
 
-Les différents CROSS sont passés progressivement à SEA MIS. En 2024, seul le CROSS Nouvelle-Calédonie n'est pas équipé de SEAMIS.
+Les différents CROSS sont passés progressivement à SeaMIS. En 2024, seul le CROSS Nouvelle-Calédonie n'est pas équipé de SeaMIS.
 
 #### Modèle de données
 Le modèle de données reste peu affecté :
@@ -19,6 +19,8 @@ Le modèle de données reste peu affecté :
 
 #### Énumérés
 Les modifications importantes concernent les valeurs des énumérés. Certaines valeurs ont disparu, d'autres ont été ajoutées. La page [table de codes](tables_codes.md) détaille succinctement les changements principaux sur ces énumérés. De nombreuses colonnes qui ne comportaient pas de valeurs absentes (`NULL`) auparavant peuvent désormais en contenir suite à des modifications de règles de saisie.
+
+Les règles de transition de valeurs d'énumérés provenant de SeaMIS vers le SNOSAN sont [disponibles dans un tableur](https://docs.google.com/spreadsheets/d/1Lg6rWPCb8LRf3Rz9pErcaYQM4XBq2H0G2h7pY2067jo/edit).
 
 #### Nouvelles colonnes
 Ajout de la colonne `systeme_source` dans `operations`. Celle-ci permet de distinguer les données provenant de SECMAR ou de SeaMIS.

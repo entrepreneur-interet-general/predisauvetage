@@ -1,8 +1,11 @@
 # Tables de codes
 Les tableaux suivants décrivent les valeurs possibles prises par les colonnes contenant du texte et qui ont un nombre de valeurs possibles important.
 
+## Transition de SeaMIS vers le SNOSAN
+Les règles de transition de valeurs d'énumérés provenant de SeaMIS vers le SNOSAN sont [disponibles dans un tableur](https://docs.google.com/spreadsheets/d/1Lg6rWPCb8LRf3Rz9pErcaYQM4XBq2H0G2h7pY2067jo/edit).
+
 ## CROSS
-Ceci décrit les valeurs possibles dans `operations.cross`
+Ceci décrit les valeurs possibles dans `operations.cross`.
 
 | Nom du CROSS | Année début usage | Année fin d'usage |
 | ------------ | ---------------- | ---------------- |
@@ -25,7 +28,7 @@ Ceci décrit les valeurs possibles dans `operations.cross`
 | Sud océan Indien | 2021 | En vigueur |
 
 ## Événements déclenchant
-Ceci décrit les valeurs possibles dans `operations.evenement`
+Ceci décrit les valeurs possibles dans `operations.evenement`.
 
 | Nom de l'événement | Présent dans SECMAR | Présent dans SEAMIS |
 | ------------------ | ------------------- | ------------------- |
@@ -99,7 +102,7 @@ Ceci décrit les valeurs possibles dans `operations.evenement`
 | Voie d'eau | ✅ | ✅ |
 
 ## Moyen d'alerte
-Ceci décrit les valeurs possibles dans `operations.moyen_alerte`
+Ceci décrit les valeurs possibles dans `operations.moyen_alerte`.
 
 | Moyen d'alerte | Présent dans SECMAR | Présent dans SEAMIS |
 | -------------- | ------------------- | ------------------- |
@@ -138,7 +141,7 @@ Ceci décrit les valeurs possibles dans `operations.moyen_alerte`
 | VHF phonie | ✅ | ✅ |
 
 ## Qui alerte
-Ceci décrit les valeurs possibles dans `operations.qui_alerte`
+Ceci décrit les valeurs possibles dans `operations.qui_alerte`.
 
 | Moyen d'alerte | Présent dans SECMAR | Présent dans SEAMIS |
 | -------------- | ------------------- | ------------------- |
@@ -228,7 +231,7 @@ Ceci décrit les valeurs possibles dans `operations.qui_alerte`
 
 
 ## Bilan humain
-Ceci décrit les valeurs possibles dans `resultats_humain.resultat_humain`
+Ceci décrit les valeurs possibles dans `resultats_humain.resultat_humain`.
 
 | Description du bilan humain | Présent dans SECMAR | Présent dans SEAMIS |
 | --------------------------- | ------------------- | ------------------- |
@@ -247,7 +250,7 @@ Ceci décrit les valeurs possibles dans `resultats_humain.resultat_humain`
 | Personne tirée d'affaire seule | ✅ | ✅ |
 
 ## Autorités des moyens
-Ceci décrit les valeurs possibles dans `moyens.autorite_moyen`
+Ceci décrit les valeurs possibles dans `moyens.autorite_moyen`.
 
 | Autorité dont le moyen a été engagé | Présent dans SECMAR | Présent dans SEAMIS |
 | ----------------------------------- | ------------------- | ------------------- |
@@ -291,7 +294,7 @@ Ceci décrit les valeurs possibles dans `moyens.autorite_moyen`
 | Station radio côtière | ✅ | ❌ |
 
 ## Types précis de flotteurs
-Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`
+Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`.
 
 | Type de flotteur | Présent dans SECMAR | Présent dans SEAMIS |
 | ---------------- | ------------------- | ------------------- |
@@ -328,7 +331,7 @@ Ceci décrit les valeurs possibles dans `flotteurs.type_flotteur`
 | Véhicule nautique à moteur | ✅ | ✅ |
 
 ## Ports de référence pour la marée
-Ceci décrit les valeurs possibles dans `operations_stats.maree_port`
+Ceci décrit les valeurs possibles dans `operations_stats.maree_port`.
 
 ![Carte des ports](https://i.imgur.com/TtmZmCc.png)
 
