@@ -81,6 +81,7 @@ select
   coalesce(f.nombre_flotteurs_engin_de_plage_impliques, 0) nombre_flotteurs_engin_de_plage_impliques,
   coalesce(f.nombre_flotteurs_kitesurf_impliques, 0) nombre_flotteurs_kitesurf_impliques,
   coalesce(f.nombre_flotteurs_plaisance_voile_legere_impliques, 0) nombre_flotteurs_plaisance_voile_legere_impliques,
+  coalesce(f.nombre_flotteurs_plaisance_a_moteur_impliques, 0) nombre_flotteurs_plaisance_a_moteur_impliques,
   coalesce(f.nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques, 0) nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques,
   coalesce(f.nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques, 0) nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques,
   coalesce(f.nombre_flotteurs_plaisance_a_voile_impliques, 0) nombre_flotteurs_plaisance_a_voile_impliques,
@@ -112,16 +113,16 @@ left join (
       sum(case when resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees,
       sum(case when resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues,
       sum(case when resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule,
-      sum(case when categorie_personne <> 'Clandestin' then dont_nombre_blesse else 0 end) nombre_personnes_blessees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne décédée accidentellement' then nombre else 0 end) nombre_personnes_decedees_accidentellement_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne disparue' then nombre else 0 end) nombre_personnes_disparues_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne impliquée dans fausse alerte' then nombre else 0 end) nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues_sans_clandestins,
-      sum(case when categorie_personne <> 'Clandestin' and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') then dont_nombre_blesse else 0 end) nombre_personnes_blessees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne assistée' then nombre else 0 end) nombre_personnes_assistees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée' then nombre else 0 end) nombre_personnes_decedees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée naturellement' then nombre else 0 end) nombre_personnes_decedees_naturellement_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne décédée accidentellement' then nombre else 0 end) nombre_personnes_decedees_accidentellement_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne disparue' then nombre else 0 end) nombre_personnes_disparues_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne impliquée dans fausse alerte' then nombre else 0 end) nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues_sans_clandestins,
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins
     from resultats_humain rh
     group by rh.operation_id
    ) t
@@ -160,6 +161,7 @@ left join (
     sum((type_flotteur = 'Engin de plage')::int) nombre_flotteurs_engin_de_plage_impliques,
     sum((type_flotteur = 'Kitesurf')::int) nombre_flotteurs_kitesurf_impliques,
     sum((type_flotteur = 'Plaisance voile légère')::int) nombre_flotteurs_plaisance_voile_legere_impliques,
+    sum((type_flotteur in ('Plaisance à moteur < 8m', 'Plaisance à moteur > 8m', 'Plaisance à moteur')::int)) nombre_flotteurs_plaisance_a_moteur_impliques,
     sum((type_flotteur = 'Plaisance à moteur < 8m')::int) nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques,
     sum((type_flotteur = 'Plaisance à moteur > 8m')::int) nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques,
     sum((type_flotteur = 'Plaisance à voile')::int) nombre_flotteurs_plaisance_a_voile_impliques,
@@ -232,7 +234,7 @@ update operations_stats set concerne_plongee = true
 where operation_id in (
   select operation_id
   from operations
-  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine')
+  where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée autonome')
 );
 
 update operations_stats set mois_texte = t.mois_texte::mois_francais

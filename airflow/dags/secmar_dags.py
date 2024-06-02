@@ -1,27 +1,20 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+import helpers
 from transformers.flotteurs import FlotteursTransformer
-from transformers.operations import OperationsTransformer
 from transformers.moyens import MoyensTransformer
-from transformers.resultats_humain import ResultatsHumainTransformer
+from transformers.opendata.flotteurs import FlotteursTransformer as OpendataFlotteursTransformer
+from transformers.opendata.moyens import MoyensTransformer as OpendataMoyensTransformer
+from transformers.opendata.operations import OperationsTransformer as OpendataOperationsTransformer
+from transformers.opendata.operations_stats import \
+    OperationsStatsTransformer as OpendataOperationsStatsTransformer
+from transformers.opendata.resultats_humain import \
+    ResultatsHumainTransformer as OpendataResultatsHumainTransformer
+from transformers.operations import OperationsTransformer
 from transformers.operations_stats import OperationsStatsTransformer
 from transformers.operations_valides import OperationsValidesTransformer
-from transformers.opendata.flotteurs import (
-    FlotteursTransformer as OpendataFlotteursTransformer,
-)
-from transformers.opendata.operations import (
-    OperationsTransformer as OpendataOperationsTransformer,
-)
-from transformers.opendata.moyens import MoyensTransformer as OpendataMoyensTransformer
-from transformers.opendata.resultats_humain import (
-    ResultatsHumainTransformer as OpendataResultatsHumainTransformer,
-)
-from transformers.opendata.operations_stats import (
-    OperationsStatsTransformer as OpendataOperationsStatsTransformer,
-)
-
-import helpers
+from transformers.resultats_humain import ResultatsHumainTransformer
 
 SECMAR_TABLES = ["flotteurs", "operations", "moyens", "resultats_humain"]
 

@@ -2,7 +2,6 @@
 
 use Cms\Classes\Layout;
 use Cms\Classes\Page;
-use Cms\Classes\Theme;
 use October\Rain\Halcyon\Model;
 
 class CmsObjectQueryTest extends TestCase

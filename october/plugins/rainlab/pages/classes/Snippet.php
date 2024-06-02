@@ -6,7 +6,6 @@ use ApplicationException;
 use Cache;
 use Cms\Classes\ComponentHelpers;
 use Cms\Classes\Controller as CmsController;
-use Cms\Classes\Partial;
 use Config;
 use Event;
 use Lang;

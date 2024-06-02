@@ -99,6 +99,7 @@ def checks():
             where stats.distance_cote_metres < 20000
               and o."cross" not in ('Antilles-Guyane', 'Corse', 'Guadeloupe', 'Guyane', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie')
               and stats.maree_coefficient is null
+              and o.est_metropolitain
         """,
         "unset_shore_distance": """
             select count(1) = 0
@@ -107,11 +108,11 @@ def checks():
             where op.latitude is not null
               and (stats.distance_cote_milles_nautiques is null or stats.distance_cote_metres is null)
         """,
-        #"recent_data_last_72h": """
+        # "recent_data_last_72h": """
         #    select count(1) > 0
         #    from operations
         #    where date_heure_reception_alerte > current_date - interval '2 day'
-        #""",
+        # """,
         "school_holidays_over_last_3_months": """
             select count(1) > 0
             from operations_stats
@@ -139,34 +140,45 @@ def checks():
         from operations_stats
         where concerne_snosan and avec_clandestins
         """,
+        "est_metropolitain_outre_mer": """
+        select
+            count(1) = 0
+        from operations
+        where "cross" in ('Antilles-Guyane', 'Guadeloupe', 'Guyane', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie') and (est_metropolitain or est_metropolitain is null)
+        """,
     }
 
 
-def secmar_csv_checks():
+def snosan_json_checks():
     return {
         "operations_count_2021": """
-            select count(1) between 16800 and 16820
+            select count(1) between 16800 and 16900
             from operations
             where extract(year from date_heure_reception_alerte) = 2021
         """,
         "operations_count_up_to_2021": """
-            select count(1) between 321500 and 321600
+            select count(1) between 321600 and 321700
             from operations
             where extract(year from date_heure_reception_alerte) <= 2021
         """,
         "operations_count_cross_2021": """
-            select count(distinct "cross") = 11
+            select count(distinct "cross") = 12
             from operations
             where extract(year from date_heure_reception_alerte) = 2021
         """,
-        "operations_count_2021_from_secmar_csv": """
-            select count(1) between 14670 and 14680
+        "operations_count_2021_from_snosan_json": """
+            select count(1) between 14700 and 14800
             from operations
-            where extract(year from date_heure_reception_alerte) = 2021 and operation_id in (select secmar_operation_id from secmar_csv_operation)
+            where extract(year from date_heure_reception_alerte) = 2021 and operation_id in (select operation_id from snosan_json_operations)
         """,
         "est_metropolitain": """
-            select string_agg(distinct "cross"::varchar, '|' order by "cross"::varchar) = 'Antilles-Guyane|Gris-Nez|Guadeloupe|Guyane|La Réunion|Martinique|Mayotte|Nouvelle-Calédonie|Polynésie'
+            select string_agg(distinct "cross"::varchar, '|' order by "cross"::varchar) = 'Antilles-Guyane|Gris-Nez|Guadeloupe|Guyane|La Réunion|Martinique|Mayotte|Nouvelle-Calédonie|Polynésie|Sud océan Indien'
             from operations
             where not est_metropolitain
+        """,
+        "categorie_evenement": """
+        select count(1) = 0
+        from operations o
+        where categorie_evenement is null and evenement is not null;
         """,
     }

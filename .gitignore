@@ -10,3 +10,4 @@ app/plugins
 app/resources/signing
 
 snosan_csv
+snosan_json

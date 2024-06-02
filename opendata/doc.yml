@@ -142,6 +142,11 @@ components:
           type: string
           description: "Fuseau horaire du CROSS coordonnant l'opération. Le fuseau horaire correspond à la timezone database de l'IANA"
           example: Europe/Paris
+        systeme_source:
+          type: string
+          description: Indique le système informatique d'où provient la donnée
+          enum: [secmarweb, seamis_json]
+          example: secmarweb
     resultats_humain:
       properties:
         operation_id:
@@ -152,11 +157,33 @@ components:
         categorie_personne:
           type: string
           description: Indique la catégorie de personne impliquée dans le bilan humain
-          enum: [Autre, Plaisancier français, Clandestin, Pêcheur français, Commerce français, Marin étranger, Toutes catégories]
+          enum: [
+            Autre,
+            Plaisancier français,
+            Pratiquant loisirs nautiques,
+            Migrant,
+            Clandestin,
+            Commerce français,
+            Marin étranger,
+            Pêcheur français,
+            Pêcheur amateur,
+            Toutes catégories
+          ]
           example: Pêcheur français
         resultat_humain:
           type: string
           description: Description du bilan humain
+          enum: [
+            Personne assistée,
+            Personne disparue,
+            Personne décédée,
+            Personne décédée accidentellement,
+            Personne décédée naturellement,
+            Personne impliquée dans fausse alerte,
+            Personne retrouvée,
+            Personne secourue,
+            Personne tirée d'affaire seule
+          ]
           example: Personne secourue
         nombre:
           type: number
@@ -190,12 +217,27 @@ components:
           type: string
           description: Catégorie du moyen mis en oeuvre
           example: Avion-Hélicoptère
-          enum: [Avion-Hélicoptère, Moyen terrestre, Navire, Navire de sauvetage agréé, Plongeur]
+          enum: [
+            Autre,
+            Avion-Hélicoptère,
+            Aérien,
+            Hélicoptère,
+            Moyen terrestre,
+            Nautique,
+            Navire,
+            Navire de sauvetage agréé,
+            Organisme,
+            Plongeur,
+            Poste de plage,
+            Station côtière,
+            Terrestre
+          ]
         domaine_action:
           type: string
           description: Domaine d'action du moyen mis en oeuvre
           enum: [Nautique, Terrestre, Aérien]
           example: Nautique
+          nullable: true
         autorite_moyen:
           type: string
           description: Autorité de rattachement du moyen mis en oeuvre
@@ -426,7 +468,7 @@ components:
           example: true
         avec_clandestins:
           type: boolean
-          description: Indique si au moins un clandestin est présent dans le bilan humain de cette opération
+          description: Indique si au moins un clandestin/migrant est présent dans le bilan humain de cette opération
           example: true
         distance_cote_metres:
           type: integer
@@ -570,79 +612,79 @@ components:
         nombre_personnes_blessees_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes blessées lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes blessées lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_assistees_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes assistées lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes assistées lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_decedees_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes décédées lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_decedees_accidentellement_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées accidentellement lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes décédées accidentellement lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_decedees_naturellement_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées naturellement lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes décédées naturellement lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_disparues_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes disparues lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes disparues lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes impliquées dans une fausse alerte lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes impliquées dans une fausse alerte lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_retrouvees_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes retrouvées lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes retrouvées lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_secourues_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes secourues lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes secourues lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_tirees_daffaire_seule_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes tirées d'affaire seule lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes tirées d'affaire seule lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_personnes_tous_deces_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération, sans prendre en compte les clandestins. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
+          description: Le nombre total de personnes décédées (qu'importe la cause) lors de l'opération, sans prendre en compte les clandestins/migrants. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
           example: 42
           minimum: 0
         nombre_personnes_tous_deces_ou_disparues_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération, sans prendre en compte les clandestins. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
+          description: Le nombre total de personnes décédées (qu'importe la cause) et le nombre de personnes disparues lors de l'opération, sans prendre en compte les clandestins/migrants. Voir la documentation de la colonne `nombre_personnes_tous_deces` pour comprendre le périmètre du dénombrement des personnes décédées.
           example: 42
           minimum: 0
         nombre_personnes_impliquees_sans_clandestins:
           type: integer
           format: int32
-          description: Le nombre total de personnes impliquées lors de l'opération, sans prendre en compte les clandestins.
+          description: Le nombre total de personnes impliquées lors de l'opération, sans prendre en compte les clandestins/migrants.
           example: 42
           minimum: 0
         nombre_moyens_nautiques_engages:
@@ -769,6 +811,12 @@ components:
           type: integer
           format: int32
           description: Le nombre de flotteurs de plaisance à voile légère impliqués dans l'opération.
+          example: 1
+          minimum: 0
+        nombre_flotteurs_plaisance_a_moteur_impliques:
+          type: integer
+          format: int32
+          description: Le nombre de flotteurs de plaisance à moteur.
           example: 1
           minimum: 0
         nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques:

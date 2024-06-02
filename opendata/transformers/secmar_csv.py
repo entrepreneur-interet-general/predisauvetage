@@ -16,10 +16,11 @@ import numpy as np
 import pandas as pd
 import socks
 
-FTP_BASE_FOLDER = "snosan_secmarweb"
+FTP_BASE_FOLDER = "SECMARWEB"
 BASE_PATH = Path(__file__).resolve().parent.parent.parent / "snosan_csv"
 AGGREGATE_FOLDER = BASE_PATH / "aggregate"
 EXPECTED_FILENAMES = set(["flotteur.csv", "bilan.csv", "moyen.csv", "operation.csv"])
+ADDED_COLUMNS = ["deduplication_id", "operation_id", "extraction_date"]
 
 
 @lru_cache(maxsize=None)
@@ -58,6 +59,18 @@ def day_exists_in_remote_ftp(day):
     return day in folders
 
 
+def ftp_delete_remote_folder(day):
+    if not day_exists_in_remote_ftp(day):
+        return
+    ftp = _setup_ftp_connexion()
+    ftp.cwd(day)
+    for filename in ftp.nlst():
+        ftp.delete(filename)
+    ftp.cwd(FTP_BASE_FOLDER)
+    ftp.rmd(day)
+    ftp.quit()
+
+
 def ftp_download_remote_folder(day):
     (BASE_PATH / day).mkdir(parents=False, exist_ok=True)
     ftp = _setup_ftp_connexion()
@@ -66,11 +79,14 @@ def ftp_download_remote_folder(day):
     logging.debug("Found %s remote files to download for %s" % (len(filenames), day))
     for filename in filenames:
         target_path = BASE_PATH / day / filename
-        if target_path.exists():
+        if target_path.exists() and target_path.stat().st_size > 0:
             logging.debug("%s/%s already exists, skipping" % (day, filename))
             continue
         logging.debug("Downloading %s/%s" % (day, filename))
         ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
+        # Download again?
+        if target_path.stat().st_size == 0:
+            ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
     ftp.quit()
 
 
@@ -89,7 +105,7 @@ def save_csv_for_day(day, data):
     for filename in EXPECTED_FILENAMES:
         with open(str(BASE_PATH / day / filename), "w") as f:
             writer = csv.DictWriter(
-                f, fieldnames=["operation_id"] + _headers_for_filename(filename)
+                f, fieldnames=ADDED_COLUMNS + _headers_for_filename(filename)
             )
             writer.writeheader()
             writer.writerows(data[filename])
@@ -100,6 +116,7 @@ def extract_for_day(day):
     files = [f for f in (BASE_PATH / day).iterdir() if f.suffix == ".zip"]
     logging.debug("Extracting %s files for %s" % (len(files), day))
     for zip_filepath in files:
+        logging.debug("Zip_filepath %s" % (zip_filepath))
         with ZipFile(str(zip_filepath)) as zf:
             _check_has_required_files(zf.infolist(), zip_filepath)
             for filename in EXPECTED_FILENAMES:
@@ -109,6 +126,7 @@ def extract_for_day(day):
 
 def read_rows_for_file(zipfile, filename, zip_filepath):
     operation_id = operation_id_from_filepath(zip_filepath)
+    extraction_date = extraction_date_from_filepath(zip_filepath)
     with zipfile.open(filename, "r") as f:
         reader = csv.DictReader(TextIOWrapper(f, "utf-8"), delimiter=";")
         _check_expected_headers(
@@ -116,13 +134,23 @@ def read_rows_for_file(zipfile, filename, zip_filepath):
         )
         rows = []
         for row in reader:
+            row["deduplication_id"] = operation_id + "_" + extraction_date
             row["operation_id"] = operation_id
+            row["extraction_date"] = extraction_date
             rows.append(row)
         return rows
 
 
 def operation_id_from_filepath(zip_filepath):
+    # ~/predisauvetage/snosan_csv/20230405/ET_2023_MAS_0705_1.zip
+    # Keep ET_2023_MAS_0705_1
     return zip_filepath.name.rstrip(".zip")
+
+
+def extraction_date_from_filepath(zip_filepath):
+    # ~/predisauvetage/snosan_csv/20230405/ET_2023_MAS_0705_1.zip
+    # Keep 20230405
+    return zip_filepath.parent.name
 
 
 def _check_has_required_files(zip_info_list, zip_filepath):
@@ -229,7 +257,7 @@ def build_aggregate_files():
                 buff.extend(f.readlines()[1:])
         target_path = str(AGGREGATE_FOLDER / filename)
         with open(target_path, "w") as f:
-            csv.writer(f).writerow(["operation_id"] + _headers_for_filename(filename))
+            csv.writer(f).writerow(ADDED_COLUMNS + _headers_for_filename(filename))
             f.writelines(buff)
         df = pd.read_csv(target_path)
         df["operation_long_name"] = df["operation_id"].apply(
@@ -320,11 +348,11 @@ def read_aggregate_file(filename, replace_mapping=True):
 
     # Keep only the most recent version of the operation
     versions = (
-        df.sort_values("operation_id", ascending=True)
+        df.sort_values("deduplication_id", ascending=True)
         .groupby(["operation_long_name"])
-        .last()["operation_id"]
+        .last()["deduplication_id"]
     )
-    df = df.loc[df.operation_id.isin(versions)]
+    df = df.loc[df.deduplication_id.isin(versions)]
 
     # Generic transformations
     df["secmar_operation_id"] = df.apply(lambda r: secmar_operation_id(r), axis=1)
@@ -357,11 +385,12 @@ def read_aggregate_file(filename, replace_mapping=True):
             df["SEC_OPERATION_vent_direction"]
         )
         df["fuseau_horaire"] = fuseau_horaire(df["SEC_OPERATION_SEC_OPERATIONcross_id"])
-        df["est_metropolitain"] = est_metropolitain(df["SEC_OPERATION_dept_id"])
+        df["est_metropolitain"] = df.apply(lambda r: est_metropolitain(r), axis=1)
     return df
 
 
-def est_metropolitain(series):
+def est_metropolitain(row):
+    cross = row["SEC_OPERATION_SEC_OPERATIONcross_id"]
     dept_hors_metropole = [
         "Guadeloupe",
         "Guyane",
@@ -377,7 +406,23 @@ def est_metropolitain(series):
         "Wallis-et-Futuna",
         "Île de Clipperton",
     ]
-    return series.map(lambda v: v not in dept_hors_metropole, na_action="ignore")
+    cross_hors_metropole = [
+        "Antilles-Guyane",
+        "Guadeloupe",
+        "Guyane",
+        "La Réunion",
+        "Martinique",
+        "Mayotte",
+        "Nouvelle-Calédonie",
+        "Polynésie",
+    ]
+    if cross in cross_hors_metropole:
+        return False
+    if cross not in cross_hors_metropole and cross != "Gris-Nez":
+        return True
+    if pd.isna(row["SEC_OPERATION_dept_id"]):
+        return np.nan
+    return row["SEC_OPERATION_dept_id"] not in dept_hors_metropole
 
 
 def vent_direction_categorie(series):
@@ -459,7 +504,7 @@ def build_replacement_mapping(filename):
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     # download_latest_remote_days()
-    # process_all_days()
+    process_all_days()
     build_aggregate_files()
     # describe_aggregate_files()
     # check_mapping_data()

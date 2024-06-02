@@ -6,11 +6,10 @@ remote server
 """
 from datetime import datetime
 
-from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
-from airflow.hooks.postgres_hook import PostgresHook
-
 import helpers
+from airflow import DAG
+from airflow.hooks.postgres_hook import PostgresHook
+from airflow.operators.bash_operator import BashOperator
 from secmar_dags import SECMAR_TABLES
 
 OUTPUT_PATH = "/tmp/secmar_dump.sql"
