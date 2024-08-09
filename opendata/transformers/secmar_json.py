@@ -70,6 +70,9 @@ def ftp_download_remote_folder(day):
             continue
         logging.debug("Downloading %s/%s" % (day, filename))
         ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
+        # Download again?
+        if target_path.stat().st_size == 0:
+            ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
     ftp.quit()
 
 
