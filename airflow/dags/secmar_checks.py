@@ -181,4 +181,11 @@ def snosan_json_checks():
         from operations o
         where categorie_evenement is null and evenement is not null;
         """,
+        "migrant_sans_clandestins": """
+        select count(1) = 0
+        from operations as op
+        join operations_stats as stats on stats.operation_id = op.operation_id
+        join resultats_humain rh on rh.operation_id = op.operation_id and rh.categorie_personne = 'Migrant'
+        where not stats.avec_clandestins
+        """,
     }
