@@ -27,6 +27,11 @@ def checks():
                 from operations_points
             ) operations_points on true
         """,
+        "concerne_snosan_count_2020": """
+            select count(1) between 9700 and 9800
+            from operations_stats
+            where annee = 2020 and concerne_snosan
+        """,
         "concerne_snosan": """
             select
                  nb_operations_snosan = nb_operations_concerne_snosan
@@ -145,6 +150,13 @@ def checks():
             count(1) = 0
         from operations
         where "cross" in ('Antilles-Guyane', 'Guadeloupe', 'Guyane', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie') and (est_metropolitain or est_metropolitain is null)
+        """,
+        "operations_stats_migrant_avec_clandestins": """
+        select count(1) = 0
+        from operations as op
+        join operations_stats as stats on stats.operation_id = op.operation_id
+        join resultats_humain rh on rh.operation_id = op.operation_id and rh.categorie_personne = 'Migrant'
+        where not stats.avec_clandestins
         """,
     }
 

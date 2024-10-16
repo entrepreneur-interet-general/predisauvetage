@@ -96,10 +96,8 @@ left join (
     t.*,
     (nombre_personnes_decedees + nombre_personnes_decedees_naturellement + nombre_personnes_decedees_accidentellement) nombre_personnes_tous_deces,
     (nombre_personnes_decedees + nombre_personnes_decedees_naturellement + nombre_personnes_decedees_accidentellement + nombre_personnes_disparues) nombre_personnes_tous_deces_ou_disparues,
-    (nombre_personnes_assistees + nombre_personnes_decedees + nombre_personnes_decedees_naturellement + nombre_personnes_decedees_accidentellement + nombre_personnes_disparues + nombre_personnes_impliquees_dans_fausse_alerte + nombre_personnes_retrouvees + nombre_personnes_secourues + nombre_personnes_tirees_daffaire_seule) nombre_personnes_impliquees,
     (nombre_personnes_decedees_sans_clandestins + nombre_personnes_decedees_naturellement_sans_clandestins + nombre_personnes_decedees_accidentellement_sans_clandestins) nombre_personnes_tous_deces_sans_clandestins,
-    (nombre_personnes_decedees_sans_clandestins + nombre_personnes_decedees_naturellement_sans_clandestins + nombre_personnes_decedees_accidentellement_sans_clandestins + nombre_personnes_disparues_sans_clandestins) nombre_personnes_tous_deces_ou_disparues_sans_clandestins,
-    (nombre_personnes_assistees_sans_clandestins + nombre_personnes_decedees_sans_clandestins + nombre_personnes_decedees_naturellement_sans_clandestins + nombre_personnes_decedees_accidentellement_sans_clandestins + nombre_personnes_disparues_sans_clandestins + nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins + nombre_personnes_retrouvees_sans_clandestins + nombre_personnes_secourues_sans_clandestins + nombre_personnes_tirees_daffaire_seule_sans_clandestins) nombre_personnes_impliquees_sans_clandestins
+    (nombre_personnes_decedees_sans_clandestins + nombre_personnes_decedees_naturellement_sans_clandestins + nombre_personnes_decedees_accidentellement_sans_clandestins + nombre_personnes_disparues_sans_clandestins) nombre_personnes_tous_deces_ou_disparues_sans_clandestins
   from (
     select
       rh.operation_id,
@@ -122,7 +120,9 @@ left join (
       sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne impliquée dans fausse alerte' then nombre else 0 end) nombre_personnes_impliquees_dans_fausse_alerte_sans_clandestins,
       sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne retrouvée' then nombre else 0 end) nombre_personnes_retrouvees_sans_clandestins,
       sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne secourue' then nombre else 0 end) nombre_personnes_secourues_sans_clandestins,
-      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins
+      sum(case when categorie_personne not in ('Clandestin', 'Migrant') and resultat_humain = 'Personne tirée d''affaire seule' then nombre else 0 end) nombre_personnes_tirees_daffaire_seule_sans_clandestins,
+      sum(case when categorie_personne in ('Clandestin', 'Migrant') then 0 else nombre end) nombre_personnes_impliquees_sans_clandestins,
+      sum(nombre) nombre_personnes_impliquees
     from resultats_humain rh
     group by rh.operation_id
    ) t
