@@ -18,7 +18,7 @@ select
   false concerne_snosan,
   false concerne_plongee,
   false implique_wingfoil,
-  coalesce(rh.nombre_personnes_impliquees, 0) > coalesce(rh.nombre_personnes_impliquees_sans_clandestins, 0) avec_clandestins,
+  false avec_clandestins,
   op.distance_cote_metres distance_cote_metres,
   op.distance_cote_milles_nautiques distance_cote_milles_nautiques,
   op.est_dans_stm est_dans_stm,
@@ -207,6 +207,12 @@ where operation_id in (
   from operations_stats os
   left join flotteurs f on f.operation_id = os.operation_id
   where f.operation_id is null
+);
+
+update operations_stats set avec_clandestins = true where operation_id in (
+  select distinct operation_id
+  from resultats_humain rh
+  where rh.categorie_personne in ('Clandestin', 'Migrant')
 );
 
 update operations_stats set concerne_snosan = true
