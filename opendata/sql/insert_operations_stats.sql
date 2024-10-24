@@ -17,6 +17,7 @@ select
   null phase_journee,
   false concerne_snosan,
   false concerne_plongee,
+  false implique_wingfoil,
   coalesce(rh.nombre_personnes_impliquees, 0) > coalesce(rh.nombre_personnes_impliquees_sans_clandestins, 0) avec_clandestins,
   op.distance_cote_metres distance_cote_metres,
   op.distance_cote_milles_nautiques distance_cote_milles_nautiques,
@@ -235,6 +236,20 @@ where operation_id in (
   select operation_id
   from operations
   where evenement in ('Plongée avec bouteille', 'Plongée en apnée', 'Chasse sous-marine', 'Plongée autonome')
+);
+
+update operations_stats set implique_wingfoil = true
+where operation_id in (
+  select distinct sjoi.operation_id
+  from (
+    select
+      data->>'chrono' as chrono,
+      jsonb_array_elements(data->'vehicules') as v
+    from snosan_json_unique
+    where data ? 'vehicules'
+  ) _
+  join snosan_json_operation_id sjoi on sjoi.chrono = _.chrono
+  where v->>'descriptionAutreFlotteur' ~* 'win(d|g)(-| )?(foil|surf)'
 );
 
 update operations_stats set mois_texte = t.mois_texte::mois_francais

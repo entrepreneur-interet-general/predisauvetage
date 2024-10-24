@@ -158,6 +158,14 @@ def checks():
         join resultats_humain rh on rh.operation_id = op.operation_id and rh.categorie_personne = 'Migrant'
         where not stats.avec_clandestins
         """,
+        "operations_stats_implique_wingfoil": """
+        select count(1) = 3
+        from operations o
+        join operations_stats s on s.operation_id = o.operation_id
+        join snosan_json_operation_id sjoi on sjoi.operation_id = o.operation_id
+        where sjoi.chrono in ('ET-2024-SAR-4751', 'CN-2024-SAR-2371', 'AG-2024-SAR-1358')
+          and s.implique_wingfoil
+        """,
     }
 
 

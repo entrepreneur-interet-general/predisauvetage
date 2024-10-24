@@ -466,6 +466,10 @@ components:
           type: boolean
           description: Indique si cette opération est une opération qui concerne une activité de plongée (bouteille ou apnée) ou de chasse sous-marine
           example: true
+        implique_wingfoil:
+          type: boolean
+          description: Indique si cette opération implique au moins 1 wingfoil.
+          example: true
         avec_clandestins:
           type: boolean
           description: Indique si au moins un clandestin/migrant est présent dans le bilan humain de cette opération

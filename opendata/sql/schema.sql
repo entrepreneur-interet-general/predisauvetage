@@ -130,6 +130,7 @@ CREATE TABLE public.operations_stats (
     "phase_journee" phase_journee,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
+    "implique_wingfoil" boolean not null,
     "avec_clandestins" boolean not null,
     "distance_cote_metres" int,
     "distance_cote_milles_nautiques" numeric(6, 2),
@@ -206,6 +207,7 @@ CREATE INDEX ON operations_stats(annee);
 CREATE INDEX ON operations_stats(phase_journee);
 CREATE INDEX ON operations_stats(concerne_snosan);
 CREATE INDEX ON operations_stats(concerne_plongee);
+CREATE INDEX ON operations_stats(implique_wingfoil);
 
 DROP TABLE IF EXISTS public.moyens_snsm;
 CREATE TABLE public.moyens_snsm (
