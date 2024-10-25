@@ -1,6 +1,11 @@
 # Changements sur le jeu de données
 Les changements de schéma du jeu de données SECMAR sont répertoriés ci-dessous.
 
+### 2024-10-25
+Ajout de la colonne `implique_wingfoil` dans `operations_stats`.
+
+**Commit**: [`d30679f`](https://github.com/entrepreneur-interet-general/predisauvetage/commit/d30679fd8377171027b2ac5c7173ed327da6eec2)
+
 ### 2024-05
 
 Les données provenant de SeaMIS proviennent désormais exclusivement des exports bruts en JSON mis à disposition et non d'un format intermédiaire. Ceci améliore la qualité des données et permet de maitriser les processus d'intégration.
