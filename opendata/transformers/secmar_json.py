@@ -87,7 +87,7 @@ def download_latest_remote_days():
 
 def save_json_for_day(day, data):
     with open(str(BASE_PATH / day / "data.json"), "w") as f:
-        f.write("\n".join(data) + "\n")
+        f.write("\n".join(data) + "\n".strip())
 
 
 def process_all_days():
