@@ -26,7 +26,7 @@ dag = DAG(
 )
 dag.doc_md = __doc__
 
-tables = SECMAR_TABLES + ["operations_stats", "moyens_snsm"]
+tables = SECMAR_TABLES + ["operations_stats", "moyens_snsm", "sitrep_messages"]
 
 template = "sudo -u postgres pg_dump -c --no-owner {tables} {schema} > {output}"
 dump_command = template.format(
@@ -35,9 +35,7 @@ dump_command = template.format(
     tables=" ".join(["-t " + t for t in tables]),
 )
 
-dump_local_database = BashOperator(
-    task_id="dump_local_database", bash_command=dump_command, dag=dag
-)
+dump_local_database = BashOperator(task_id="dump_local_database", bash_command=dump_command, dag=dag)
 
 template = "psql -U {user} -h {host} {schema} < {input}"
 target_connection = PostgresHook.get_connection("target_secmar")
@@ -55,7 +53,5 @@ import_remote_database = BashOperator(
 )
 import_remote_database.set_upstream(dump_local_database)
 
-delete_dump_file = BashOperator(
-    task_id="delete_dump_file", bash_command="rm " + OUTPUT_PATH, dag=dag
-)
+delete_dump_file = BashOperator(task_id="delete_dump_file", bash_command="rm " + OUTPUT_PATH, dag=dag)
 delete_dump_file.set_upstream(import_remote_database)

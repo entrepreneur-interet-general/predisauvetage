@@ -128,6 +128,9 @@ copy_json_data.set_upstream(create_tables)
 insert_snosan_json_unique = secmar_json_sql_task(dag, "insert_snosan_json_unique")
 insert_snosan_json_unique.set_upstream(copy_json_data)
 
+insert_sitrep_messages = secmar_json_sql_task(dag, "insert_sitrep_messages")
+insert_sitrep_messages.set_upstream(insert_snosan_json_unique)
+
 start_create_codes_tables = DummyOperator(task_id="start_create_codes_tables", dag=dag)
 start_create_codes_tables.set_upstream(insert_snosan_json_unique)
 end_create_codes_tables = DummyOperator(task_id="end_create_codes_tables", dag=dag)
