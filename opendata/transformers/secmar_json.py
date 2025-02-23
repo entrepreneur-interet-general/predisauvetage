@@ -66,13 +66,15 @@ def ftp_download_remote_folder(day):
     for filename in filenames:
         target_path = BASE_PATH / day / filename
         if target_path.exists():
-            logging.debug("%s/%s already exists, skipping" % (day, filename))
-            continue
+            # Empty file: delete it
+            if target_path.stat().st_size == 0:
+                logging.info("%s/%s is empty, deleting" % (day, filename))
+                target_path.unlink()
+            else:
+                logging.debug("%s/%s already exists, skipping" % (day, filename))
+                continue
         logging.debug("Downloading %s/%s" % (day, filename))
         ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
-        # Download again?
-        if target_path.stat().st_size == 0:
-            ftp.retrbinary("RETR " + filename, open(str(target_path), "wb").write)
     ftp.quit()
 
 

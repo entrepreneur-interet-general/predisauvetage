@@ -44,6 +44,8 @@ def setup_ftp_env():
 def ftp_download_fn(**kwargs):
     setup_ftp_env()
     secmar_json.ftp_download_remote_folder(kwargs["templates_dict"]["day"])
+    # Two tries to prevent empty files
+    secmar_json.ftp_download_remote_folder(kwargs["templates_dict"]["day"])
 
 
 def parse_and_save_coordinates_fn(**kwargs):
