@@ -24,4 +24,4 @@ join (
   select seamis, secmar, categorie_evenement
   from secmar_json_evenement_codes
 ) t on t.seamis = data->'identification'->>'operativeEvent'
-where s.data->>'chrono' not similar to '%20(19|20|21)%';
+where s.data->>'chrono' not similar to '%20(19|20)%';
