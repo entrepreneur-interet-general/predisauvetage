@@ -10,7 +10,7 @@ PATTERN_DMS = re.compile(
     r"(?P<lat>\d+)° *(?P<lat_m>\d+)' *(?P<lat_s>\d+)(\"|'')? *(?P<lat_dir>N|S) (-|/) (?P<lon>\d+)° *(?P<lon_m>\d+)' *(?P<lon_s>\d+)(\"|'')? *(?P<lon_dir>W|E)"
 )
 # Example: -51,033333 - 2,0515
-PATTERN_DD = re.compile(r"(?P<lat>-?\d+(,|.)\d+) (-|/) (?P<lon>-?\d+(,|.)\d+)")
+PATTERN_DD = re.compile(r"(?P<lat>-?\d+(,|.)\d+) *(-|/|,) *(?P<lon>-?\d+(,|.)\d+)")
 
 
 def parse(content):
@@ -21,6 +21,10 @@ def parse(content):
     m = re.match(PATTERN_DMS, content)
     if m:
         return (convert_dms(m, "lat"), convert_dms(m, "lon"))
+
+    if content.startswith("[") and content.endswith("]"):
+        content = content.replace("[", "").replace("]", "").split(",")
+        content = content[1].strip() + "," + content[0]
 
     m = re.match(PATTERN_DD, content)
     if m:

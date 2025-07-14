@@ -143,7 +143,7 @@ download_operations_coordinates = PgDownloadOperator(
     sql="""
     select
       data->>'chrono' chrono,
-      coalesce(data->'messages'->0->>'paragraphe2', data->'messages'->0->>'paragrapheB') paragraphe
+      coalesce(data->'messages'->0->>'paragraphe2', data->'messages'->0->>'paragrapheB', data->'bulletinsMeteo'->0->'position'->>'coordinates') paragraphe
     from snosan_json_unique
     """,
     pandas_sql_params={"chunksize": 10000},

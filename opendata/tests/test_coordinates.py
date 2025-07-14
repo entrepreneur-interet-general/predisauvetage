@@ -20,3 +20,4 @@ class CoordinatesTest(unittest.TestCase):
 
         self.assertEqual((43.28881, 5.29848), parse("43,28881 - 5,29848"))
         self.assertEqual((-43.28881, -5.29848), parse("-43.28881 - -5.29848"))
+        self.assertEqual((-20.9355, 55.277833), parse("[55.277833, -20.9355]"))
