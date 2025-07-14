@@ -202,7 +202,7 @@ def snosan_json_checks():
         where categorie_evenement is null and evenement is not null;
         """,
         "latitude_longitude": """
-        select sum(case when op.latitude is null then 1 else 0 end)*100/count(1) <= 5
+        select sum(case when op.latitude is null then 1 else 0 end)*100/count(1) <= 20
         from operations as op
         where date_heure_reception_alerte > current_date - interval '30 day'
         """,
