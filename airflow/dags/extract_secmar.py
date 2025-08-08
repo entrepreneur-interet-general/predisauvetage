@@ -308,7 +308,16 @@ set_tide_data = PythonOperator(
     dag=dag,
 )
 set_tide_data.set_upstream(set_operations_stats_extra_attributes)
-set_tide_data.set_downstream(start_checks)
+
+delete_soi_operations = PythonOperator(
+    task_id="delete_soi_operations",
+    python_callable=lambda **kwargs: execute_sql_file("delete_soi_operations"),
+    provide_context=True,
+    dag=dag,
+)
+delete_soi_operations.set_upstream(set_tide_data)
+delete_soi_operations.set_downstream(start_checks)
+
 
 for check_name, query in checks().items():
     t = CheckOperator(
