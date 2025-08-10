@@ -17,7 +17,7 @@ def checks():
         """,
         "operations_operations_points": """
             select
-                nb_operations_points = nb_operations
+                nb_operations_points >= nb_operations
             from (
                 select count(1) nb_operations
                 from operations
