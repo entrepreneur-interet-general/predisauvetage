@@ -12,6 +12,7 @@ class CoordinatesTest(unittest.TestCase):
         self.assertEqual((47.054833, -2.243167), parse("47°03.29'N - 002°14.59'W"))
         self.assertEqual((-47.054833, 2.243167), parse("47°03.29'S - 002°14.59'E"))
         self.assertEqual((-47.054833, 2.243167), parse("47°03.29'S / 002°14.59'E"))
+        self.assertEqual((43.439, 6.919167), parse("43°26'34'N - 006°55,15'E 191.0°"))
 
         self.assertEqual((49.501111, -1.846944), parse("49°30'04\"N - 001°50'49\"W"))
         self.assertEqual((49.501111, -1.846944), parse("49°30'04\"N / 001°50'49\"W"))

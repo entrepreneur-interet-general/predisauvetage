@@ -57,7 +57,7 @@ def convert_dms(groups, coordinate):
 
 
 def group_name_to_float(groups, name):
-    return float(groups.group(name).replace(",", "."))
+    return float(groups.group(name).replace(",", ".").replace("'", "."))
 
 
 def sign(direction):
