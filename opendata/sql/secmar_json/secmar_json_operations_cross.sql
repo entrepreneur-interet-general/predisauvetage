@@ -13,7 +13,7 @@ INSERT INTO secmar_json_operations_cross
 VALUES
   ('ET_ETEL', 'Étel', true),
   ('LG_LAGARDE', 'La Garde', true),
-  ('GN_GRISNEZ', 'Gris-Nez', null),
+  ('GN_GRISNEZ', 'Gris-Nez', true),
   ('CN_CORSEN', 'Corsen', true),
   ('JB_JOBOURG', 'Jobourg', true),
   ('AJ_CORSE', 'Corse', true),
