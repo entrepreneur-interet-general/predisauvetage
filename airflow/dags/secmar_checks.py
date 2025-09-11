@@ -28,7 +28,7 @@ def checks():
             ) operations_points on true
         """,
         "concerne_snosan_count_2020": """
-            select count(1) between 9700 and 9800
+            select count(1) between 9100 and 9300
             from operations_stats
             where annee = 2020 and concerne_snosan
         """,
@@ -47,13 +47,13 @@ def checks():
                         from operations op
                         join operations_stats stats on stats.operation_id = op.operation_id and stats.sans_flotteur_implique
                         where op.evenement in (
-                         'Sans avarie inexpérience', 'Autre événement',
-                         'Découverte de corps', 'Accident en mer',
-                         'Autre accident', 'Blessé EvaMed',
-                         'Blessé EvaSan', 'Disparu en mer',
-                         'Sans avarie en dérive', 'Incertitude sur la position',
+                         'Sans avarie inexpérience', 'Autre événement', 'Baignade',
+                         'Découverte de corps', 'Plongée en apnée', 'Accident en mer',
+                         'Isolement par la marée / Envasé', 'Autre accident', 'Blessé EvaMed',
+                         'Chasse sous-marine', 'Blessé EvaSan', 'Disparu en mer',
+                         'Plongée avec bouteille', 'Sans avarie en dérive', 'Incertitude sur la position',
                          'Homme à la mer', 'Malade EvaMed', 'Ski nautique', 'Accident aéronautique',
-                         'Malade EvaSan',
+                         'Chute falaise / Emporté par une lame', 'Malade EvaSan',
                          'Blessé projection d''une équipe médicale',
                          'Absence d''un moyen de communication')))) snosan
              join (
