@@ -55,8 +55,8 @@ class OperationsTransformer(BaseTransformer):
 
         if row["cross"] in cross_hors_metropole:
             return False
-        if row["est_metropolitain"] is None:
-            return row["cross"] not in cross_hors_metropole and row["cross"] != "Gris-Nez"
+        if row["est_metropolitain"] in [np.nan, None]:
+            return row["cross"] not in cross_hors_metropole
         return row["est_metropolitain"]
 
     def vent_direction_categorie(self, series):
