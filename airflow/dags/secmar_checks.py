@@ -28,7 +28,7 @@ def checks():
             ) operations_points on true
         """,
         "concerne_snosan_count_2020": """
-            select count(1) between 9100 and 9300
+            select count(1) between 9700 and 9800
             from operations_stats
             where annee = 2020 and concerne_snosan
         """,
