@@ -62,7 +62,7 @@ select
     (u.data->'identification'->>'yearOfCreation') || '/' ||
     (u.data->'identification'->>'numberInYear')
   ) cross_sitrep,
-  'UTC' fuseau_horaire,
+  c.fuseau_horaire fuseau_horaire,
   'seamis_json' "systeme_source"
 from snosan_json_unique u
 join snosan_json_operations_coordinates oc on oc.chrono = u.data->>'chrono'
