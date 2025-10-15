@@ -98,7 +98,8 @@ def process_all_days():
         for day in list_of_days():
             data_for_day = extract_for_day(day)
             save_json_for_day(day, data_for_day)
-            f.write("\n".join(data_for_day) + "\n")
+            if data_for_day != []:
+                f.write("\n".join(data_for_day) + "\n")
 
 
 def extract_for_day(day):
