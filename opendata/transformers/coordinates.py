@@ -3,7 +3,7 @@ import re
 
 # Example: 47°03.29'N - 002°14.59'W
 PATTERN_DM = re.compile(
-    r"(?P<lat>\d+)°(?P<lat_m>\d+.\d+)'(?P<lat_dir>N|S) (-|/) (?P<lon>\d+)°(?P<lon_m>\d+.\d+)'(?P<lon_dir>W|E)"
+    r"(?P<lat>\d+)°(?P<lat_m>\d+.\d+)(?:'| )(?P<lat_dir>N|S) (?:-|/) (?P<lon>\d+)°(?P<lon_m>\d+.\d+)(?:'| )(?P<lon_dir>W|E)"
 )
 # Example: 43°32'27"N - 003°58'41"E
 PATTERN_DMS = re.compile(
