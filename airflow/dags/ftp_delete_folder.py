@@ -10,7 +10,7 @@ import helpers
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.python_operator import PythonOperator
-from transformers import secmar_csv, secmar_json
+from transformers import secmar_json
 
 default_args = helpers.default_args({"start_date": datetime(2022, 6, 22, 10, 0)})
 
@@ -34,7 +34,6 @@ def setup_ftp_env():
 
 def ftp_delete_fn(**kwargs):
     setup_ftp_env()
-    secmar_csv.ftp_delete_remote_folder(kwargs["templates_dict"]["day"])
     secmar_json.ftp_delete_remote_folder(kwargs["templates_dict"]["day"])
 
 
