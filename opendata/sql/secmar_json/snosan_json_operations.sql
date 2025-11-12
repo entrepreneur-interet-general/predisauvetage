@@ -72,7 +72,7 @@ left join secmar_json_operations_moyen_alerte ma on ma.seamis = u.data->>'moyenA
 left join secmar_json_operations_qui_alerte qa on qa.seamis = u.data->>'quiAlerte'
 left join secmar_json_operations_zone_responsabilite zr on zr.seamis = u.data->>'zoneResponsabilite'
 left join secmar_json_operations_vent_categorie vc on vc.seamis = u.data->'bulletinsMeteo'->0->>'secteurVent'
-left join secmar_json_operations_departement d on d.seamis = u.data->>'departement'
+left join secmar_json_operations_departement d on d.seamis = split_part(u.data->>'departement', ' ', 1)
 join snosan_json_operation_id id on id.chrono = u.data->>'chrono'
 where abs(coalesce(oc.latitude, 0)) <= 90 and abs(coalesce(oc.longitude, 0)) <= 180
 ;
