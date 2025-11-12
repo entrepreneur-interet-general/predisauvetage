@@ -255,7 +255,7 @@ where operation_id in (
     where data ? 'vehicules'
   ) _
   join snosan_json_operation_id sjoi on sjoi.chrono = _.chrono
-  where v->>'descriptionAutreFlotteur' ~* 'win(d|g)(-| )?(foil|surf)'
+  where v::text ~* 'win(d|g)(-| )?(foil|surf)'
 );
 
 update operations_stats set mois_texte = t.mois_texte::mois_francais
