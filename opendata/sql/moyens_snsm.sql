@@ -6,7 +6,7 @@ select
 from (
   select
     operation_id,
-    sum((moyen = 'Embarcation légère de sauvetage (pneumatique,...)')::int) nombre_semi_rigides_engages,
+    sum((moyen in ('Embarcation légère de sauvetage (pneumatique,...)', 'Autre embarcation légère (pneumat...)'))::int) nombre_semi_rigides_engages,
     sum((moyen = 'Vedette de 1re classe')::int) nombre_vedettes_1ere_classe_engages,
     sum((moyen = 'Vedette de 2e ou 3e classe')::int) nombre_vedettes_2e_ou_3e_classe_engages,
     sum((moyen = 'Vedette de 4e classe')::int) nombre_vedettes_4e_classe_engages,
@@ -15,5 +15,6 @@ from (
   from moyens
   where autorite_moyen = 'SNSM'
     and domaine_action in ('Nautique', 'Terrestre')
+    and not moyen is null
   group by operation_id
 ) t;

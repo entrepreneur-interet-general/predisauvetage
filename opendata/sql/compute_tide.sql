@@ -41,7 +41,7 @@ from (
         join operations o on o.operation_id = op.operation_id
         where op.point is not null
           and coalesce(stats.distance_cote_metres, 0) < 20000
-          and o."cross" not in ('Antilles-Guyane', 'Corse', 'Guadeloupe', 'Guyane', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie')
+          and o.est_metropolitain
       ) op on true
     ) t
   ) t

@@ -14,17 +14,17 @@ When datasets are available, we push them to a remote server so that they can be
 """
 from datetime import datetime
 
-from airflow import DAG
-from airflow.models import Variable
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.dummy_operator import DummyOperator
-from operators.pg_download_operator import PgDownloadOperator
 import pandas as pd
 
 import helpers
-from secmar_dags import SECMAR_TABLES, opendata_transformer, out_path
-from secmar_dags import secmar_transform, opendata_path
+from airflow import DAG
+from airflow.models import Variable
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.postgres_operator import PostgresOperator
+from airflow.operators.python_operator import PythonOperator
+from operators.pg_download_operator import PgDownloadOperator
+from secmar_dags import SECMAR_TABLES, opendata_path, opendata_transformer, out_path, secmar_transform
 
 default_args = helpers.default_args({"start_date": datetime(2018, 5, 22, 5, 40)})
 
@@ -38,18 +38,12 @@ dag = DAG(
 )
 dag.doc_md = __doc__
 
-
-def filter_operations_fn(**kwargs):
-    operations = pd.read_csv(out_path("operations"))
-    operations_stats = pd.read_csv(out_path("operations_stats"))
-    df = operations.loc[
-        operations["operation_id"].isin(operations_stats["operation_id"]), :
-    ]
-    df.to_csv(out_path("operations"), index=False)
-
-
-start = DummyOperator(task_id="start", dag=dag)
+start_download = DummyOperator(task_id="start_download", dag=dag)
+end_download = DummyOperator(task_id="end_download", dag=dag)
+start_transform = DummyOperator(task_id="start_transform", dag=dag)
 end_transform = DummyOperator(task_id="end_transform", dag=dag)
+
+start_transform.set_upstream(end_download)
 
 download_operations_stats = PgDownloadOperator(
     task_id="download_operations_stats",
@@ -60,17 +54,37 @@ download_operations_stats = PgDownloadOperator(
     csv_params={"sep": ",", "index": False},
     dag=dag,
 )
-download_operations_stats.set_downstream(start)
+download_operations_stats.set_upstream(start_download)
+download_operations_stats.set_downstream(end_download)
 
-filter_operations = PythonOperator(
-    task_id="filter_operations",
-    python_callable=filter_operations_fn,
-    provide_context=True,
+remove_operations_sous_marin = PostgresOperator(
+    task_id="remove_operations_sous_marin",
+    sql="""
+    delete from operations
+    where operation_id in (
+        select distinct operation_id
+        from flotteurs f
+        where f.type_flotteur = 'Sous-marin'
+    )
+    """,
+    postgres_conn_id="postgresql_local",
     dag=dag,
 )
-filter_operations.set_upstream(download_operations_stats)
-filter_operations.set_downstream(start)
 
+for table in SECMAR_TABLES:
+    task = PgDownloadOperator(
+        task_id="download_{table}".format(table=table),
+        postgres_conn_id="postgresql_local",
+        sql="select * from {table}".format(table=table),
+        pandas_sql_params={"chunksize": 10000},
+        csv_path=out_path(table),
+        csv_params={"sep": ",", "index": False},
+        dag=dag,
+    )
+    task.set_upstream(start_download)
+    task.set_downstream(end_download)
+    if table == "operations":
+        task.set_upstream(remove_operations_sous_marin)
 
 for table in SECMAR_TABLES + ["operations_stats"]:
     t = PythonOperator(
@@ -85,18 +99,14 @@ for table in SECMAR_TABLES + ["operations_stats"]:
             "transformer": opendata_transformer(table),
         },
     )
-    t.set_upstream(start)
+    t.set_upstream(start_transform)
     t.set_downstream(end_transform)
 
-scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(
-    host=Variable.get("REMOTE_SERVER_CSV_HOST")
-)
+scp_command = "scp *.csv root@{host}:/var/www/secmar-data/".format(host=Variable.get("REMOTE_SERVER_CSV_HOST"))
 
 publish_csv_files = BashOperator(
     task_id="publish_csv_files",
-    bash_command=" && ".join(
-        ["cd " + helpers.opendata_folder_path(), "rm -f moyens.csv", scp_command]
-    ),
+    bash_command=" && ".join(["cd " + helpers.opendata_folder_path(), "rm -f moyens.csv", scp_command]),
     dag=dag,
 )
 publish_csv_files.set_upstream(end_transform)

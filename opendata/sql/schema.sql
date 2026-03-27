@@ -5,7 +5,7 @@ CREATE TYPE jours_semaine_francais AS enum('Lundi', 'Mardi', 'Mercredi', 'Jeudi'
 DROP TYPE IF EXISTS phase_journee CASCADE;
 CREATE TYPE phase_journee AS enum('matinée', 'déjeuner', 'après-midi', 'nuit');
 DROP TYPE IF EXISTS noms_cross CASCADE;
-CREATE TYPE noms_cross AS enum('Adge', 'Antilles-Guyane', 'Corse', 'Corsen', 'Étel', 'Gris-Nez', 'Guadeloupe', 'Guyane', 'Jobourg', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie', 'Soulac');
+CREATE TYPE noms_cross AS enum('Adge', 'Antilles-Guyane', 'Corse', 'Corsen', 'Étel', 'Gris-Nez', 'Guadeloupe', 'Guyane', 'Jobourg', 'La Garde', 'La Réunion', 'Martinique', 'Mayotte', 'Nouvelle-Calédonie', 'Polynésie', 'Soulac', 'Sud océan Indien');
 
 DROP TABLE IF EXISTS public.operations CASCADE;
 CREATE TABLE public.operations (
@@ -33,7 +33,8 @@ CREATE TABLE public.operations (
     "date_heure_fin_operation" timestamp with time zone not null,
     "numero_sitrep" smallint not null,
     "cross_sitrep" varchar(50) not null,
-    "fuseau_horaire" varchar(25) not null
+    "fuseau_horaire" varchar(25) not null,
+    "systeme_source" varchar(25) not null
 );
 
 CREATE INDEX ON operations(type_operation);
@@ -129,6 +130,7 @@ CREATE TABLE public.operations_stats (
     "phase_journee" phase_journee,
     "concerne_snosan" boolean not null,
     "concerne_plongee" boolean not null,
+    "implique_wingfoil" boolean not null,
     "avec_clandestins" boolean not null,
     "distance_cote_metres" int,
     "distance_cote_milles_nautiques" numeric(6, 2),
@@ -188,6 +190,7 @@ CREATE TABLE public.operations_stats (
     "nombre_flotteurs_engin_de_plage_impliques" smallint not null,
     "nombre_flotteurs_kitesurf_impliques" smallint not null,
     "nombre_flotteurs_plaisance_voile_legere_impliques" smallint not null,
+    "nombre_flotteurs_plaisance_a_moteur_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques" smallint not null,
     "nombre_flotteurs_plaisance_a_voile_impliques" smallint not null,
@@ -204,6 +207,7 @@ CREATE INDEX ON operations_stats(annee);
 CREATE INDEX ON operations_stats(phase_journee);
 CREATE INDEX ON operations_stats(concerne_snosan);
 CREATE INDEX ON operations_stats(concerne_plongee);
+CREATE INDEX ON operations_stats(implique_wingfoil);
 
 DROP TABLE IF EXISTS public.moyens_snsm;
 CREATE TABLE public.moyens_snsm (
