@@ -7,7 +7,7 @@ use Cms\Classes\ComponentBase;
 
 class Categories extends ComponentBase
 {
-    public function __construct(CodeBase $cmsObject = null, $properties = [])
+    public function __construct(?CodeBase $cmsObject = null, $properties = [])
     {
         parent::__construct($cmsObject, $properties);
     }
