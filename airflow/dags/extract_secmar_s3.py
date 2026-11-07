@@ -5,13 +5,12 @@ Download SECMAR extracts from AWS S3
 """
 from datetime import datetime
 
+import helpers
 from airflow import DAG
-from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
-
-import helpers
-from secmar_dags import in_path, SECMAR_TABLES
+from airflow.operators.dummy_operator import DummyOperator
+from secmar_dags import SECMAR_TABLES, in_path
 
 BASE_PATH = "/tmp/data"
 

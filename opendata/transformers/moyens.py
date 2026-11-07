@@ -8,9 +8,8 @@ class MoyensTransformer(NopeTransformer):
 
     def transform(self, output):
         df = self.read_csv()
-        df["duree_engagement_minutes"] = df.apply(
-            lambda r: self.duree_engagement_minutes(r), axis=1
-        )
+        df["numero_ordre"] = df["numero_ordre"].astype("Int64")
+        df["duree_engagement_minutes"] = df.apply(lambda r: self.duree_engagement_minutes(r), axis=1)
         self.to_csv(df, output)
 
     def duree_engagement_minutes(self, row):

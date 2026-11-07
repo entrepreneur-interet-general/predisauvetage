@@ -39,6 +39,7 @@ in:
     - {name: numero_sitrep, type: long}
     - {name: cross_sitrep, type: string}
     - {name: fuseau_horaire, type: string}
+    - {name: systeme_source, type: string}
 {% include 'datasources/out_postgresql' %}
   table: operations
   mode: truncate_insert

@@ -29,6 +29,7 @@ class FlotteursTransformer(BaseTransformer):
     def transform(self, output):
         df = self.read_csv()
 
+        df["numero_ordre"] = df["numero_ordre"].astype("Int64")
         df["numero_immatriculation"] = self.build_numero_immatriculation(df)
         df["assurance"] = self.assurance(df.assurance)
         plaisance_voile_legere = (
@@ -43,18 +44,14 @@ class FlotteursTransformer(BaseTransformer):
         return series.map({np.nan: np.nan, 0.0: False, 1.0: True})
 
     def build_numero_immatriculation(self, df):
-        return df.apply(
-            lambda r: self.numero_immatriculation(r, self.hash_secret()), axis=1
-        )
+        return df.apply(lambda r: self.numero_immatriculation(r, self.hash_secret()), axis=1)
 
     def numero_immatriculation(self, row, secret):
         val = row["numero_immatriculation"]
         if val in self.hash_cache:
             return self.hash_cache[val]
         hashed = sha1(
-            "{secret}{immatriculation}".format(
-                secret=secret, immatriculation=val
-            ).encode("utf-8")
+            "{secret}{immatriculation}".format(secret=secret, immatriculation=val).encode("utf-8")
         ).hexdigest()
         self.hash_cache[val] = hashed
         return hashed

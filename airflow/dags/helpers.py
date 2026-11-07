@@ -11,15 +11,15 @@ def base_path():
 
 
 def opendata_sql_path(filename):
-    return "{base}/opendata_sql/{filename}.sql".format(
-        base=base_path(), filename=filename
-    )
+    return "{base}/opendata_sql/{filename}.sql".format(base=base_path(), filename=filename)
 
 
-def secmar_csv_sql_path(filename):
-    return "{base}/opendata_sql/secmar_csv/{filename}.sql".format(
-        base=base_path(), filename=filename
-    )
+def snosan_json_sql_path(filename):
+    return "{base}/opendata_sql/snosan_json/{filename}.sql".format(base=base_path(), filename=filename)
+
+
+def secmar_json_sql_path(filename):
+    return "{base}/opendata_sql/secmar_json/{filename}.sql".format(base=base_path(), filename=filename)
 
 
 def data_path(filename):
@@ -27,9 +27,7 @@ def data_path(filename):
 
 
 def embulk_filepath(filename):
-    return "{base}/../embulk/{filename}.yml.liquid".format(
-        base=base_path(), filename=filename
-    )
+    return "{base}/../embulk/{filename}.yml.liquid".format(base=base_path(), filename=filename)
 
 
 def opendata_folder_path():
@@ -61,8 +59,7 @@ def resolve_env(env):
 def embulk_run(dag, script, env=None, task_id=None):
     return BashOperator(
         task_id=task_id or "embulk_run_" + script,
-        bash_command="%s run %s"
-        % (Variable.get("EMBULK_BIN"), embulk_filepath(script)),
+        bash_command="%s run %s" % (Variable.get("EMBULK_BIN"), embulk_filepath(script)),
         dag=dag,
         pool="embulk",
         env=resolve_env(env),

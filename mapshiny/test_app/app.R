@@ -78,6 +78,7 @@ secmar <- secmar %>%
                   mutate(flotteurs_plaisance_autre =
                            ifelse(nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques == 0 &
                                     nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques == 0 &
+                                    nombre_flotteurs_plaisance_a_moteur_impliques == 0 &
                                     nombre_flotteurs_plaisance_a_voile_impliques == 0
                                     , 1, 0 )) %>%
                   mutate(flotteurs_vehicule_nautique =
@@ -159,7 +160,8 @@ flotteur_choices_dico <- c('Commerce' = 'nombre_flotteurs_commerce_impliques',
                             'Sans flotteur' = 'sans_flotteur')
 
 plaisance_choices <- c('Moteur < 8m', 'Moteur > 8m', 'Voile', 'Autre')
-plaisance_choices_dico <- c('Moteur < 8m' = 'nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques',
+plaisance_choices_dico <- c('Moteur' = 'nombre_flotteurs_plaisance_a_moteur_impliques',
+                           'Moteur < 8m' = 'nombre_flotteurs_plaisance_a_moteur_moins_8m_impliques',
                            'Moteur > 8m' = 'nombre_flotteurs_plaisance_a_moteur_plus_8m_impliques',
                            'Voile' = 'nombre_flotteurs_plaisance_a_voile_impliques',
                            'Autre' = 'flotteurs_plaisance_autre')
